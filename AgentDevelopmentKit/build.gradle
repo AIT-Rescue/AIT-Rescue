@@ -1,0 +1,61 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
+
+archivesBaseName = 'comlib-adk'
+//jar.baseName = 'comlib-adk'
+//version = '0.3.0'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile fileTree(dir: new File(rootDir, 'library/util'), include: '*.jar')
+    compile fileTree(dir: new File(rootDir, 'library/rescue/core'), include: '*.jar')
+    compile fileTree(dir: new File(rootDir, 'library/rescue/util'), include: '*.jar')
+    compile project(':CommunicationLibrary')
+    testCompile 'junit:junit:4.11'
+}
+
+[compileJava, compileTestJava].each {
+    it.options.encoding = 'UTF-8'
+    it.options.compilerArgs += ['-source', '1.8', '-target', '1.8', '-Xlint:unchecked']
+}
+javadoc.options.encoding = 'UTF-8'
+
+/*task javadocJar(type: Jar, dependsOn:javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}*/
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+    //archives javadocJar
+}
+
+build.mustRunAfter 'clean'
+
+task makeArchive(dependsOn: [clean, build]) << {
+}
+
+task start (type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = "comlib.adk.launcher.Main"
+    if (project.hasProperty('args')) {
+        args project.args.split('\\s+')
+    }
+    jvmArgs '-Xms512m', '-Xmx4g'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.1'
+}
+
+
