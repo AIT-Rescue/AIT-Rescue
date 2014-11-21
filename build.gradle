@@ -1,56 +1,5 @@
-import java.text.SimpleDateFormat
-
 apply plugin: 'java'
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.1'
-}
-
-//http://www.gradle.org/docs/current/dsl/org.gradle.api.tasks.bundling.Zip.html#org.gradle.api.tasks.bundling.Zip
-task buildWorkspace(type: Zip,  dependsOn: [':CommunicationLibrary:makeArchive', ':AgentDevelopmentKit:makeArchive']) {
-    Calendar calendar = Calendar.getInstance()
-    SimpleDateFormat sdf = new SimpleDateFormat('yyyyMMdd')
-    String date = sdf.format(calendar.getTime())
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    destinationDir = new File(projectDir, 'archive')
-    String buildName = 'comlib-adk-workspace-' + date
-    archiveName = buildName + '.zip'
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    into(buildName) {
-        into('workspace') {
-            //gradle
-            from 'gradlew'
-            from 'gradlew.bat'
-            into('gradle') {
-                from 'gradle'
-            }
-            //workspace
-            from 'basefile/build.gradle'
-            //library
-            into('library') {
-                from 'library'
-                into('rescue/util') {
-                    from 'Comlib-ADK/build/libs'
-                    from 'Comlib/build/libs'
-                }
-            }
-            //src
-            into('src') {
-                into('java') {
-                    into('sample') {
-                        from 'basefile/sample'
-                    }
-                }
-            }
-            //tactics
-            into('tactics') {
-                from 'basefile/.gitkeep'
-            }
-            //config
-            into('config') {
-                from 'basefile/adk.cfg'
-            }
-        }
-        from 'LICENSE'
-    }
 }

@@ -1,7 +1,5 @@
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'eclipse'
-
 
 archivesBaseName = 'comlib-adk'
 //jar.baseName = 'comlib-adk'
@@ -14,7 +12,7 @@ repositories {
 dependencies {
     compile fileTree(dir: new File(rootDir, 'library/util'), include: '*.jar')
     compile fileTree(dir: new File(rootDir, 'library/rescue/core'), include: '*.jar')
-    compile fileTree(dir: new File(rootDir, 'library/rescue/util'), include: '*.jar')
+    //compile fileTree(dir: new File(rootDir, 'library/rescue/util'), include: '*.jar')
     compile project(':CommunicationLibrary')
     testCompile 'junit:junit:4.11'
 }
@@ -25,10 +23,12 @@ dependencies {
 }
 javadoc.options.encoding = 'UTF-8'
 
-/*task javadocJar(type: Jar, dependsOn:javadoc) {
+/*
+task javadocJar(type: Jar, dependsOn:javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
-}*/
+}
+*/
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
@@ -47,7 +47,7 @@ task makeArchive(dependsOn: [clean, build]) << {
 
 task start (type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
-    main = "comlib.adk.launcher.Main"
+    main = "adk.Main"
     if (project.hasProperty('args')) {
         args project.args.split('\\s+')
     }
@@ -57,5 +57,3 @@ task start (type: JavaExec) {
 task wrapper(type: Wrapper) {
     gradleVersion = '2.1'
 }
-
-

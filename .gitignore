@@ -1,7 +1,7 @@
 *.class
 
 #archive (workspace)
-archive/
+#archive/
 
 # rescue
 test-results/

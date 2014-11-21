@@ -1,5 +1,0 @@
-//チーム名です。コンパイル時に、Jarのファイル名になります。デフォルトでは、プロジェクトのディレクトリ名になります。
-String teamName = name
-
-//Jarを読み込むための記述です。Teamを実装したクラスを、パッケージを含めて記述してください。
-String teamClassName = 'sample.SampleTeam'

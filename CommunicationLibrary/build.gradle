@@ -1,6 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'eclipse'
+//apply plugin: 'eclipse'
 
 archivesBaseName = 'comlib'
 //jar.baseName = 'comlib'
@@ -13,7 +13,7 @@ repositories {
 dependencies {
     compile fileTree(dir: new File(rootDir, 'library/util'), include: '*.jar')
     compile fileTree(dir: new File(rootDir, 'library/rescue/core'), include: '*.jar')
-    compile fileTree(dir: new File(rootDir, 'library/rescue/util'), include: '*.jar')
+    //compile fileTree(dir: new File(rootDir, 'library/rescue/util'), include: '*.jar')
     testCompile 'junit:junit:4.11'
 }
 
@@ -24,10 +24,12 @@ dependencies {
 }
 javadoc.options.encoding = 'UTF-8'
 
-/*task javadocJar(type: Jar, dependsOn:javadoc) {
+/*
+task javadocJar(type: Jar, dependsOn:javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
-}*/
+}
+*/
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
@@ -47,5 +49,3 @@ task makeArchive(dependsOn: [clean, build]) << {
 task wrapper(type: Wrapper) {
     gradleVersion = '2.1'
 }
-
-
