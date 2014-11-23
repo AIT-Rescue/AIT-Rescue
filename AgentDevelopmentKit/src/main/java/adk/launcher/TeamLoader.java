@@ -1,7 +1,7 @@
-package comlib.adk.launcher;
+package adk.launcher;
 
-import comlib.adk.launcher.dummy.DummyTeam;
-import comlib.adk.team.Team;
+import adk.launcher.dummy.DummyTeam;
+import adk.team.Team;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,9 +71,10 @@ public class TeamLoader {
     }
 
     private void addDummyTeam() {
-        String name = this.dummy.getTeamName();
+       // Team dummy = new DummyTeam();
+        String name = dummy.getTeamName();
         this.nameList.add(name);
-        this.teamMap.put(name, this.dummy);
+        this.teamMap.put(name, dummy);
     }
 
     private void loadJar(File file, URLClassLoader loader, List<String> list) {
@@ -117,85 +118,10 @@ public class TeamLoader {
                     System.out.println("Load Success : " + name);
                     this.nameList.add(name);
                     this.teamMap.put(name, team);
-                    //team.readConfig(config);
                 }
             } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) { //loadClass
                 e.printStackTrace();
             }
         }
     }
-
-    /*private void load(File dir, Config config) {
-        Team team = new SampleTeam();
-        String name = team.getTeamName();
-        this.nameList.add(name);
-        this.teamMap.put(name, team);
-
-        if (!dir.exists()) {
-            if(!dir.mkdir()) {
-                return;
-            }
-        }
-
-        URLClassLoader loader= (URLClassLoader)this.getClass().getClassLoader();
-
-        for(File file : dir.listFiles()) {
-            if(file.isDirectory()) {
-                this.load(file, config);
-            }
-            else if (file.getName().endsWith(".jar")) {
-                System.out.println("Found Jar : " + file.getName());
-                this.loadTeam(file, loader, config);
-            }
-        }
-    }*/
-
-    /*private void loadTeam(File file, URLClassLoader loader, Config config) {
-        try {
-            //System.out.println("add url");
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            Method m = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
-            m.setAccessible(true);
-            m.invoke(loader, new Object[]{file.toURI().toURL()});
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //System.out.println("load manifest");
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            JarFile jar = new JarFile(file);
-            Manifest manifest = jar.getManifest();
-            Attributes attributes = manifest.getMainAttributes();
-            String target = attributes.getValue("Team-Class");
-            if (target != null) {
-                ////////////////////////////////////////////////////////////////////////////////////////////////////////
-                //System.out.println("target class : " + targetClass);
-                ////////////////////////////////////////////////////////////////////////////////////////////////////////
-                //loader = (URLClassLoader) getClass().getClassLoader();
-                Class<?> teamClass = loader.loadClass(target);
-                Object obj = teamClass.newInstance();
-                if(obj instanceof Team) {
-                    ////////////////////////////////////////////////////////////////////////////////////////////////////
-                    //System.out.println("init Team");
-                    ////////////////////////////////////////////////////////////////////////////////////////////////////
-                    Team team = (Team) obj;
-                    String name = team.getTeamName();
-                    System.out.println("Load Success : " + name);
-                    this.nameList.add(name);
-                    this.teamMap.put(name, team);
-                    //System.out.println("load Team : " + team.getTeamName());
-                    team.readConfig(config);
-                }
-            }
-        } catch (IOException e) { //FileOpen
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) { //reflection
-            e.printStackTrace();
-        } catch (IllegalAccessException e) { //reflection
-            e.printStackTrace();
-        } catch (InvocationTargetException e) { //reflection
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) { //load class
-            e.printStackTrace();
-        } catch (InstantiationException e) { //load class
-            e.printStackTrace();
-        }
-    }*/
 }

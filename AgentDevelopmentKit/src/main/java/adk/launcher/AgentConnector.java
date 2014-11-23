@@ -5,9 +5,9 @@ import rescuecore2.standard.entities.StandardEntityFactory;
 import rescuecore2.standard.entities.StandardPropertyFactory;
 import rescuecore2.standard.messages.StandardMessageFactory;
 
-import adk.agent.AmbulanceTeamAgent;
-import adk.agent.FireBrigadeAgent;
-import adk.agent.PoliceForceAgent;
+import adk.launcher.agent.AmbulanceTeamAgent;
+import adk.launcher.agent.FireBrigadeAgent;
+import adk.launcher.agent.PoliceForceAgent;
 import adk.team.Team;
 import rescuecore2.Constants;
 import rescuecore2.components.ComponentConnectionException;
@@ -18,7 +18,7 @@ import rescuecore2.connection.ConnectionException;
 
 import java.io.File;
 
-public class AgentConnector {\
+public class AgentConnector {
     
     private Config config;
     
@@ -56,27 +56,30 @@ public class AgentConnector {\
     }
     
     private void connectAmbulance(ComponentLauncher cl, String name, int count) {
-        Team team = this.loader.get(name);
-        int limit = 0;
-        
-        /*while(team.getAmbulanceTeamTactics() == null) {
-			if(limit == 10) {
+		System.out.println("Start Ambulance Connect");
+		Team team = this.loader.get(name);
+		if(team == null || team.getAmbulanceTeamTactics() == null) {
+			if(this.config.getBooleanValue(ConfigKey.KEY_DUMMY_SYSTEM, false)) {
+				System.out.println("Error : AmbulanceTactics is Null !!");
+				System.out.println("Load  : Dummy System");
 				team = this.loader.getDummy();
 			}
 			else {
-				team = this.loader.getRandomTeam();
-				limit++;
+				System.out.println("Error : Ambulance Connect");
+				System.out.println("AmbulanceTeamTactics is Null !!");
+				System.out.println("End Ambulance Connect");
+				return;
 			}
 		}
-        */
-        name = team.getTeamName();
+        name = "Connect Ambulance (Team Name : " + team.getTeamName() + ")";
         try {
             for (int i = 0; i != count; ++i) {
                 cl.connect(new AmbulanceTeamAgent(team.getAmbulanceTeamTactics()));
-                System.out.println("Connect Ambulance Team (Team Name : " + name + ")");
+                System.out.println(name);
             }
         } catch (ComponentConnectionException | InterruptedException | ConnectionException ignored) {
         }
+		System.out.println("Done Ambulance Connect");
     }
 
 	private void connectFire(ComponentLauncher cl) {
@@ -84,25 +87,30 @@ public class AgentConnector {\
 	}
 
 	private void connectFire(ComponentLauncher cl, String name, int count) {
+		System.out.println("Start Fire Connect");
 		Team team = this.loader.get(name);
-		int limit = 0;
-		while(team.getFireBrigadeTactics() == null) {
-			if(limit == 10) {
+		if(team == null || team.getFireBrigadeTactics() == null) {
+			if(this.config.getBooleanValue(ConfigKey.KEY_DUMMY_SYSTEM, false)) {
+				System.out.println("Error : FireTactics is Null !!");
+				System.out.println("Load  : Dummy System");
 				team = this.loader.getDummy();
 			}
 			else {
-				team = this.loader.getRandomTeam();
-				limit++;
+				System.out.println("Error : Fire Connect");
+				System.out.println("FireTactics is Null !!");
+				System.out.println("End Fire Connect");
+				return;
 			}
 		}
-		name = team.getTeamName();
+		name = "Connect Fire (Team Name : " + team.getTeamName() + ")";
 		try {
 			for (int i = 0; i != count; ++i) {
-				System.out.println("Connect Fire Brigade   (Team Name : " + name + ")");
 				cl.connect(new FireBrigadeAgent(team.getFireBrigadeTactics()));
+				System.out.println(name);
 			}
 		} catch (ComponentConnectionException | InterruptedException | ConnectionException ignored) {
 		}
+		System.out.println("Done Fire Connect");
 	}
 
 	private void connectPolice(ComponentLauncher cl) {
@@ -110,25 +118,29 @@ public class AgentConnector {\
 	}
 
 	private void connectPolice(ComponentLauncher cl, String name, int count) {
+		System.out.println("Start Police Connect");
 		Team team = this.loader.get(name);
-		int limit = 0;
-		while(team.getPoliceForceTactics() == null) {
-			if(limit == 10) {
+		if(team == null || team.getPoliceForceTactics() == null) {
+			if(this.config.getBooleanValue(ConfigKey.KEY_DUMMY_SYSTEM, false)) {
+				System.out.println("Error : PoliceTactics is Null !!");
+				System.out.println("Load  : Dummy System");
 				team = this.loader.getDummy();
 			}
 			else {
-				team = this.loader.getRandomTeam();
-				limit++;
+				System.out.println("Error : Police Connect");
+				System.out.println("PoliceTactics is Null !!");
+				System.out.println("End Police Connect");
+				return;
 			}
 		}
-		name = team.getTeamName();
+		name = "Connect Police (Team Name : " + team.getTeamName() + ")";
 		try {
 			for (int i = 0; i != count; ++i) {
-				System.out.println("Connect Police Force   (Team Name : " + name + ")");
 				cl.connect(new PoliceForceAgent(team.getPoliceForceTactics()));
+				System.out.println(name);
 			}
 		} catch (ComponentConnectionException | InterruptedException | ConnectionException ignored) {
 		}
-
+		System.out.println("Done Police Connect");
 	}
 }
