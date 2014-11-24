@@ -1,5 +1,8 @@
 package adk.team.action;
 
+import rescuecore2.messages.Message;
+import rescuecore2.worldmodel.EntityID;
+
 public abstract class Action {
     
     protected int time;
