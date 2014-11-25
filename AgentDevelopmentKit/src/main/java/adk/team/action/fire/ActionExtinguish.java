@@ -1,6 +1,7 @@
 package adk.team.action.fire;
 
 import adk.team.action.ActionTarget;
+import adk.team.tactics.TacticsFire;
 import rescuecore2.messages.Message;
 import rescuecore2.standard.entities.Building;
 import rescuecore2.standard.messages.AKExtinguish;
@@ -10,13 +11,13 @@ public class ActionExtinguish extends ActionTarget {
     
     private int power;
     
-    public ActionExtinguish(FireBrigadeTactics tactics, int actionTime, EntityID targetID, int maxPower) {
-        super((Tactics)tactics, actionTime, targetID);
+    public ActionExtinguish(TacticsFire tactics, int actionTime, EntityID targetID, int maxPower) {
+        super(tactics, actionTime, targetID);
         this.power = maxPower;
     }
     
-    public ActionExtinguish(FireBrigadeTactics tactics, int actionTime, Building building, int maxPower) {
-        this((Tactics)tactics, actionTime, building.getID(), maxPower);
+    public ActionExtinguish(TacticsFire tactics, int actionTime, Building building, int maxPower) {
+        this(tactics, actionTime, building.getID(), maxPower);
     }
     
     @Override

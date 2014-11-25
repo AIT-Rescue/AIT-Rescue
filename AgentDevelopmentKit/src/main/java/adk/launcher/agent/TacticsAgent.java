@@ -1,6 +1,7 @@
-package comlib.adk.agent;
+package adk.launcher.agent;
 
-import comlib.adk.team.tactics.Tactics;
+import adk.team.action.Action;
+import adk.team.tactics.Tactics;
 import comlib.agent.CommunicationAgent;
 import comlib.manager.MessageManager;
 import rescuecore2.standard.entities.StandardEntity;
@@ -26,7 +27,7 @@ public abstract class TacticsAgent<T extends Tactics, E extends StandardEntity> 
         this.tactics.random = this.random;
         this.tactics.model = this.model;
         this.tactics.config = this.config;
-        this.tactics.ignoreTime = this.config.getIntValue(kernel.KernelConstants.IGNORE_AGENT_COMMANDS_KEY);
+        //this.tactics.ignoreTime = this.config.getIntValue(kernel.KernelConstants.IGNORE_AGENT_COMMANDS_KEY);
         this.tactics.agentID = this.getID(); //AgentのEntityIDはかわるのか？？
         this.tactics.location = this.location();
         this.setAgentEntity();
@@ -51,12 +52,13 @@ public abstract class TacticsAgent<T extends Tactics, E extends StandardEntity> 
     
     @Override
     public void think(int time, ChangeSet changed) {
-        if(time <= this.ignoreTime) { //TODO: これでいいのか．．．
+        if(time <= this.ignoreTime) {
+            this.tactics.ignoreTimeThink(time, changed, this.manager);
             return;
         }
 
-        Message actMessage = this.tactics.think(time, changed, this.manager);
-        this.send(actMessage == null ? new AKRest(this.getID(), time) : actMessage);
+        Action actMessage = this.tactics.think(time, changed, this.manager);
+        this.send(actMessage == null ? new AKRest(this.getID(), time) : actMessage.getMessage());
     }
 
     @Override

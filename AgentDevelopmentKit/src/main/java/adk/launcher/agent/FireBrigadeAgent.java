@@ -1,20 +1,20 @@
-package comlib.adk.agent;
+package adk.launcher.agent;
 
-import comlib.adk.team.tactics.FireBrigadeTactics;
+import adk.team.tactics.TacticsFire;
 import rescuecore2.standard.entities.FireBrigade;
 import rescuecore2.standard.entities.StandardEntityURN;
 
 import java.util.EnumSet;
 
-public class FireBrigadeAgent extends TacticsAgent<FireBrigadeTactics, FireBrigade> {
+public class FireBrigadeAgent extends TacticsAgent<TacticsFire, FireBrigade> {
     
     public static final String MAX_WATER_KEY = "fire.tank.maximum";
     public static final String MAX_DISTANCE_KEY = "fire.extinguish.max-distance";
     public static final String MAX_POWER_KEY = "fire.extinguish.max-sum";
     
-    public FireBrigadeTactics fbt;
+    public TacticsFire fbt;
     
-    public FireBrigadeAgent(FireBrigadeTactics fireBrigadeTactics) {
+    public FireBrigadeAgent(TacticsFire fireBrigadeTactics) {
         super(fireBrigadeTactics);
         this.fbt = fireBrigadeTactics;
     }

@@ -1,16 +1,16 @@
-package comlib.adk.agent;
+package adk.launcher.agent;
 
-import comlib.adk.team.tactics.AmbulanceTeamTactics;
+import adk.team.tactics.TacticsAmbulance;
 import rescuecore2.standard.entities.AmbulanceTeam;
 import rescuecore2.standard.entities.StandardEntityURN;
 
 import java.util.EnumSet;
 
-public class AmbulanceTeamAgent extends TacticsAgent<AmbulanceTeamTactics, AmbulanceTeam> {
+public class AmbulanceTeamAgent extends TacticsAgent<TacticsAmbulance, AmbulanceTeam> {
     
-    public AmbulanceTeamTactics att;
+    public TacticsAmbulance att;
     
-    public AmbulanceTeamAgent(AmbulanceTeamTactics ambulanceTactics) {
+    public AmbulanceTeamAgent(TacticsAmbulance ambulanceTactics) {
         super(ambulanceTactics);
         this.att = ambulanceTactics;
     }

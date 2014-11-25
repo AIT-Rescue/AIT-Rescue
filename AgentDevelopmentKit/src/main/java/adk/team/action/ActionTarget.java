@@ -1,5 +1,6 @@
 package adk.team.action;
 
+import adk.team.tactics.Tactics;
 import rescuecore2.worldmodel.EntityID;
 
 public abstract class ActionTarget extends Action {

@@ -1,18 +1,18 @@
-package comlib.adk.agent;
+package adk.launcher.agent;
 
-import comlib.adk.team.tactics.PoliceForceTactics;
+import adk.team.tactics.TacticsPolice;
 import rescuecore2.standard.entities.PoliceForce;
 import rescuecore2.standard.entities.StandardEntityURN;
 
 import java.util.EnumSet;
 
-public class PoliceForceAgent extends TacticsAgent<PoliceForceTactics, PoliceForce> {
+public class PoliceForceAgent extends TacticsAgent<TacticsPolice, PoliceForce> {
     
     public static final String DISTANCE_KEY = "clear.repair.distance";
     
-    public PoliceForceTactics pft;
+    public TacticsPolice pft;
     
-    public PoliceForceAgent(PoliceForceTactics policeForceTactics) {
+    public PoliceForceAgent(TacticsPolice policeForceTactics) {
         super(policeForceTactics);
         this.pft = policeForceTactics;
     }

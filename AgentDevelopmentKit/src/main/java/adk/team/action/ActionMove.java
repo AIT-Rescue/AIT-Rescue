@@ -1,5 +1,6 @@
 package adk.team.action;
 
+import adk.team.tactics.Tactics;
 import rescuecore2.messages.Message;
 import rescuecore2.standard.messages.AKMove;
 import rescuecore2.worldmodel.EntityID;

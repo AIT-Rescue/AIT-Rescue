@@ -1,6 +1,7 @@
 package adk.team.action.ambulance;
 
 import adk.team.action.ActionTarget;
+import adk.team.tactics.TacticsAmbulance;
 import rescuecore2.messages.Message;
 import rescuecore2.standard.entities.Human;
 import rescuecore2.standard.messages.AKRescue;
@@ -9,12 +10,12 @@ import rescuecore2.worldmodel.EntityID;
 public class ActionRescue extends ActionTarget {
 
 
-    public ActionRescue(AmbulanceTeamTactics tactics, int actionTime, EntityID targetID) {
-        super((Tactics)tactics, actionTime, targetID);
+    public ActionRescue(TacticsAmbulance tactics, int actionTime, EntityID targetID) {
+        super(tactics, actionTime, targetID);
     }
 
-    public ActionRescue(AmbulanceTeamTactics tactics, int actionTime, Human human) {
-        this((Tactics)tactics, actionTime, human.getID());
+    public ActionRescue(TacticsAmbulance tactics, int actionTime, Human human) {
+        this(tactics, actionTime, human.getID());
     }
 
     @Override
