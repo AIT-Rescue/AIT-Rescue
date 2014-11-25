@@ -3,11 +3,13 @@ package adk.team.tactics;
 import adk.team.action.Action;
 import comlib.manager.MessageManager;
 import rescuecore2.config.Config;
+import rescuecore2.standard.entities.Refuge;
 import rescuecore2.standard.entities.StandardEntity;
 import rescuecore2.standard.entities.StandardWorldModel;
 import rescuecore2.worldmodel.ChangeSet;
 import rescuecore2.worldmodel.EntityID;
 
+import java.util.List;
 import java.util.Random;
 
 public abstract class Tactics<E extends StandardEntity> {
@@ -17,6 +19,10 @@ public abstract class Tactics<E extends StandardEntity> {
     public StandardEntity location;
     public int time;
     public EntityID target;
+    public List<Refuge> refugeList;
+    //public List<EntityID> refugeList;
+
+    //public E me;
 
     public Random random;
     public Config config;
