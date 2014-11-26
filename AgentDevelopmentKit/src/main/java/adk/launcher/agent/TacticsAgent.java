@@ -23,17 +23,12 @@ public abstract class TacticsAgent<T extends Tactics, E extends StandardEntity> 
     public void postConnect() {
         super.postConnect();
         this.ignoreTime = this.config.getIntValue(kernel.KernelConstants.IGNORE_AGENT_COMMANDS_KEY);
-        //set value
-        this.tactics.random = this.random;
         this.tactics.model = this.model;
-        this.tactics.config = this.config;
-        //this.tactics.ignoreTime = this.config.getIntValue(kernel.KernelConstants.IGNORE_AGENT_COMMANDS_KEY);
         this.tactics.agentID = this.getID(); //AgentのEntityIDはかわるのか？？
-        this.tactics.location = this.location();
         this.setAgentEntity();
         this.setAgentUniqueValue();
         
-        this.tactics.preparation();
+        this.tactics.preparation(this.config);
     }
     
     public abstract void setAgentEntity();
@@ -64,9 +59,9 @@ public abstract class TacticsAgent<T extends Tactics, E extends StandardEntity> 
     @Override
     public void receiveBeforeEvent(int time, ChangeSet changed) {
         //set value
+
         this.tactics.time = time;
         this.tactics.model = this.model;
-        this.tactics.config = this.config;
         this.tactics.agentID = this.getID();
         this.tactics.location = this.location();
         this.setAgentEntity();

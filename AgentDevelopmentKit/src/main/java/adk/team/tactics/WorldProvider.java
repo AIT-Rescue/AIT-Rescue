@@ -1,7 +1,7 @@
 package adk.team.tactics;
 
+//import com.google.common.base.Function;
 //import com.google.common.collect.Lists;
-
 import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.EntityID;
 
@@ -28,12 +28,23 @@ public interface WorldProvider<E extends StandardEntity> {
     }
 
     default List<Refuge> getRefuges() {
-        //Collection<StandardEntity> -> List<StandardEntity>
+        /*
         List<StandardEntity> entityList = new ArrayList<>(this.getWorld().getEntitiesOfType(StandardEntityURN.REFUGE));
-        //Lists.
-        //List<StandardEntity> -> List<Refuge>
+        List<Refuge> refugeList = Lists.transform(entityList, new Function<StandardEntity, Refuge>() {
+            @Override
+            public Refuge apply(StandardEntity input) {
+                return (Refuge)input;
+            }
+        });
+        */
         return this.getWorld().getEntitiesOfType(StandardEntityURN.REFUGE).stream().map(entity -> (Refuge) entity).collect(Collectors.toList());
     }
+
+    /*
+    default <T extends StandardEntity> List<T> getEntityList(StandardEntityURN urn) {
+        return this.getWorld().getEntitiesOfType(urn).stream().map(entity -> (T)entity).collect(Collectors.toList());
+    }
+    */
 
     default EntityID getID() {
         return this.getAgentID();

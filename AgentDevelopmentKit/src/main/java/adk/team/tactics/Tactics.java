@@ -12,7 +12,7 @@ import rescuecore2.worldmodel.EntityID;
 import java.util.List;
 import java.util.Random;
 
-public abstract class Tactics<E extends StandardEntity> {
+public abstract class Tactics<E extends StandardEntity> implements WorldProvider<E> {
 
     public StandardWorldModel model;
     public EntityID agentID;
@@ -20,14 +20,8 @@ public abstract class Tactics<E extends StandardEntity> {
     public int time;
     public EntityID target;
     public List<Refuge> refugeList;
-    //public List<EntityID> refugeList;
 
-    //public E me;
-
-    public Random random;
-    public Config config;
-
-    public abstract void preparation();
+    public abstract void preparation(Config config);
 
     public abstract void registerEvent(MessageManager manager);
 
@@ -41,19 +35,14 @@ public abstract class Tactics<E extends StandardEntity> {
     public void registerProvider(MessageManager manager) {
     }
 
-    public Config getConfig() {
-        return this.config;
+    @Override
+    public EntityID getAgentID() {
+        return this.agentID;
     }
 
-    public StandardWorldModel getModel() {
+    @Override
+    public StandardWorldModel getWorld() {
         return this.model;
     }
 
-    public StandardEntity location() {
-        return this.location;
-    }
-
-    public EntityID getID() {
-        return this.agentID;
-    }
 }
