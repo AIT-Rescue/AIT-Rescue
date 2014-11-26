@@ -1,9 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 
-archivesBaseName = 'adk'
-//jar.baseName = 'comlib-adk'
-//version = '0.3.0'
+archivesBaseName = 'agent-development-kit'
 
 repositories {
     jcenter()
