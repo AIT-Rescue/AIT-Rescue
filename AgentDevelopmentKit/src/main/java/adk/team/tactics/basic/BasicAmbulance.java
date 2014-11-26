@@ -19,7 +19,7 @@ public abstract class BasicAmbulance extends TacticsAmbulance {
 
     public VictimSelector victimSelector;
 
-    public RouteSearcher routeSearcher;
+    public adk.team.route.IRouteSearcher routeSearcher;
 
 		public ChangeSet changed; // temp add
 

@@ -11,6 +11,7 @@ repositories {
 }
 
 dependencies {
+    compile 'com.google.guava:guava:18.0'
     compile fileTree(dir: new File(rootDir, 'library/util'), include: '*.jar')
     compile fileTree(dir: new File(rootDir, 'library/rescue/core'), include: '*.jar')
     //compile fileTree(dir: new File(rootDir, 'library/rescue/util'), include: '*.jar')

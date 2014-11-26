@@ -35,7 +35,7 @@ public abstract class Tactics<E extends StandardEntity> {
 
     public abstract E me();
 
-    public void ignoreTimeThink(int time, ChangeSet changed, MessageManager manager) {
+    public void ignoreTimeThink(ChangeSet changed, MessageManager manager) {
     }
 
     public void registerProvider(MessageManager manager) {

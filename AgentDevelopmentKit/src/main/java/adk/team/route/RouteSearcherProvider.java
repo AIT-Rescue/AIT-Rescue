@@ -1,6 +1,4 @@
-package comlib.adk.team.tactics;
-
-import comlib.adk.util.route.IRouteSearcher;
+package adk.team.route;
 
 public interface RouteSearcherProvider {
 

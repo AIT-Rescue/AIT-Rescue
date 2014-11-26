@@ -1,4 +1,4 @@
-package comlib.adk.util.route;
+package adk.team.route;
 
 import rescuecore2.standard.entities.Area;
 import rescuecore2.standard.entities.Blockade;

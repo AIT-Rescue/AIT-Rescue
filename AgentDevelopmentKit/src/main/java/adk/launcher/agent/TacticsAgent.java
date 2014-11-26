@@ -53,7 +53,7 @@ public abstract class TacticsAgent<T extends Tactics, E extends StandardEntity> 
     @Override
     public void think(int time, ChangeSet changed) {
         if(time <= this.ignoreTime) {
-            this.tactics.ignoreTimeThink(time, changed, this.manager);
+            this.tactics.ignoreTimeThink(changed, this.manager);
             return;
         }
 
