@@ -15,7 +15,7 @@ public abstract class Action {
         this.agentID = tactics.getID();
     }
     
-    public abstract Message getMessage();
+    public abstract Message getCommand();
     
     public int getTime() {
         return this.time;

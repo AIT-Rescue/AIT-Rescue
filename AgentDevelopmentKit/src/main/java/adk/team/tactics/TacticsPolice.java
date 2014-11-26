@@ -8,7 +8,12 @@ public abstract class TacticsPolice extends Tactics<PoliceForce> {
     public int distance;
 
     @Override
-    public PoliceForce me() {
+    public PoliceForce getOwner() {
         return this.me;
+    }
+
+    @Override
+    public PoliceForce me() {
+        return this.getOwner();
     }
 }

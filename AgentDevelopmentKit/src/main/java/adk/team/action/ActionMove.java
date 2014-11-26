@@ -30,7 +30,7 @@ public class ActionMove extends Action {
     }
     
     @Override
-    public Message getMessage() {
+    public Message getCommand() {
         return this.usePosition ? new AKMove(this.agentID, this.time, this.path, this.posX, this.posY) : new AKMove(this.agentID, this.time, this.path);
     }
 }

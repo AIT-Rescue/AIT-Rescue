@@ -1,6 +1,6 @@
 package adk.launcher;
 
-import adk.launcher.dummy.DummyTeam;
+import adk.sample.dummy.DummyTeam;
 import adk.team.Team;
 
 import java.io.File;
@@ -92,7 +92,7 @@ public class TeamLoader {
                 method.setAccessible(true);
                 //method.invoke(loader, new Object[]{file.toURI().toURL()});
                 method.invoke(loader, file.toURI().toURL());
-                //load target class name
+                //load util class name
                 JarFile jar = new JarFile(file);
                 Manifest manifest = jar.getManifest();
                 Attributes attributes = manifest.getMainAttributes();

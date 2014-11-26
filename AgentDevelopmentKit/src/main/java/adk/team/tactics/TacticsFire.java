@@ -10,7 +10,12 @@ public abstract class TacticsFire extends Tactics<FireBrigade> {
     public int maxPower;
 
     @Override
-    public FireBrigade me() {
+    public FireBrigade getOwner() {
         return this.me;
+    }
+
+    @Override
+    public FireBrigade me() {
+        return this.getOwner();
     }
 }

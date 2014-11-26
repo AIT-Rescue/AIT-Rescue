@@ -11,7 +11,7 @@ public class ActionRest extends Action {
     }
 
     @Override
-    public Message getMessage() {
+    public Message getCommand() {
         return new AKRest(this.agentID, this.time);
     }
 }

@@ -6,8 +6,13 @@ public abstract class TacticsAmbulance extends Tactics<AmbulanceTeam> {
     public AmbulanceTeam me;
 
     @Override
-    public AmbulanceTeam me() {
+    public AmbulanceTeam getOwner() {
         return this.me;
+    }
+
+    @Override
+    public AmbulanceTeam me() {
+        return this.getOwner();
     }
 
 }
