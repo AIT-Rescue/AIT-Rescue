@@ -21,13 +21,13 @@ public abstract class Tactics<E extends StandardEntity> implements WorldProvider
     public EntityID target;
     public List<Refuge> refugeList;
 
+    public abstract String getTacticsName();
+
     public abstract void preparation(Config config);
 
     public abstract void registerEvent(MessageManager manager);
 
     public abstract Action think(int time, ChangeSet changed, MessageManager manager);
-
-    public abstract E me();
 
     public void ignoreTimeThink(ChangeSet changed, MessageManager manager) {
     }
@@ -44,5 +44,4 @@ public abstract class Tactics<E extends StandardEntity> implements WorldProvider
     public StandardWorldModel getWorld() {
         return this.model;
     }
-
 }

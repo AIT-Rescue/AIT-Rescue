@@ -17,7 +17,7 @@ public class AmbulanceTeamAgent extends TacticsAgent<TacticsAmbulance, Ambulance
     
     @Override
     public String toString() {
-        return "Comlib Ambulance Team";
+        return "Ambulance Team [tactics: " + this.tactics.getTacticsName() + " ]";
     }
     
     @Override

@@ -40,12 +40,6 @@ public interface WorldProvider<E extends StandardEntity> {
         return this.getWorld().getEntitiesOfType(StandardEntityURN.REFUGE).stream().map(entity -> (Refuge) entity).collect(Collectors.toList());
     }
 
-    /*
-    default <T extends StandardEntity> List<T> getEntityList(StandardEntityURN urn) {
-        return this.getWorld().getEntitiesOfType(urn).stream().map(entity -> (T)entity).collect(Collectors.toList());
-    }
-    */
-
     default EntityID getID() {
         return this.getAgentID();
     }

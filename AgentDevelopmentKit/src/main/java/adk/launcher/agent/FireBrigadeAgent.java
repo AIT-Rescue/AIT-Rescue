@@ -21,7 +21,7 @@ public class FireBrigadeAgent extends TacticsAgent<TacticsFire, FireBrigade> {
     
     @Override
     public String toString() {
-        return "Comlib Fire Brigade";
+        return "Fire Brigade [tactics: " + this.tactics.getTacticsName() + " ]";
     }
     
     @Override

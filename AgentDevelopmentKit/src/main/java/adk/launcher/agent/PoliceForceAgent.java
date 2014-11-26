@@ -19,7 +19,7 @@ public class PoliceForceAgent extends TacticsAgent<TacticsPolice, PoliceForce> {
     
     @Override
     public String toString() {
-        return "Comlib Police Force";
+        return "Police Force [tactics: " + this.tactics.getTacticsName() + " ]";
     }
     
     @Override
