@@ -1,7 +1,6 @@
 package adk.team.util;
 
 import rescuecore2.standard.entities.Blockade;
-import rescuecore2.worldmodel.EntityID;
 
 public interface BlockadeSelector extends TargetSelector {
 

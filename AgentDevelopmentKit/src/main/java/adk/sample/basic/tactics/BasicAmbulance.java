@@ -21,8 +21,6 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
 
     public RouteSearcher routeSearcher;
 
-		public ChangeSet changed; // temp add
-
     @Override
     public void preparation(Config config) {
         this.victimSelector = this.initVictimSelector();
@@ -34,19 +32,16 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
     public abstract RouteSearcher initRouteSearcher();
 
     @Override
-    public Action think(int time, ChangeSet changed, MessageManager manager) {
-
-			this.changed = changed; //temp add
-
-        this.updateInfo(changed, manager);
+    public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
+        this.updateInfo(updateWorldData, manager);
 
         if(this.someoneOnBoard()) {
             if (this.location instanceof Refuge) {
                 this.target = null;
-                return new ActionUnload(this, time);
+                return new ActionUnload(this, currentTime);
             }
             else {
-                return this.moveRefuge(time);
+                return this.moveRefuge(currentTime);
             }
         }
 
@@ -57,9 +52,9 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
                     Civilian civilian = (Civilian)target;
                     manager.addSendMessage(new CivilianMessage(civilian));
                     this.victimSelector.remove(civilian);
-                    return new ActionLoad(this, time, this.target);
+                    return new ActionLoad(this, currentTime, this.target);
                 } else if (target.getBuriedness() > 0) {
-                    return new ActionRescue(this, time, this.target);
+                    return new ActionRescue(this, currentTime, this.target);
                 }
                 else {
                     if(target instanceof Civilian) {
@@ -82,36 +77,36 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
                         manager.addSendMessage(new PoliceForceMessage(policeForce));
                         this.victimSelector.remove(target);
                     }
-                    this.target = this.victimSelector.getTarget(time);
+                    this.target = this.victimSelector.getTarget(currentTime);
                     if (this.target != null) {
-                        List<EntityID> path = this.routeSearcher.getPath(time, this.me, this.target);
-                        return path != null ? new ActionMove(this, time, path) : new ActionMove(this, time, this.routeSearcher.noTargetWalk(time));
+                        List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
+                        return path != null ? new ActionMove(this, currentTime, path) : new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
                     }
                     else {
-                        return new ActionMove(this, time, this.routeSearcher.noTargetWalk(time));
+                        return new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
                     }
                 }
             }
             else {
-                List<EntityID> path = this.routeSearcher.getPath(time, this.me, this.target);
-                return path != null ? new ActionMove(this, time, path) : new ActionMove(this, time, this.routeSearcher.noTargetWalk(time));
+                List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
+                return path != null ? new ActionMove(this, currentTime, path) : new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
             }
         }
 
         if(this.me.getBuriedness() > 0) {
-            return new ActionRest(this, time);
+            return new ActionRest(this, currentTime);
         }
-        this.target = this.victimSelector.getTarget(time);
+        this.target = this.victimSelector.getTarget(currentTime);
         if (this.target != null) {
-            List<EntityID> path = this.routeSearcher.getPath(time, this.me, this.target);
-            return path != null ? new ActionMove(this, time, path) : new ActionMove(this, time, this.routeSearcher.noTargetWalk(time));
+            List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
+            return path != null ? new ActionMove(this, currentTime, path) : new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
         }
-        List<EntityID> path = this.routeSearcher.noTargetWalk(time);
-        return path != null ? new ActionMove(this, time, path) : new ActionRest(this, time);
+        List<EntityID> path = this.routeSearcher.noTargetWalk(currentTime);
+        return path != null ? new ActionMove(this, currentTime, path) : new ActionRest(this, currentTime);
     }
 
-    private void updateInfo(ChangeSet changed, MessageManager manager) {
-        for (EntityID next : changed.getChangedEntities()) {
+    private void updateInfo(ChangeSet updateWorldInfo, MessageManager manager) {
+        for (EntityID next : updateWorldInfo.getChangedEntities()) {
             StandardEntity entity = model.getEntity(next);
             if(entity instanceof Civilian) {
                 this.victimSelector.add((Civilian) entity);
@@ -136,7 +131,7 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
         return this.target != null && ((Human) this.model.getEntity(this.target)).getPosition().equals(this.agentID);
     }
 
-    private Action moveRefuge(int time) {
+    private Action moveRefuge(int currentTime) {
         Refuge result = null;
         int minDistance = Integer.MAX_VALUE;
         for (Refuge refuge : this.refugeList) {
@@ -146,8 +141,8 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
                 result = refuge;
             }
         }
-        List<EntityID> path = this.routeSearcher.getPath(time, this.me, result);
-        return path != null ? new ActionMove(this, time, path) : new ActionMove(this, time, this.routeSearcher.noTargetWalk(time));
+        List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, result);
+        return path != null ? new ActionMove(this, currentTime, path) : new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
     }
 
 

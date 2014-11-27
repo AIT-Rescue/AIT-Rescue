@@ -4,6 +4,7 @@ package adk.team.util.provider;
 import rescuecore2.standard.entities.Refuge;
 import rescuecore2.standard.entities.StandardEntity;
 import rescuecore2.standard.entities.StandardWorldModel;
+import rescuecore2.worldmodel.ChangeSet;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.List;
 public interface WorldProvider<E extends StandardEntity> {
 
     public int getCurrentTime();
+
+    public ChangeSet getUpdateWorldData();
 
     public StandardWorldModel getWorld();
 

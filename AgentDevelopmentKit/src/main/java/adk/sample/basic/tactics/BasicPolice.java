@@ -28,8 +28,6 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
 
     public RouteSearcher routeSearcher;
 
-    public ChangeSet changed; // temp add
-
     @Override
 	public void preparation(Config config) {
 		this.routeSearcher = this.initRouteSearcher();
@@ -41,13 +39,10 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
     public abstract RouteSearcher initRouteSearcher();
 
     @Override
-    public Action think(int time, ChangeSet changed, MessageManager manager) {
-
-        this.changed = changed; //temp add
-
-        this.updateInfo(changed, manager);
+    public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
+        this.updateInfo(updateWorldData, manager);
         // if(this.util == null) {
-        this.target = this.blockadeSelector.getTarget(time);
+        this.target = this.blockadeSelector.getTarget(currentTime);
         // }
         Blockade blockade = (Blockade)this.model.getEntity(this.target);
 
@@ -70,23 +65,23 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
 				Vector2D v = bestPoint.minus(new Point2D(this.me.getX(), this.me.getY()));
 				v = v.normalised().scale(1000000);
 				this.blockadeSelector.remove(blockade);
-				return new ActionClear(this, time, blockade, (int) (this.me.getX() + v.getX()), (int) (this.me.getY() + v.getY()));
+				return new ActionClear(this, currentTime, blockade, (int) (this.me.getX() + v.getX()), (int) (this.me.getY() + v.getY()));
 			}
 
-			List<EntityID> path = this.routeSearcher.getPath(time, me().getPosition(), blockade.getPosition());
+			List<EntityID> path = this.routeSearcher.getPath(currentTime, me().getPosition(), blockade.getPosition());
 			if (path != null) {
-				return new ActionMove(this, time, path, blockade.getX(), blockade.getY());
+				return new ActionMove(this, currentTime, path, blockade.getX(), blockade.getY());
 			}
 		}
             // Plan a path to a blocked area
                 // Road r = (Road)model.getEntity(path.get(path.size() - 1));
                 // Blockade b = getTargetBlockade(r, -1);
 
-		return new ActionMove(this, time, this.routeSearcher.noTargetWalk(time));
+		return new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
 	}
 
-    private void updateInfo(ChangeSet changed, MessageManager manager) {
-        for (EntityID next : changed.getChangedEntities()) {
+    private void updateInfo(ChangeSet updateWorldInfo, MessageManager manager) {
+        for (EntityID next : updateWorldInfo.getChangedEntities()) {
             StandardEntity entity = this.model.getEntity(next);
             if(entity instanceof Civilian) {
                 Civilian civilian = (Civilian)entity;

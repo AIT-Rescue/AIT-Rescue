@@ -1,7 +1,7 @@
 package adk.team.util;
 
-import rescuecore2.standard.entities.*;
-import rescuecore2.worldmodel.EntityID;
+import rescuecore2.standard.entities.Civilian;
+import rescuecore2.standard.entities.Human;
 
 public interface VictimSelector extends TargetSelector {
 

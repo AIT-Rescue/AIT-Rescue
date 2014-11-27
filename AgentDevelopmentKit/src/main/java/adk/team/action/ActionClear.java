@@ -1,6 +1,5 @@
 package adk.team.action;
 
-import adk.team.action.ActionTarget;
 import adk.team.tactics.TacticsPolice;
 import rescuecore2.messages.Message;
 import rescuecore2.standard.entities.Blockade;

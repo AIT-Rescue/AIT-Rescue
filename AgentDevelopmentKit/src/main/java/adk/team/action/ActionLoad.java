@@ -1,6 +1,5 @@
 package adk.team.action;
 
-import adk.team.action.ActionTarget;
 import adk.team.tactics.TacticsAmbulance;
 import rescuecore2.messages.Message;
 import rescuecore2.standard.entities.Civilian;

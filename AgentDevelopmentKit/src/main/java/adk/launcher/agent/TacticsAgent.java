@@ -61,6 +61,7 @@ public abstract class TacticsAgent<T extends Tactics, E extends StandardEntity> 
     @Override
     public void receiveBeforeEvent(int time, ChangeSet changed) {
         this.tactics.time = time;
+        this.tactics.changed = changed;
         this.setAgentEntity();
     }
 

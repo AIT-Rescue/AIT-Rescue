@@ -25,8 +25,6 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
 
     public RouteSearcher routeSearcher;
 
-		public ChangeSet changed; // temp add
-
     @Override
     public void preparation(Config config) {
         this.buildingSelector = this.initBuildingSelector();
@@ -38,79 +36,78 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
     public abstract RouteSearcher initRouteSearcher();
 
     @Override
-    public Action think(int time, ChangeSet changed, MessageManager manager) {
+    public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
+        this.organizingUpdateInfo(currentTime, updateWorldData, manager);
 
-			this.changed = changed; //temp add
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        this.updateInfo(changed, manager);
         if (this.me.getWater() == 0) {
             this.target = null;
-            return this.moveRefuge(time);
+            return this.moveRefuge(currentTime);
         }
         if(this.target != null) {
             Building building = (Building)this.model.getEntity(this.target);
             if(building.isOnFire()) {
                 if(this.model.getDistance(this.agentID, this.target) <= this.maxDistance) {
-                    return new ActionExtinguish(this, time, this.target, this.maxPower);
+                    return new ActionExtinguish(this, currentTime, this.target, this.maxPower);
                 }
                 else {
-                    List<EntityID> path = this.routeSearcher.getPath(time, this.me, this.target);
+                    List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
                     if(path != null) {
                         path.remove(path.size() - 1);
-                        return new ActionMove(this, time, path);
+                        return new ActionMove(this, currentTime, path);
                     }
-                    return new ActionMove(this, time, this.routeSearcher.noTargetWalk(time));
+                    return new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
                 }
             }
             else {
                 this.buildingSelector.remove((Building)this.model.getEntity(this.target));
-                this.target = this.buildingSelector.getTarget(time);
+                this.target = this.buildingSelector.getTarget(currentTime);
                 if(this.target != null) {
-                    List<EntityID> path = this.routeSearcher.getPath(time, this.me, this.target);
+                    List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
                     if(path != null) {
                         path.remove(path.size() - 1);
-                        return new ActionMove(this, time, path);
+                        return new ActionMove(this, currentTime, path);
                     }
                 }
-                return new ActionMove(this, time, this.routeSearcher.noTargetWalk(time));
+                return new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
             }
         }
         else {
             //if(this.me.isWaterDefined()) { //??????????????????????????????????????????????????????
             if(this.location instanceof Refuge) {
                 if (this.me.getWater() < this.maxWater) {
-                    return new ActionRest(this, time);
+                    return new ActionRest(this, currentTime);
                 }
                 else {
-                    this.target = this.buildingSelector.getTarget(time);
+                    this.target = this.buildingSelector.getTarget(currentTime);
                     if(this.target != null) {
-                        List<EntityID> path = this.routeSearcher.getPath(time, this.me, this.target);
+                        List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
                         if(path != null) {
                             path.remove(path.size() - 1);
-                            return new ActionMove(this, time, path);
+                            return new ActionMove(this, currentTime, path);
                         }
                     }
-                    return new ActionMove(this, time, this.routeSearcher.noTargetWalk(time));
+                    return new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
                 }
             }
             else {
-                this.target = this.buildingSelector.getTarget(time);
+                this.target = this.buildingSelector.getTarget(currentTime);
                 if(this.target != null) {
-                    List<EntityID> path = this.routeSearcher.getPath(time, this.me, this.target);
+                    List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
                     if(path != null) {
                         path.remove(path.size() - 1);
-                        return new ActionMove(this, time, path);
+                        return new ActionMove(this, currentTime, path);
                     }
                 }
-                return new ActionMove(this, time, this.routeSearcher.noTargetWalk(time));
+                return new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
             }
             //}
         }
     }
 
-
-    private void updateInfo(ChangeSet changed, MessageManager manager) {
-        for (EntityID next : changed.getChangedEntities()) {
+    public void organizingUpdateInfo(int currentTime, ChangeSet updateWorldInfo, MessageManager manager) {
+        for (EntityID next : updateWorldInfo.getChangedEntities()) {
             StandardEntity entity = model.getEntity(next);
             if(entity instanceof Civilian) {
                 Civilian civilian = (Civilian)entity;
@@ -127,7 +124,7 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
         }
     }
 
-    private Action moveRefuge(int time) {
+    private Action moveRefuge(int currentTime) {
         Refuge result = null;
         int minDistance = Integer.MAX_VALUE;
         for (Refuge refuge : this.refugeList) {
@@ -137,8 +134,8 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
                 result = refuge;
             }
         }
-        List<EntityID> path = this.routeSearcher.getPath(time, this.me, result);
-        return path != null ? new ActionMove(this, time, path) : new ActionMove(this, time, this.routeSearcher.noTargetWalk(time));
+        List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, result);
+        return path != null ? new ActionMove(this, currentTime, path) : new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
     }
 
 
