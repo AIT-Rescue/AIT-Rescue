@@ -71,6 +71,7 @@ public class TeamLoader {
         List<String> list = new ArrayList<>();
         this.loadJar(loadFile, loader, list);
         this.loadTeam(loader, list);
+        System.out.println("[END  ] Load Jar");
     }
 
     private void loadJar(File loadFile, URLClassLoader loader, List<String> list) {

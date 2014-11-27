@@ -1,6 +1,5 @@
 apply plugin: 'java'
 apply plugin: 'idea'
-//apply plugin: 'eclipse'
 
 archivesBaseName = 'comlib'
 //jar.baseName = 'comlib'
@@ -14,14 +13,13 @@ dependencies {
     compile 'com.google.guava:guava:18.0'
     compile fileTree(dir: new File(rootDir, 'library/util'), include: '*.jar')
     compile fileTree(dir: new File(rootDir, 'library/rescue/core'), include: '*.jar')
-    //compile fileTree(dir: new File(rootDir, 'library/rescue/util'), include: '*.jar')
     testCompile 'junit:junit:4.11'
 }
 
 [compileJava, compileTestJava].each {
     it.options.encoding = 'UTF-8'
-    //it.options.compilerArgs += ['-source', '1.8', '-util', '1.8', '-Xlint:unchecked']
-    //it.options.compilerArgs += ['-source', '1.8', '-util', '1.8']
+    //it.options.compilerArgs += ['-source', '1.8', '-target', '1.8', '-Xlint:unchecked']
+    it.options.compilerArgs += ['-source', '1.8', '-target', '1.8']
 }
 javadoc.options.encoding = 'UTF-8'
 

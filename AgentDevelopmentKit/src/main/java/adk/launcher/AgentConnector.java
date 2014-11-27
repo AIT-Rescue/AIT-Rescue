@@ -36,7 +36,7 @@ public class AgentConnector {
         //init config
         this.config = ConfigInitializer.getConfig(args);
         //load team jar
-        this.loader = new TeamLoader(new File(config.getValue(ConfigKey.KEY_DIRECTORY, "."), "tactics"));
+		this.loader = new TeamLoader(new File(config.getValue(ConfigKey.KEY_DIRECTORY, System.getProperty("user.dir")), "tactics"));
     }
     
     public void start() {
@@ -56,13 +56,13 @@ public class AgentConnector {
     
     private void connectAmbulance(ComponentLauncher cl, String name, int count) {
 		System.out.println("[START] Connect Ambulance (teamName:" + name + ")");
-		System.out.println("[START] Load Ambulance Team (teamName:" + name + ")");
+		System.out.println("[INFO ] Load Ambulance Team (teamName:" + name + ")");
 		Team team = this.loader.get(name);
 		if(team == null) {
 			System.out.println("[ERROR] Team is Null !!");
 			if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
 				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_RANDOM_RETRY, 10); i++) {
-					System.out.println("[RETRY] Load Team (teamName:random)");
+					System.out.println("[INFO ] Retry Load Team (teamName:" + name + ")");
 					team = this.loader.getRandomTeam();
 					if(team != null) {
 						break;
@@ -71,7 +71,7 @@ public class AgentConnector {
 			}
 			if(team == null) {
 				if (this.config.getBooleanValue(ConfigKey.KEY_DUMMY_SYSTEM, false)) {
-					System.out.println("[START] Load Dummy System");
+					System.out.println("[INFO ] Load Dummy System");
 					team = this.loader.getDummy();
 				} else {
 					System.out.println("[ERROR] Cannot Load Team !!");
@@ -84,7 +84,7 @@ public class AgentConnector {
 			System.out.println("[ERROR] Cannot Load Ambulance Team Tactics !!");
 			if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
 				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_RANDOM_RETRY, 10); i++) {
-					System.out.println("[RETRY] Load Team (teamName:random)");
+					System.out.println("[INFO ] Retry Load Team (teamName:" + name + ")");
 					team = this.loader.getRandomTeam();
 					if(team.getAmbulanceTeamTactics() != null) {
 						break;
@@ -93,7 +93,7 @@ public class AgentConnector {
 			}
 			if(team.getAmbulanceTeamTactics() == null) {
 				if (this.config.getBooleanValue(ConfigKey.KEY_DUMMY_SYSTEM, false)) {
-					System.out.println("[START] Load Dummy System");
+					System.out.println("[INFO ] Load Dummy System");
 					team = this.loader.getDummy();
 				} else {
 					System.out.println("[END  ] Connect Ambulance (success:0)");
@@ -121,13 +121,13 @@ public class AgentConnector {
 
 	private void connectFire(ComponentLauncher cl, String name, int count) {
 		System.out.println("[START] Connect Fire (teamName:" + name + ")");
-		System.out.println("[START] Load Fire Team (teamName:" + name + ")");
+		System.out.println("[INFO ] Load Fire Team (teamName:" + name + ")");
 		Team team = this.loader.get(name);
 		if(team == null) {
 			System.out.println("[ERROR] Team is Null !!");
 			if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
 				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_RANDOM_RETRY, 10); i++) {
-					System.out.println("[RETRY] Load Team (teamName:random)");
+					System.out.println("[INFO ] Retry Load Team (teamName:" + name + ")");
 					team = this.loader.getRandomTeam();
 					if(team != null) {
 						break;
@@ -136,7 +136,7 @@ public class AgentConnector {
 			}
 			if(team == null) {
 				if (this.config.getBooleanValue(ConfigKey.KEY_DUMMY_SYSTEM, false)) {
-					System.out.println("[START] Load Dummy System");
+					System.out.println("[INFO ] Load Dummy System");
 					team = this.loader.getDummy();
 				} else {
 					System.out.println("[ERROR] Cannot Load Team !!");
@@ -149,7 +149,7 @@ public class AgentConnector {
 			System.out.println("[ERROR] Cannot Load Fire Brigade Tactics !!");
 			if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
 				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_RANDOM_RETRY, 10); i++) {
-					System.out.println("[RETRY] Load Team (teamName:random)");
+					System.out.println("[INFO ] Retry Load Team (teamName:" + name + ")");
 					team = this.loader.getRandomTeam();
 					if(team.getFireBrigadeTactics() != null) {
 						break;
@@ -158,7 +158,7 @@ public class AgentConnector {
 			}
 			if(team.getFireBrigadeTactics() == null) {
 				if (this.config.getBooleanValue(ConfigKey.KEY_DUMMY_SYSTEM, false)) {
-					System.out.println("[START] Load Dummy System");
+					System.out.println("[INFO ] Load Dummy System");
 					team = this.loader.getDummy();
 				} else {
 					System.out.println("[END  ] Connect Fire (success:0)");
@@ -186,13 +186,13 @@ public class AgentConnector {
 
 	private void connectPolice(ComponentLauncher cl, String name, int count) {
 		System.out.println("[START] Connect Police (teamName:" + name + ")");
-		System.out.println("[START] Load Police Team (teamName:" + name + ")");
+		System.out.println("[INFO ] Load Police Team (teamName:" + name + ")");
 		Team team = this.loader.get(name);
 		if(team == null) {
 			System.out.println("[ERROR] Team is Null !!");
 			if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
 				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_RANDOM_RETRY, 10); i++) {
-					System.out.println("[RETRY] Load Team (teamName:random)");
+					System.out.println("[INFO ] Retry Load Team (teamName:" + name + ")");
 					team = this.loader.getRandomTeam();
 					if(team != null) {
 						break;
@@ -201,7 +201,7 @@ public class AgentConnector {
 			}
 			if(team == null) {
 				if (this.config.getBooleanValue(ConfigKey.KEY_DUMMY_SYSTEM, false)) {
-					System.out.println("[START] Load Dummy System");
+					System.out.println("[INFO ] Load Dummy System");
 					team = this.loader.getDummy();
 				} else {
 					System.out.println("[ERROR] Cannot Load Team !!");
@@ -214,7 +214,7 @@ public class AgentConnector {
 			System.out.println("[ERROR] Cannot Load Police Force Tactics !!");
 			if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
 				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_RANDOM_RETRY, 10); i++) {
-					System.out.println("[RETRY] Load Team (teamName:random)");
+					System.out.println("[INFO ] Retry Load Team (teamName:" + name + ")");
 					team = this.loader.getRandomTeam();
 					if(team.getPoliceForceTactics() != null) {
 						break;
@@ -223,7 +223,7 @@ public class AgentConnector {
 			}
 			if(team.getPoliceForceTactics() == null) {
 				if (this.config.getBooleanValue(ConfigKey.KEY_DUMMY_SYSTEM, false)) {
-					System.out.println("[START] Load Dummy System");
+					System.out.println("[INFO ] Load Dummy System");
 					team = this.loader.getDummy();
 				} else {
 					System.out.println("[END  ] Connect Police (success:0)");
