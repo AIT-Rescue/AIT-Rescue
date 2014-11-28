@@ -1,10 +1,11 @@
 package adk.sample.basic.util;
 
 import adk.team.util.BuildingSelector;
+import adk.team.util.PositionUtil;
 import adk.team.util.provider.WorldProvider;
 import rescuecore2.standard.entities.Building;
-import rescuecore2.standard.entities.Human;
 import rescuecore2.standard.entities.StandardEntity;
+import rescuecore2.standard.entities.StandardWorldModel;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.HashSet;
@@ -12,11 +13,11 @@ import java.util.Set;
 
 public class BasicBuildingSelector implements BuildingSelector {
 
-    public WorldProvider<? extends Human> provider;
+    public WorldProvider<? extends StandardEntity> provider;
 
-    public Set<EntityID> buildingList;
+    public Set<Building> buildingList;
 
-    public BasicBuildingSelector(WorldProvider<? extends Human> user) {
+    public BasicBuildingSelector(WorldProvider<? extends StandardEntity> user) {
         this.provider = user;
         this.buildingList = new HashSet<>();
     }
@@ -24,13 +25,11 @@ public class BasicBuildingSelector implements BuildingSelector {
     @Override
     public void add(Building building) {
         if (building.isOnFire()) {
-            this.buildingList.add(building.getID());
+            this.buildingList.add(building);
         }
         else {
-            this.buildingList.remove(building.getID());
+            this.buildingList.remove(building);
         }
-        //if(building.getFieryness() > 0) {
-        //}
     }
 
     @Override
@@ -43,28 +42,30 @@ public class BasicBuildingSelector implements BuildingSelector {
 
     @Override
     public void remove(Building building) {
-        this.buildingList.remove(building.getID());
+        this.buildingList.remove(building);
     }
 
     @Override
     public void remove(EntityID id) {
-        this.buildingList.remove(id);
+        StandardEntity entity = this.provider.getWorld().getEntity(id);
+        if(entity instanceof Building) {
+            this.buildingList.remove(entity);
+        }
     }
 
     @Override
     public EntityID getTarget(int time) {
-        EntityID result = null;
-        int minDistance = Integer.MAX_VALUE;
-        for (EntityID id : this.buildingList) {
-            StandardEntity building = this.provider.getWorld().getEntity(id);
-            if(building != null) {
-                int d = this.provider.getWorld().getDistance(this.provider.me(), building);
-                if (minDistance >= d) {
-                    minDistance = d;
-                    result = id;
-                }
+        Building result = null;
+        StandardEntity owner = this.provider.getOwner();
+        StandardWorldModel world = this.provider.getWorld();
+        for(Building building : this.buildingList) {
+            if(result != null) {
+                result = (Building) PositionUtil.getNearEntity(owner, result, building, world);
+            }
+            else {
+                result = building;
             }
         }
-        return result;
+        return result != null ? result.getID() : null;
     }
 }
