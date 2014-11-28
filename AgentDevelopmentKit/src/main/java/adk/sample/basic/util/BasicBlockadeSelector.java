@@ -5,7 +5,6 @@ import adk.team.util.PositionUtil;
 import adk.team.util.provider.WorldProvider;
 import rescuecore2.standard.entities.Blockade;
 import rescuecore2.standard.entities.StandardEntity;
-import rescuecore2.standard.entities.StandardWorldModel;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.HashSet;
@@ -50,17 +49,7 @@ public class BasicBlockadeSelector implements BlockadeSelector {
 
     @Override
     public EntityID getTarget(int time) {
-        Blockade result = null;
-        StandardEntity owner = this.provider.getOwner();
-        StandardWorldModel world = this.provider.getWorld();
-        for(Blockade blockade : this.blockadeList) {
-            if(result != null) {
-                result = (Blockade)PositionUtil.getNearEntity(owner, result, blockade, world);
-            }
-            else {
-                result = blockade;
-            }
-        }
+        StandardEntity result = PositionUtil.getNearTarget(this.provider.getWorld(), this.provider.getOwner(), this.blockadeList);
         return result != null ? result.getID() : null;
     }
 }

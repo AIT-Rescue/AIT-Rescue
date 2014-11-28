@@ -79,54 +79,9 @@ public class BasicVictimSelector implements VictimSelector {
 
     @Override
     public EntityID getTarget(int time) {
-        //this.routeSearch.getPath(time, this.tactics.me, this.civilianList.get(0));
-        /*EntityID result = null;
-        int minDistance = Integer.MAX_VALUE;
-        if(!this.civilianList.isEmpty()) {
-            for (EntityID id : this.civilianList) {
-                StandardEntity civilian = this.provider.getWorld().getEntity(id);
-                if(civilian != null) {
-                    int d = this.provider.getWorld().getDistance(this.provider.me(), civilian);
-                    if (minDistance >= d) {
-                        minDistance = d;
-                        result = id;
-                    }
-                }
-            }
-        }
+        StandardEntity result = PositionUtil.getNearTarget(this.provider.getWorld(), this.provider.getOwner(), this.civilianList);
         if(result == null) {
-            for (EntityID id : this.agentList) {
-                StandardEntity agent = this.provider.getWorld().getEntity(id);
-                if(agent != null) {
-                    int d = this.provider.getWorld().getDistance(this.provider.me(), agent);
-                    if (minDistance >= d) {
-                        minDistance = d;
-                        result = id;
-                    }
-                }
-            }
-        }
-        return result;*/
-        Human result = null;
-        StandardEntity owner = this.provider.getOwner();
-        StandardWorldModel world = this.provider.getWorld();
-        for(Civilian civilian : this.civilianList) {
-            if(result != null) {
-                result = (Human) PositionUtil.getNearEntity(owner, result, civilian, world);
-            }
-            else {
-                result = civilian;
-            }
-        }
-        if(result == null) {
-            for(Human agent : this.agentList) {
-                if(result != null) {
-                    result = (Human) PositionUtil.getNearEntity(owner, result, agent, world);
-                }
-                else {
-                    result = agent;
-                }
-            }
+            result = PositionUtil.getNearTarget(this.provider.getWorld(), this.provider.getOwner(), this.agentList);
         }
         return result != null ? result.getID() : null;
     }

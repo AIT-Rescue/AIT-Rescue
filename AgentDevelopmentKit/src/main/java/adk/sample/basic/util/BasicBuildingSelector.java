@@ -5,7 +5,6 @@ import adk.team.util.PositionUtil;
 import adk.team.util.provider.WorldProvider;
 import rescuecore2.standard.entities.Building;
 import rescuecore2.standard.entities.StandardEntity;
-import rescuecore2.standard.entities.StandardWorldModel;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.HashSet;
@@ -55,17 +54,7 @@ public class BasicBuildingSelector implements BuildingSelector {
 
     @Override
     public EntityID getTarget(int time) {
-        Building result = null;
-        StandardEntity owner = this.provider.getOwner();
-        StandardWorldModel world = this.provider.getWorld();
-        for(Building building : this.buildingList) {
-            if(result != null) {
-                result = (Building) PositionUtil.getNearEntity(owner, result, building, world);
-            }
-            else {
-                result = building;
-            }
-        }
+        StandardEntity result = PositionUtil.getNearTarget(this.provider.getWorld(), this.provider.getOwner(), this.buildingList);
         return result != null ? result.getID() : null;
     }
 }

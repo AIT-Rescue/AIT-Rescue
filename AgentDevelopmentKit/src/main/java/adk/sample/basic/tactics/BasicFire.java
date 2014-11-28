@@ -38,9 +38,15 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
     @Override
     public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
         this.organizingUpdateInfo(currentTime, updateWorldData, manager);
-
+        if(this.checkOwnState(currentTime, updateWorldData, manager)) {
+            this.target = this.selectTarget(currentTime, updateWorldData, manager);
+            return this.getTargetAction(currentTime, updateWorldData, manager);
+        }
+        else {
+            return this.getNoTargetAction(currentTime, updateWorldData, manager);
+        }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /*
         if (this.me.getWater() == 0) {
             this.target = null;
             return this.moveRefuge(currentTime);
@@ -104,6 +110,23 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
             }
             //}
         }
+        */
+    }
+
+    public Action getNoTargetAction(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
+        return new ActionRest(this, currentTime);
+    }
+
+    public Action getTargetAction(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
+        return new ActionRest(this, currentTime);
+    }
+
+    public EntityID selectTarget(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
+        return this.buildingSelector.getTarget(currentTime);
+    }
+
+    public boolean checkOwnState(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
+        return false;
     }
 
     public void organizingUpdateInfo(int currentTime, ChangeSet updateWorldInfo, MessageManager manager) {
