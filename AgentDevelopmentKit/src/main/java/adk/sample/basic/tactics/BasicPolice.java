@@ -183,5 +183,9 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         return null;
     }
 
+    public boolean canStraightForward(Point2D position, Point2D targetPosition) {
+        return false;
+    }
+
 
 }
