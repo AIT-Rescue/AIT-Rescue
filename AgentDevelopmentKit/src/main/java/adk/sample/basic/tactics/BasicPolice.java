@@ -131,6 +131,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         return edges != null ? edges : this.getPassableEdge((Road) this.getWorld().getEntity(roadID));
     }
 
+    //Area.getNeighbours()
     public List<Edge> getPassableEdge(Road road) {
         EntityID roadID = road.getID();
         List<Edge> edges = this.passableEdgeMap.get(roadID);
@@ -183,8 +184,26 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         return null;
     }
 
-    public boolean canStraightForward(Point2D position, Point2D targetPosition) {
-        return false;
+    public boolean canStraightForward(Point2D position, Point2D targetPosition, List<Edge> edges) {
+        for(Edge edge : edges) {
+            if(this.getIntersection(position, targetPosition, edge.getLine())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public double getIntersection(Point2D position, Point2D targetPosition, Line2D roadLine) {
+        Vector2D vector = targetPosition.minus(position);
+        double bxax = vector.getX();
+        double dycy = roadLine.getDirection().getY();
+        double byay = vector.getY();
+        double dxcx = roadLine.getDirection().getX();
+        double cxax = roadLine.getOrigin().getX() - position.getX();
+        double cyay = roadLine.getOrigin().getY() - position.getY();
+        double d = bxax * dycy - byay * dxcx;
+        double t = cxax * dycy - cyay * dxcx;
+        return GeometryTools2D.nearlyZero(d)?0.0D / 0.0:t / d;
     }
 
 
