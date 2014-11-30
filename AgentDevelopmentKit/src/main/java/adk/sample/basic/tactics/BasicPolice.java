@@ -11,6 +11,7 @@ import adk.team.util.provider.RouteSearcherProvider;
 import comlib.manager.MessageManager;
 import comlib.message.information.BuildingMessage;
 import comlib.message.information.CivilianMessage;
+import org.omg.PortableServer.POA;
 import rescuecore2.config.Config;
 import rescuecore2.misc.Pair;
 import rescuecore2.misc.geometry.GeometryTools2D;
@@ -21,10 +22,7 @@ import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.ChangeSet;
 import rescuecore2.worldmodel.EntityID;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class BasicPolice extends TacticsPolice implements RouteSearcherProvider, BlockadeSelectorProvider {
 
@@ -164,11 +162,15 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
 
     public List<Point2D> getClearPointArray(List<Edge> edges) {
         int size = edges.size();
-        List<Point2D> points = new ArrayList<>();
+        List<Point2D> points = new ArrayList<>(size);
         for (Edge edge : edges) {
             points.add(new Point2D(((edge.getStartX() + edge.getEndX()) / 2), ((edge.getStartY() + edge.getEndY()) / 2)));
         }
         return points;
+    }
+
+    public List<Point2D> getEdgePointList(List<Edge> edges) {
+        return null;
     }
 
     public Point2D getTargetPosition(AmbulanceTeam ambulance, Road road) {
@@ -184,27 +186,43 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         return null;
     }
 
-    public boolean canStraightForward(Point2D position, Point2D targetPosition, List<Edge> edges) {
+    public List<Point2D> getClearPath(Point2D position, Point2D targetPosition, Road road) {
+        List<Point2D> clearPath = new ArrayList<>();
+        List<Edge> edges = road.getEdges();
+        if(this.canStraightForward(position, targetPosition, edges)) {
+            clearPath.add(targetPosition);
+        }
+        else {
+
+        }
+        return clearPath;
+    }
+
+    public boolean canStraightForward(Point2D position, Point2D targetPosition, Edge... edges) {
         for(Edge edge : edges) {
-            if(this.getIntersection(position, targetPosition, edge.getLine())) {
+            if(this.canStraightForward(position, targetPosition, edge)) {
                 return false;
             }
         }
         return true;
     }
 
-    public double getIntersection(Point2D position, Point2D targetPosition, Line2D roadLine) {
-        Vector2D vector = targetPosition.minus(position);
-        double bxax = vector.getX();
-        double dycy = roadLine.getDirection().getY();
-        double byay = vector.getY();
-        double dxcx = roadLine.getDirection().getX();
-        double cxax = roadLine.getOrigin().getX() - position.getX();
-        double cyay = roadLine.getOrigin().getY() - position.getY();
-        double d = bxax * dycy - byay * dxcx;
-        double t = cxax * dycy - cyay * dxcx;
-        return GeometryTools2D.nearlyZero(d)?0.0D / 0.0:t / d;
+    public boolean canStraightForward(Point2D position, Point2D targetPosition, Collection<Edge> edges) {
+        for (Edge edge : edges) {
+            if (this.canStraightForward(position, targetPosition, edge)) {
+                return false;
+            }
+        }
+        return true;
     }
 
-
+    public boolean canStraightForward(Point2D position, Point2D targetPosition, Edge edge) {
+        Point2D start = edge.getStart();
+        Point2D end = edge.getEnd();
+        return !(java.awt.geom.Line2D.linesIntersect(
+                position.getX(), position.getY(),
+                targetPosition.getX(), targetPosition.getY(),
+                start.getX(), start.getY(),
+                end.getX(), end.getY()));
+    }
 }
