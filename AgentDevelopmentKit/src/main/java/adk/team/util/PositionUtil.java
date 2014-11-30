@@ -97,4 +97,6 @@ public class PositionUtil {
         }
         return result;
     }
+
+    //Point2D向けのメソッドも用意するべき
 }
