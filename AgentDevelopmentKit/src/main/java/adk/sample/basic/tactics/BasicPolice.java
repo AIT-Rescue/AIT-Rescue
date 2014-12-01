@@ -69,7 +69,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
     @Override
     public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
         this.agentPosition = new Point2D(this.me().getX(), this.me().getY());
-        this.updateInfo(currentTime, updateWorldData, manager);
+        this.organizingUpdateInfo(currentTime, updateWorldData, manager);
         EntityID roadID = this.me().getPosition();
         Road road = (Road)this.getWorld().getEntity(roadID);
         //目標がない場合取得し，それでもNullならnoTargetWalk
@@ -132,7 +132,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         }
     }
 
-    private void updateInfo(int currentTime, ChangeSet updateWorldInfo, MessageManager manager) {
+    private void organizingUpdateInfo(int currentTime, ChangeSet updateWorldInfo, MessageManager manager) {
         for (EntityID next : updateWorldInfo.getChangedEntities()) {
             StandardEntity entity = this.model.getEntity(next);
             if(entity instanceof Civilian) {

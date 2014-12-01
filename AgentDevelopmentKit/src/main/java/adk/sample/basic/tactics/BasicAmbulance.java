@@ -33,7 +33,7 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
 
     @Override
     public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
-        this.updateInfo(updateWorldData, manager);
+        this.organizingUpdateInfo(updateWorldData, manager);
 
         if(this.someoneOnBoard()) {
             if (this.location instanceof Refuge) {
@@ -105,7 +105,7 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
         return path != null ? new ActionMove(this, currentTime, path) : new ActionRest(this, currentTime);
     }
 
-    private void updateInfo(ChangeSet updateWorldInfo, MessageManager manager) {
+    private void organizingUpdateInfo(ChangeSet updateWorldInfo, MessageManager manager) {
         for (EntityID next : updateWorldInfo.getChangedEntities()) {
             StandardEntity entity = model.getEntity(next);
             if(entity instanceof Civilian) {
