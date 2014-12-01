@@ -1,6 +1,7 @@
 package adk.team.util;
 
 import rescuecore2.misc.Pair;
+import rescuecore2.misc.geometry.Point2D;
 import rescuecore2.standard.entities.StandardEntity;
 import rescuecore2.standard.entities.StandardWorldModel;
 
@@ -99,4 +100,21 @@ public class PositionUtil {
     }
 
     //Point2D向けのメソッドも用意するべき
+    private static double valueOfCompare(Point2D position, Point2D another) {
+        double dx = position.getX() - another.getX();
+        double dy = position.getY() - another.getY();
+        return dx*dx + dy*dy;
+    }
+
+    public static Point2D compareDistance(Point2D position, Point2D first, Point2D second) {
+        return (valueOfCompare(position, first) <= valueOfCompare(position, second)) ? first : second;
+    }
+
+    public static Point2D getNearPosition(Point2D position, Collection<Point2D> targets) {
+        Point2D result = null;
+        for(Point2D target : targets) {
+            result = (result != null) ? compareDistance(position, result, target) : target;
+        }
+        return result;
+    }
 }
