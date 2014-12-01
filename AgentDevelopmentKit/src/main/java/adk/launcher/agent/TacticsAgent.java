@@ -62,6 +62,8 @@ public abstract class TacticsAgent<T extends Tactics, E extends StandardEntity> 
     public void receiveBeforeEvent(int time, ChangeSet changed) {
         this.tactics.time = time;
         this.tactics.changed = changed;
+        this.tactics.model = this.model;
+        this.tactics.agentID = this.getID();
         this.setAgentEntity();
     }
 
