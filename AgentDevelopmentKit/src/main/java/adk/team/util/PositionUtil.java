@@ -37,7 +37,9 @@ public class PositionUtil {
         return (valueOfCompare(position, first) <= valueOfCompare(position, second)) ? first : second;
     }
 
+    /*
     public static Pair<Integer, Integer> getNearPosition(StandardWorldModel world, StandardEntity position, Pair<Integer, Integer>... targets) {
+
         return getNearPosition(position.getLocation(world), targets);
     }
 
@@ -48,6 +50,7 @@ public class PositionUtil {
         }
         return result;
     }
+    */
 
     public static Pair<Integer, Integer> getNearPosition(StandardWorldModel world, StandardEntity position, Collection<Pair<Integer, Integer>> targets) {
         return getNearPosition(position.getLocation(world), targets);
@@ -75,6 +78,7 @@ public class PositionUtil {
         return (valueOfCompare(user, first.getLocation(world)) <= valueOfCompare(user, second.getLocation(world))) ? first : second;
     }
 
+    /*
     public static StandardEntity getNearTarget(StandardWorldModel world, StandardEntity user, StandardEntity... targets) {
         return getNearTarget(world, user.getLocation(world), targets);
     }
@@ -86,6 +90,7 @@ public class PositionUtil {
         }
         return result;
     }
+    */
 
     public static StandardEntity getNearTarget(StandardWorldModel world, StandardEntity user, Collection<? extends StandardEntity> targets) {
         return getNearTarget(world, user.getLocation(world), targets);
