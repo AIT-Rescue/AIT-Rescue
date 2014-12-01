@@ -30,6 +30,18 @@ public class ActionClear extends ActionTarget {
         this.posY = destY;
     }
 
+    public boolean getUsePosition() {
+        return this.usePosition;
+    }
+
+    public int getPosX() {
+        return this.posX;
+    }
+
+    public int getPosY() {
+        return this.posY;
+    }
+
     @Override
     public Message getCommand() {
         return this.usePosition ? new AKClear(this.agentID, this.time, this.target) : new AKClearArea(this.agentID, this.time, this.posX, this.posY);
