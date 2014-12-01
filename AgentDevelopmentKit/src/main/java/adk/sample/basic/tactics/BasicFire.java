@@ -48,15 +48,15 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
             Building building = (Building)this.model.getEntity(this.target);
             if(building.isOnFire()) {
                 if(this.model.getDistance(this.agentID, this.target) <= this.maxDistance) {
-                    return new ActionExtinguish(this, currentTime, this.target, this.maxPower);
+                    return new ActionExtinguish(this, this.target, this.maxPower);
                 }
                 else {
                     List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
                     if(path != null) {
                         path.remove(path.size() - 1);
-                        return new ActionMove(this, currentTime, path);
+                        return new ActionMove(this, path);
                     }
-                    return new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
+                    return new ActionMove(this, this.routeSearcher.noTargetWalk(currentTime));
                 }
             }
             else {
@@ -66,17 +66,17 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
                     List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
                     if(path != null) {
                         path.remove(path.size() - 1);
-                        return new ActionMove(this, currentTime, path);
+                        return new ActionMove(this, path);
                     }
                 }
-                return new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
+                return new ActionMove(this, this.routeSearcher.noTargetWalk(currentTime));
             }
         }
         else {
             //if(this.me.isWaterDefined()) { //??????????????????????????????????????????????????????
             if(this.location instanceof Refuge) {
                 if (this.me.getWater() < this.maxWater) {
-                    return new ActionRest(this, currentTime);
+                    return new ActionRest(this);
                 }
                 else {
                     this.target = this.buildingSelector.getTarget(currentTime);
@@ -84,10 +84,10 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
                         List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
                         if(path != null) {
                             path.remove(path.size() - 1);
-                            return new ActionMove(this, currentTime, path);
+                            return new ActionMove(this, path);
                         }
                     }
-                    return new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
+                    return new ActionMove(this, this.routeSearcher.noTargetWalk(currentTime));
                 }
             }
             else {
@@ -96,10 +96,10 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
                     List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
                     if(path != null) {
                         path.remove(path.size() - 1);
-                        return new ActionMove(this, currentTime, path);
+                        return new ActionMove(this, path);
                     }
                 }
-                return new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
+                return new ActionMove(this, this.routeSearcher.noTargetWalk(currentTime));
             }
             //}
         }
@@ -152,7 +152,7 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
             }
         }
         List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, result);
-        return path != null ? new ActionMove(this, currentTime, path) : new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
+        return path != null ? new ActionMove(this, path) : new ActionMove(this, this.routeSearcher.noTargetWalk(currentTime));
     }
 
 

@@ -7,24 +7,23 @@ import rescuecore2.standard.messages.AKClear;
 import rescuecore2.standard.messages.AKClearArea;
 import rescuecore2.worldmodel.EntityID;
 
-public class ActionClear extends ActionTarget {
+public class ActionClear extends ActionTarget<TacticsPolice> {
 
     private boolean usePosition;
     private int posX;
     private int posY;
 
-
-    public ActionClear(TacticsPolice tactics, int actionTime, EntityID targetID) {
-        super(tactics, actionTime, targetID);
+    public ActionClear(TacticsPolice tactics, EntityID targetID) {
+        super(tactics, targetID);
         this.usePosition = false;
     }
 
-    public ActionClear(TacticsPolice tactics, int actionTime, Blockade blockade) {
-        this(tactics, actionTime, blockade.getID());
+    public ActionClear(TacticsPolice tactics, Blockade blockade) {
+        this(tactics, blockade.getID());
     }
 
-    public ActionClear(TacticsPolice tactics, int actionTime, int destX, int destY) {
-        super(tactics, actionTime, null);
+    public ActionClear(TacticsPolice tactics, int destX, int destY) {
+        super(tactics, null);
         this.usePosition = true;
         this.posX = destX;
         this.posY = destY;
@@ -43,7 +42,7 @@ public class ActionClear extends ActionTarget {
     }
 
     @Override
-    public Message getCommand() {
-        return this.usePosition ? new AKClear(this.agentID, this.time, this.target) : new AKClearArea(this.agentID, this.time, this.posX, this.posY);
+    public Message getCommand(EntityID agentID, int time) {
+        return this.usePosition ? new AKClear(agentID, time, this.target) : new AKClearArea(agentID, time, this.posX, this.posY);
     }
 }

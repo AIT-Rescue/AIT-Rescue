@@ -38,7 +38,7 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
         if(this.someoneOnBoard()) {
             if (this.location instanceof Refuge) {
                 this.target = null;
-                return new ActionUnload(this, currentTime);
+                return new ActionUnload(this);
             }
             else {
                 return this.moveRefuge(currentTime);
@@ -52,9 +52,9 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
                     Civilian civilian = (Civilian)target;
                     manager.addSendMessage(new CivilianMessage(civilian));
                     this.victimSelector.remove(civilian);
-                    return new ActionLoad(this, currentTime, this.target);
+                    return new ActionLoad(this, this.target);
                 } else if (target.getBuriedness() > 0) {
-                    return new ActionRescue(this, currentTime, this.target);
+                    return new ActionRescue(this, this.target);
                 }
                 else {
                     if(target instanceof Civilian) {
@@ -80,29 +80,29 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
                     this.target = this.victimSelector.getTarget(currentTime);
                     if (this.target != null) {
                         List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
-                        return path != null ? new ActionMove(this, currentTime, path) : new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
+                        return path != null ? new ActionMove(this, path) : new ActionMove(this, this.routeSearcher.noTargetWalk(currentTime));
                     }
                     else {
-                        return new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
+                        return new ActionMove(this, this.routeSearcher.noTargetWalk(currentTime));
                     }
                 }
             }
             else {
                 List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
-                return path != null ? new ActionMove(this, currentTime, path) : new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
+                return path != null ? new ActionMove(this, path) : new ActionMove(this, this.routeSearcher.noTargetWalk(currentTime));
             }
         }
 
         if(this.me.getBuriedness() > 0) {
-            return new ActionRest(this, currentTime);
+            return new ActionRest(this);
         }
         this.target = this.victimSelector.getTarget(currentTime);
         if (this.target != null) {
             List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
-            return path != null ? new ActionMove(this, currentTime, path) : new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
+            return path != null ? new ActionMove(this, path) : new ActionMove(this, this.routeSearcher.noTargetWalk(currentTime));
         }
         List<EntityID> path = this.routeSearcher.noTargetWalk(currentTime);
-        return path != null ? new ActionMove(this, currentTime, path) : new ActionRest(this, currentTime);
+        return path != null ? new ActionMove(this, path) : new ActionRest(this);
     }
 
     private void organizingUpdateInfo(ChangeSet updateWorldInfo, MessageManager manager) {
@@ -142,7 +142,7 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
             }
         }
         List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, result);
-        return path != null ? new ActionMove(this, currentTime, path) : new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
+        return path != null ? new ActionMove(this, path) : new ActionMove(this, this.routeSearcher.noTargetWalk(currentTime));
     }
 
 

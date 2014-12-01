@@ -7,7 +7,7 @@ import rescuecore2.worldmodel.EntityID;
 
 import java.util.List;
 
-public class ActionMove extends Action {
+public class ActionMove extends Action<Tactics> {
     
     private List<EntityID> path;
 
@@ -15,22 +15,38 @@ public class ActionMove extends Action {
     private int posX;
     private int posY;
     
-    public ActionMove(Tactics tactics, int actionTime, List<EntityID> movePath) {
-        super(tactics, actionTime);
+    public ActionMove(Tactics tactics, List<EntityID> movePath) {
+        super(tactics);
         this.usePosition = false;
         this.path = movePath;
     }
     
-    public ActionMove(Tactics tactics, int actionTime, List<EntityID> movePath, int destX, int destY) {
-        super(tactics, actionTime);
+    public ActionMove(Tactics tactics, List<EntityID> movePath, int destX, int destY) {
+        super(tactics);
         this.usePosition = true;
         this.path = movePath;
         this.posX = destX;
         this.posY = destY;
     }
+
+    public List<EntityID> getPath() {
+        return this.path;
+    }
+
+    public boolean getUsePosition() {
+        return this.usePosition;
+    }
+
+    public int getPosX() {
+        return this.posX;
+    }
+
+    public int getPosY() {
+        return this.posY;
+    }
     
     @Override
-    public Message getCommand() {
-        return this.usePosition ? new AKMove(this.agentID, this.time, this.path, this.posX, this.posY) : new AKMove(this.agentID, this.time, this.path);
+    public Message getCommand(EntityID agentID, int time) {
+        return this.usePosition ? new AKMove(agentID, time, this.path, this.posX, this.posY) : new AKMove(agentID, time, this.path);
     }
 }

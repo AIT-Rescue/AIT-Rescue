@@ -4,11 +4,10 @@ import adk.team.tactics.TacticsAmbulance;
 import rescuecore2.standard.entities.AmbulanceTeam;
 import rescuecore2.standard.entities.StandardEntity;
 import rescuecore2.standard.entities.StandardEntityURN;
-import rescuecore2.worldmodel.ChangeSet;
 
 import java.util.EnumSet;
 
-public class AmbulanceTeamAgent extends TacticsAgent<TacticsAmbulance, AmbulanceTeam> {
+public class AmbulanceTeamAgent extends TacticsAgent<AmbulanceTeam> {
     
     private TacticsAmbulance ta;
     
@@ -28,12 +27,6 @@ public class AmbulanceTeamAgent extends TacticsAgent<TacticsAmbulance, Ambulance
     }
 
     @Override
-    public void receiveBeforeEvent(int time, ChangeSet changed) {
-        super.receiveBeforeEvent(time, changed);
-        this.ta.location = this.location();
-    }
-
-    @Override
     protected void setAgentUniqueValue() {
         this.model.indexClass(
                 StandardEntityURN.CIVILIAN,
@@ -44,12 +37,12 @@ public class AmbulanceTeamAgent extends TacticsAgent<TacticsAmbulance, Ambulance
                 StandardEntityURN.FIRE_BRIGADE,
                 StandardEntityURN.POLICE_FORCE
         );
-        this.ta.refugeList = this.getRefuges();
     }
 
     @Override
     protected void setAgentEntity() {
         this.ta.me = this.me();
+        this.ta.location = this.ta.me.getPosition(this.model);
     }
 
     @Override

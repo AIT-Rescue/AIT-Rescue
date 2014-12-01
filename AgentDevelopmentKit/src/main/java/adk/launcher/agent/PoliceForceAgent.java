@@ -4,11 +4,10 @@ import adk.team.tactics.TacticsPolice;
 import rescuecore2.standard.entities.PoliceForce;
 import rescuecore2.standard.entities.StandardEntity;
 import rescuecore2.standard.entities.StandardEntityURN;
-import rescuecore2.worldmodel.ChangeSet;
 
 import java.util.EnumSet;
 
-public class PoliceForceAgent extends TacticsAgent<TacticsPolice, PoliceForce> {
+public class PoliceForceAgent extends TacticsAgent<PoliceForce> {
     
     public static final String DISTANCE_KEY = "clear.repair.distance";
     
@@ -28,12 +27,6 @@ public class PoliceForceAgent extends TacticsAgent<TacticsPolice, PoliceForce> {
     protected EnumSet<StandardEntityURN> getRequestedEntityURNsEnum() {
         return EnumSet.of(StandardEntityURN.POLICE_FORCE);
     }
-
-    @Override
-    public void receiveBeforeEvent(int time, ChangeSet changed) {
-        super.receiveBeforeEvent(time, changed);
-        this.tp.location = this.location();
-    }
     
     @Override
     protected void setAgentUniqueValue() {
@@ -44,12 +37,12 @@ public class PoliceForceAgent extends TacticsAgent<TacticsPolice, PoliceForce> {
                 StandardEntityURN.POLICE_FORCE
         );
         this.tp.distance = this.config.getIntValue(DISTANCE_KEY);
-        this.tp.refugeList = this.getRefuges();
     }
     
     @Override
     protected void setAgentEntity() {
         this.tp.me = this.me();
+        this.tp.location = this.tp.me.getPosition(this.model);
     }
 
     @Override

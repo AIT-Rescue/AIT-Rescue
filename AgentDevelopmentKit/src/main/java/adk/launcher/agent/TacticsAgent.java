@@ -13,12 +13,12 @@ import rescuecore2.standard.messages.AKRest;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class TacticsAgent<T extends Tactics, E extends StandardEntity> extends CommunicationAgent<E> {
+public abstract class TacticsAgent<E extends StandardEntity> extends CommunicationAgent<E> {
     
     private Tactics tactics;
     private int ignoreTime;
 
-    public TacticsAgent(T t) {
+    public TacticsAgent(Tactics t) {
         super();
         this.tactics = t;
     }
@@ -29,6 +29,7 @@ public abstract class TacticsAgent<T extends Tactics, E extends StandardEntity> 
         this.ignoreTime = this.config.getIntValue(kernel.KernelConstants.IGNORE_AGENT_COMMANDS_KEY);
         this.tactics.model = this.model;
         this.tactics.agentID = this.getID();
+        this.tactics.refugeList = this.getRefuges();
         this.setAgentUniqueValue();
         this.setAgentEntity();
         this.tactics.preparation(this.config);
@@ -51,11 +52,12 @@ public abstract class TacticsAgent<T extends Tactics, E extends StandardEntity> 
     @Override
     public void think(int time, ChangeSet changed) {
         if(time <= this.ignoreTime) {
+            this.tactics.agentID = this.getID();
             this.tactics.ignoreTimeThink(time, changed, this.manager);
             return;
         }
         Action action = this.tactics.think(time, changed, this.manager);
-        this.send(action == null ? new AKRest(this.getID(), time) : action.getCommand());
+        this.send(action == null ? new AKRest(this.getID(), time) : action.getCommand(this.getID(), time));
     }
 
     @Override
@@ -63,7 +65,6 @@ public abstract class TacticsAgent<T extends Tactics, E extends StandardEntity> 
         this.tactics.time = time;
         this.tactics.changed = changed;
         this.tactics.model = this.model;
-        this.tactics.agentID = this.getID();
         this.setAgentEntity();
     }
 
@@ -73,15 +74,6 @@ public abstract class TacticsAgent<T extends Tactics, E extends StandardEntity> 
 
     @Override
     public List<Refuge> getRefuges() {
-        /*
-        List<StandardEntity> entityList = new ArrayList<>(this.getWorld().getEntitiesOfType(StandardEntityURN.REFUGE));
-        List<Refuge> refugeList = Lists.transform(entityList, new Function<StandardEntity, Refuge>() {
-            @Override
-            public Refuge apply(StandardEntity input) {
-                return (Refuge)input;
-            }
-        });
-        */
         return this.model.getEntitiesOfType(StandardEntityURN.REFUGE).stream().map(entity -> (Refuge) entity).collect(Collectors.toList());
     }
 }

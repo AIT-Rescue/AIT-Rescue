@@ -77,14 +77,14 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
             this.target = ((Blockade)this.getWorld().getEntity(this.blockadeSelector.getTarget(currentTime))).getPosition();
             if(this.target == null) {
                 this.beforeMove = true;
-                return new ActionMove(this, currentTime, this.routeSearcher.noTargetWalk(currentTime));
+                return new ActionMove(this, this.routeSearcher.noTargetWalk(currentTime));
             }
         }
         //今いる場所がTarget地点と違う場合，通れるなら移動を行う．通れないと判定された場合，対象を今の場所に変更を行う
         if(!roadID.equals(this.target)) {
             if(this.passable(road)) {
                 this.beforeMove = true;
-                return new ActionMove(this, currentTime, this.getRouteSearcher().getPath(currentTime, this.getID(), this.target));
+                return new ActionMove(this, this.getRouteSearcher().getPath(currentTime, this.getID(), this.target));
             }
             this.target = roadID;
         }
@@ -99,7 +99,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
             this.mainTargetPosition = this.getClearTargetPoint(road).get(this.count);
             Vector2D vector = this.getVector(this.agentPosition, this.mainTargetPosition, road);
             this.beforeMove = false;
-            return new ActionClear(this, currentTime, (int) (this.me.getX() + vector.getX()), (int) (this.me.getY() + vector.getY()));
+            return new ActionClear(this, (int) (this.me.getX() + vector.getX()), (int) (this.me.getY() + vector.getY()));
         }
         if(this.beforeMove) {
             if(this.mainTargetPosition.equals(this.agentPosition)) {
@@ -110,25 +110,25 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
                     this.mainTargetPosition = clearPoint.get(0);
                     List<EntityID> path = new ArrayList<>(1);
                     path.add(roadID);
-                    return new ActionMove(this, currentTime, path, (int) this.mainTargetPosition.getX(), (int) this.mainTargetPosition.getY());
+                    return new ActionMove(this, path, (int) this.mainTargetPosition.getX(), (int) this.mainTargetPosition.getY());
                 }
                 else {
                     this.mainTargetPosition = null;
                     this.target = ((Blockade)this.getWorld().getEntity(this.blockadeSelector.getTarget(currentTime))).getPosition();
                     List<EntityID> path = this.target != null ? this.getRouteSearcher().getPath(currentTime, this.getID(), this.target) : this.getRouteSearcher().noTargetWalk(currentTime);
-                    return new ActionMove(this, currentTime, path);
+                    return new ActionMove(this, path);
                 }
             }
             else {
                 Vector2D vector = this.getVector(this.agentPosition, this.mainTargetPosition, road);
                 this.beforeMove = false;
-                return new ActionClear(this, currentTime, (int) (this.me().getX() + vector.getX()), (int) (this.me().getY() + vector.getY()));
+                return new ActionClear(this, (int) (this.me().getX() + vector.getX()), (int) (this.me().getY() + vector.getY()));
             }
         }
         else {
             List<EntityID> path = new ArrayList<>(1);
             path.add(roadID);
-            return new ActionMove(this, currentTime, path, (int) this.mainTargetPosition.getX(), (int) this.mainTargetPosition.getY());
+            return new ActionMove(this, path, (int) this.mainTargetPosition.getX(), (int) this.mainTargetPosition.getY());
         }
     }
 

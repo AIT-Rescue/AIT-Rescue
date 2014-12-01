@@ -6,19 +6,19 @@ import rescuecore2.standard.entities.Human;
 import rescuecore2.standard.messages.AKRescue;
 import rescuecore2.worldmodel.EntityID;
 
-public class ActionRescue extends ActionTarget {
+public class ActionRescue extends ActionTarget<TacticsAmbulance> {
 
 
-    public ActionRescue(TacticsAmbulance tactics, int actionTime, EntityID targetID) {
-        super(tactics, actionTime, targetID);
+    public ActionRescue(TacticsAmbulance tactics, EntityID targetID) {
+        super(tactics, targetID);
     }
 
-    public ActionRescue(TacticsAmbulance tactics, int actionTime, Human human) {
-        this(tactics, actionTime, human.getID());
+    public ActionRescue(TacticsAmbulance tactics, Human human) {
+        this(tactics, human.getID());
     }
 
     @Override
-    public Message getCommand() {
-        return new AKRescue(this.agentID, this.time, this.target);
+    public Message getCommand(EntityID agentID, int time) {
+        return new AKRescue(agentID, time, this.target);
     }
 }

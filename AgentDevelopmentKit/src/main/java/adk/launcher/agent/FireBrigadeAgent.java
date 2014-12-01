@@ -4,11 +4,10 @@ import adk.team.tactics.TacticsFire;
 import rescuecore2.standard.entities.FireBrigade;
 import rescuecore2.standard.entities.StandardEntity;
 import rescuecore2.standard.entities.StandardEntityURN;
-import rescuecore2.worldmodel.ChangeSet;
 
 import java.util.EnumSet;
 
-public class FireBrigadeAgent extends TacticsAgent<TacticsFire, FireBrigade> {
+public class FireBrigadeAgent extends TacticsAgent<FireBrigade> {
     
     public static final String MAX_WATER_KEY = "fire.tank.maximum";
     public static final String MAX_DISTANCE_KEY = "fire.extinguish.max-distance";
@@ -32,12 +31,6 @@ public class FireBrigadeAgent extends TacticsAgent<TacticsFire, FireBrigade> {
     }
 
     @Override
-    public void receiveBeforeEvent(int time, ChangeSet changed) {
-        super.receiveBeforeEvent(time, changed);
-        this.tf.location = this.location();
-    }
-
-    @Override
     protected void setAgentUniqueValue() {
         this.model.indexClass(
                 StandardEntityURN.BUILDING,
@@ -50,12 +43,12 @@ public class FireBrigadeAgent extends TacticsAgent<TacticsFire, FireBrigade> {
         this.tf.maxWater = this.config.getIntValue(MAX_WATER_KEY);
         this.tf.maxDistance = this.config.getIntValue(MAX_DISTANCE_KEY);
         this.tf.maxPower = this.config.getIntValue(MAX_POWER_KEY);
-        this.tf.refugeList = this.getRefuges();
     }
 
     @Override
     protected void setAgentEntity() {
         this.tf.me = this.me();
+        this.tf.location = this.tf.me.getPosition(this.model);
     }
 
     @Override
