@@ -76,7 +76,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
                 //ここで対象との差を変更して，一定の長さの距離にしている
 				v = v.normalised().scale(1000000);
 				this.blockadeSelector.remove(blockade);
-				return new ActionClear(this, currentTime, blockade, (int) (this.me.getX() + v.getX()), (int) (this.me.getY() + v.getY()));
+				return new ActionClear(this, currentTime, (int) (this.me.getX() + v.getX()), (int) (this.me.getY() + v.getY()));
 			}
 
 			List<EntityID> path = this.routeSearcher.getPath(currentTime, me().getPosition(), blockade.getPosition());
@@ -141,39 +141,31 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         if(this.count != 0) {
             this.count--;
             this.mainTargetPosition = this.getClearTargetPoint(road).get(this.count);
-            Vector2D vector = this.getVector(this.agentPosition, this.mainTargetPosition, road.getEdges());
+            Vector2D vector = this.getVector(this.agentPosition, this.mainTargetPosition, road);
+            return new ActionClear(this, currentTime, (int) (this.me.getX() + vector.getX()), (int) (this.me.getY() + vector.getY()));
         }
+        
 
         return new ActionRest(this, currentTime);
     }
 
-    public Vector2D getVector(Point2D agentPos, Point2D targetPos, List<Edge> edges) {
-        if(this.canStraightForward(agentPos, targetPos, edges)) {
+    public Vector2D getVector(Point2D agentPos, Point2D targetPos, Road road) {
+        EntityID roadID = road.getID();
+        List<Edge> edges = road.getEdges();
+        if(this.canStraightForward(agentPos, targetPos, roadID, edges)) {
             return targetPos.minus(agentPos).normalised().scale(1000000);
         }
         else {
-            List<Point2D> points = new ArrayList<>();
-            Point2D edgePoint = null;
-            Vector2D vector = null;
+            Point2D edgePoint;
+            Point2D min = null;
             for (Edge edge : edges) {
                 edgePoint = this.getEdgePoint(edge);
-                if (this.canStraightForward(agentPos, edgePoint, edges)) {
-                    points.add(edgePoint);
+                if (this.canStraightForward(agentPos, edgePoint, roadID, edges)) {
+                    min = min != null ? PositionUtil.compareDistance(agentPos, min, edgePoint).translate(0.0D, 0.0D) : edgePoint.translate(0.0D, 0.0D);
                 }
             }
-            if (points.isEmpty()) {
-                return null;
-            }
-            return PositionUtil.getNearPosition(targetPos, points).minus(agentPos).normalised().scale(1000000);
+            return min == null ? null : min.minus(agentPos).normalised().scale(1000000);
         }
-    }
-
-    public Point2D getNearPosition(Point2D position, Collection<Point2D> targets) {
-        Point2D result = null;
-        for(Point2D target : targets) {
-            result = (result != null) ? PositionUtil.compareDistance(position, result, target) : target;
-        }
-        return result;
     }
 
     public Map<EntityID, List<Edge>> passableEdgeMap;
@@ -240,6 +232,22 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         this.clearTargetPointMap.put(roadID, clearTargetPoint);
     }
 
+    public boolean canStraightForward(Point2D position, Point2D targetPosition, Road road) {
+        return this.canStraightForward(position, targetPosition, road.getID(), road.getEdges());
+    }
+    public boolean canStraightForward(Point2D position, Point2D targetPosition, EntityID roadID, Collection<Edge> edges) {
+        for (Edge edge : edges) {
+            if (this.linesIntersect(position, targetPosition, edge)) {
+                return false;
+            }
+        }
+        for(Edge edge : this.passableEdgeMap.get(roadID)) {
+            if (!this.canStraightForward(position, targetPosition, ((Road) this.getWorld().getEntity(edge.getNeighbour())).getEdges())) {
+                return false;
+            }
+        }
+        return true;
+    }
     public boolean canStraightForward(Point2D position, Point2D targetPosition, Collection<Edge> edges) {
         for (Edge edge : edges) {
             if (this.linesIntersect(position, targetPosition, edge)) {

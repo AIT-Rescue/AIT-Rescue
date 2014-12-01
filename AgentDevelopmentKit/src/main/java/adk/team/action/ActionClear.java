@@ -23,15 +23,11 @@ public class ActionClear extends ActionTarget {
         this(tactics, actionTime, blockade.getID());
     }
 
-    public ActionClear(TacticsPolice tactics, int actionTime, EntityID targetID, int destX, int destY) {
-        super(tactics, actionTime, targetID);
+    public ActionClear(TacticsPolice tactics, int actionTime, int destX, int destY) {
+        super(tactics, actionTime, null);
         this.usePosition = true;
         this.posX = destX;
         this.posY = destY;
-    }
-
-    public ActionClear(TacticsPolice tactics, int actionTime, Blockade blockade, int destX, int destY) {
-        this(tactics, actionTime, blockade.getID(), destX, destY);
     }
 
     @Override
