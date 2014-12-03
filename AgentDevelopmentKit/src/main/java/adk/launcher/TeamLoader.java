@@ -42,7 +42,6 @@ public class TeamLoader {
     }
 
     public Team getRandomTeam() {
-
         return nameList.isEmpty() ? null : this.teamMap.get(this.nameList.get(this.random.nextInt(this.nameList.size())));
     }
 
@@ -58,6 +57,7 @@ public class TeamLoader {
         System.out.println("[START] Load Jar (path:" + loadFile.getAbsolutePath() + ")");
         if (!loadFile.exists()) {
             if(loadFile.mkdir()) {
+                System.out.println("[END  ] Load Jar");
                 return;
             }
             else {
@@ -71,6 +71,11 @@ public class TeamLoader {
         List<String> list = new ArrayList<>();
         this.loadJar(loadFile, loader, list);
         this.loadTeam(loader, list);
+        if(this.nameList.isEmpty()) {
+            String name = this.dummy.getTeamName();
+            this.teamMap.put(name, this.dummy);
+            this.nameList.add(name);
+        }
         System.out.println("[END  ] Load Jar");
     }
 
