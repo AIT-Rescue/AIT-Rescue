@@ -304,12 +304,12 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         return new Point2D(((start.getX() + end.getX()) / 2.0D), ((start.getY() + end.getY()) / 2.0D));
     }
 
-    public boolean equalsPoint(Point2D point, Point2D another, double range) {
-        return this.equalsPoint(point.getX(), point.getY(), another.getX(), another.getY(), range);
+    public boolean equalsPoint(Point2D point, Point2D target, double range) {
+        return this.equalsPoint(point.getX(), point.getY(), target.getX(), target.getY(), range);
     }
 
-    public boolean equalsPoint(Point2D point, double x, double y, double range) {
-        return ((Double.compare(x, point.getX()) == 0) && ((Double.compare(y, point.getY()) == 0)));
+    public boolean equalsPoint(Point2D point, double targetX, double targetY, double range) {
+        return this.equalsPoint(point.getX(), point.getY(), targetX, targetY, range);
     }
 
     public boolean equalsPoint(double pointX, double pointY, double targetX, double targetY, double range) {
