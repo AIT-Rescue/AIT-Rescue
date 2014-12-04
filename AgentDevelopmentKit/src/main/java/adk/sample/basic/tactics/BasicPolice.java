@@ -3,6 +3,7 @@ package adk.sample.basic.tactics;
 import adk.team.action.Action;
 import adk.team.action.ActionClear;
 import adk.team.action.ActionMove;
+import adk.team.action.ActionRest;
 import adk.team.tactics.TacticsPolice;
 import adk.team.util.DebrisRemovalSelector;
 import adk.team.util.PositionUtil;
@@ -13,6 +14,7 @@ import com.google.common.collect.Lists;
 import comlib.manager.MessageManager;
 import comlib.message.information.BuildingMessage;
 import comlib.message.information.CivilianMessage;
+import comlib.message.information.PoliceForceMessage;
 import rescuecore2.config.Config;
 import rescuecore2.misc.geometry.Point2D;
 import rescuecore2.misc.geometry.Vector2D;
@@ -47,8 +49,6 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         this.passablePointMap = new HashMap<>();
         this.allEdgePointMap = new HashMap<>();
         this.clearTargetPointMap = new HashMap<>();
-        this.mainTargetPosition = null;
-        this.agentPosition = null;
         this.beforeMove = false;
         this.count = 0;
 	}
@@ -71,7 +71,14 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
     @Override
     public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
         this.agentPosition = new Point2D(this.me().getX(), this.me().getY());
-        this.organizingUpdateInfo(currentTime, updateWorldData, manager);
+        this.organizingUpdateInfo(updateWorldData, manager);
+        if(this.me().getBuriedness() > 0) {
+            if(!this.beforeMove) {
+                this.beforeMove = true;
+                manager.addSendMessage(new PoliceForceMessage(this.me()));
+            }
+            return new ActionRest(this);
+        }
         EntityID roadID = this.me().getPosition();
         Road road = (Road)this.getWorld().getEntity(roadID);
         //目標がない場合取得し，それでもNullならnoTargetWalk
@@ -131,7 +138,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         }
     }
 
-    public void organizingUpdateInfo(int currentTime, ChangeSet updateWorldInfo, MessageManager manager) {
+    public void organizingUpdateInfo(ChangeSet updateWorldInfo, MessageManager manager) {
         for (EntityID next : updateWorldInfo.getChangedEntities()) {
             StandardEntity entity = this.model.getEntity(next);
             if(entity instanceof Civilian) {
@@ -230,6 +237,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         }
     }
 
+    /*
     public void removeTargetPoint(EntityID roadID, Point2D point) {
         List<Point2D> list = this.clearTargetPointMap.get(roadID);
         list.remove(point);
@@ -237,10 +245,13 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
             this.debrisRemovalSelector.remove(roadID);
         }
     }
+    */
 
+    /*
     public boolean canStraightForward(Point2D position, Point2D targetPosition, Road road) {
         return this.canStraightForward(position, targetPosition, road.getID(), road.getEdges());
     }
+    */
 
     public boolean canStraightForward(Point2D position, Point2D targetPosition, EntityID roadID, Collection<Edge> edges) {
         for (Edge edge : edges) {

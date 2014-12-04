@@ -47,11 +47,21 @@ public class PoliceForceAgent extends TacticsAgent<PoliceForce> {
 
     @Override
     protected PoliceForce me() {
-        return (PoliceForce)this.model.getEntity(this.getID());
+        try {
+            return (PoliceForce) this.model.getEntity(this.getID());
+        }
+        catch(NullPointerException e) {
+            return null;
+        }
     }
 
     @Override
     protected StandardEntity location() {
-        return this.me().getPosition(this.model);
+        try {
+            return this.me().getPosition(this.model);
+        }
+        catch(NullPointerException e) {
+            return null;
+        }
     }
 }

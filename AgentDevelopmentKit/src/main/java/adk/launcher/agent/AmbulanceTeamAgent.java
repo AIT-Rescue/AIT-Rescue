@@ -41,17 +41,27 @@ public class AmbulanceTeamAgent extends TacticsAgent<AmbulanceTeam> {
 
     @Override
     protected void setAgentEntity() {
-        this.ta.me = this.me();
+        this.ta.me = super.me();
         this.ta.location = this.ta.me.getPosition(this.model);
     }
 
     @Override
     protected AmbulanceTeam me() {
-        return (AmbulanceTeam)this.model.getEntity(this.getID());
+        try {
+            return (AmbulanceTeam) this.model.getEntity(this.getID());
+        }
+        catch(NullPointerException e) {
+            return null;
+        }
     }
 
     @Override
     protected StandardEntity location() {
-        return this.me().getPosition(this.model);
+        try {
+            return this.me().getPosition(this.model);
+        }
+        catch(NullPointerException e) {
+            return null;
+        }
     }
 }

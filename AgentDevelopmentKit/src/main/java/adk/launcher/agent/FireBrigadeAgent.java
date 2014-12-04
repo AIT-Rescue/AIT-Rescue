@@ -53,11 +53,21 @@ public class FireBrigadeAgent extends TacticsAgent<FireBrigade> {
 
     @Override
     protected FireBrigade me() {
-        return (FireBrigade)this.model.getEntity(this.getID());
+        try {
+            return (FireBrigade)this.model.getEntity(this.getID());
+        }
+        catch(NullPointerException e) {
+            return null;
+        }
     }
 
     @Override
     protected StandardEntity location() {
-        return this.me().getPosition(this.model);
+        try {
+            return this.me().getPosition(this.model);
+        }
+        catch(NullPointerException e) {
+            return null;
+        }
     }
 }

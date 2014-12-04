@@ -37,9 +37,7 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
 
     @Override
     public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
-        this.organizingUpdateInfo(currentTime, updateWorldData, manager);
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        this.organizingUpdateInfo(updateWorldData, manager);
         if (this.me.getWater() == 0) {
             this.target = null;
             return this.moveRefuge(currentTime);
@@ -123,7 +121,7 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
     }
     */
 
-    public void organizingUpdateInfo(int currentTime, ChangeSet updateWorldInfo, MessageManager manager) {
+    public void organizingUpdateInfo(ChangeSet updateWorldInfo, MessageManager manager) {
         for (EntityID next : updateWorldInfo.getChangedEntities()) {
             StandardEntity entity = model.getEntity(next);
             if(entity instanceof Civilian) {
@@ -141,7 +139,7 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
         }
     }
 
-    private Action moveRefuge(int currentTime) {
+    public Action moveRefuge(int currentTime) {
         Refuge result = null;
         int minDistance = Integer.MAX_VALUE;
         for (Refuge refuge : this.refugeList) {
@@ -154,7 +152,6 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
         List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, result);
         return path != null ? new ActionMove(this, path) : new ActionMove(this, this.routeSearcher.noTargetWalk(currentTime));
     }
-
 
     @Override
     public BuildingSelector getBuildingSelector() {

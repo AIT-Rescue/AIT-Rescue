@@ -7,6 +7,7 @@ import comlib.manager.MessageManager;
 import rescuecore2.standard.entities.Refuge;
 import rescuecore2.standard.entities.StandardEntity;
 import rescuecore2.standard.entities.StandardEntityURN;
+import rescuecore2.standard.entities.StandardWorldModel;
 import rescuecore2.worldmodel.ChangeSet;
 import rescuecore2.standard.messages.AKRest;
 
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 public abstract class TacticsAgent<E extends StandardEntity> extends CommunicationAgent<E> {
     
     private Tactics tactics;
-    private int ignoreTime;
+    public int ignoreTime;
 
     public TacticsAgent(Tactics t) {
         super();
@@ -27,9 +28,10 @@ public abstract class TacticsAgent<E extends StandardEntity> extends Communicati
     public void postConnect() {
         super.postConnect();
         this.ignoreTime = this.config.getIntValue(kernel.KernelConstants.IGNORE_AGENT_COMMANDS_KEY);
-        this.tactics.model = this.model;
+        this.tactics.model = this.getWorld();
         this.tactics.agentID = this.getID();
         this.tactics.refugeList = this.getRefuges();
+        //this.tactics.setWorldInfo(this);
         this.setAgentUniqueValue();
         this.setAgentEntity();
         this.tactics.preparation(this.config);
@@ -64,7 +66,7 @@ public abstract class TacticsAgent<E extends StandardEntity> extends Communicati
     public void receiveBeforeEvent(int time, ChangeSet changed) {
         this.tactics.time = time;
         this.tactics.changed = changed;
-        this.tactics.model = this.model;
+        this.tactics.model = this.getWorld();
         this.setAgentEntity();
     }
 
@@ -75,5 +77,9 @@ public abstract class TacticsAgent<E extends StandardEntity> extends Communicati
     @Override
     public List<Refuge> getRefuges() {
         return this.model.getEntitiesOfType(StandardEntityURN.REFUGE).stream().map(entity -> (Refuge) entity).collect(Collectors.toList());
+    }
+
+    public StandardWorldModel getWorld() {
+        return this.model;
     }
 }
