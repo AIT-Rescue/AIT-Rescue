@@ -4,7 +4,9 @@ import adk.team.util.RouteSearcher;
 import adk.team.util.provider.WorldProvider;
 import rescuecore2.misc.collections.LazyMap;
 import rescuecore2.standard.entities.Area;
+import rescuecore2.standard.entities.Building;
 import rescuecore2.standard.entities.Human;
+import rescuecore2.standard.entities.Road;
 import rescuecore2.worldmodel.Entity;
 import sample.SampleSearch;
 import rescuecore2.worldmodel.EntityID;
@@ -42,7 +44,12 @@ public class BasicRouteSearcher implements RouteSearcher {
             if (next instanceof Area) {
                 //if(next instanceof Road) {
                 Collection<EntityID> areaNeighbours = ((Area)next).getNeighbours();
-                this.neighbours.get(next.getID()).addAll(areaNeighbours);
+                Set<EntityID> roadNeighbours = new HashSet<>();
+                for(EntityID id : areaNeighbours)
+                    if (this.provider.getWorld().getEntity(id) instanceof Road) {
+                        roadNeighbours.add(id);
+                    }
+                this.neighbours.get(next.getID()).addAll(roadNeighbours);
             }
         }
     }

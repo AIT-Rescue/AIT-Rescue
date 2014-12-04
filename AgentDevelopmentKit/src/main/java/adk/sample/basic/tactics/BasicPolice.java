@@ -84,7 +84,14 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         if(!(area instanceof Road)) {
             this.target = this.debrisRemovalSelector.getTarget(currentTime);
             this.beforeMove = true;
-            List<EntityID> path = this.target != null ? this.getRouteSearcher().getPath(currentTime, this.getID(), this.target) : this.routeSearcher.noTargetWalk(currentTime);
+            //List<EntityID> path = this.target != null ? this.getRouteSearcher().getPath(currentTime, this.getID(), this.target) : this.routeSearcher.noTargetWalk(currentTime);
+            List<EntityID> path = null;
+            if(this.target != null) {
+                path = this.getRouteSearcher().getPath(currentTime, this.getID(), this.target);
+            }
+            if(path == null) {
+                path = this.getRouteSearcher().noTargetWalk(currentTime);
+            }
             return new ActionMove(this, path);
         }
         Road road = (Road)area;
@@ -100,7 +107,12 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         if(!roadID.equals(this.target)) {
             if(this.passable(road)) {
                 this.beforeMove = true;
-                return new ActionMove(this, this.getRouteSearcher().getPath(currentTime, this.getID(), this.target));
+                //return new ActionMove(this, this.getRouteSearcher().getPath(currentTime, this.getID(), this.target));
+                List<EntityID> path = this.getRouteSearcher().getPath(currentTime, this.getID(), this.target);
+                if(path == null) {
+                    path = this.getRouteSearcher().noTargetWalk(currentTime);
+                }
+                return new ActionMove(this, path);
             }
             this.target = roadID;
         }
@@ -125,14 +137,21 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
                 this.beforeMove = true;
                 if(!clearPoint.isEmpty()) {
                     this.mainTargetPosition = clearPoint.get(0);
-                    List<EntityID> path = new ArrayList<>(1);
+                    List<EntityID> path = new ArrayList<>();
                     path.add(roadID);
                     return new ActionMove(this, path, (int) this.mainTargetPosition.getX(), (int) this.mainTargetPosition.getY());
                 }
                 else {
                     this.mainTargetPosition = null;
                     this.target = this.debrisRemovalSelector.getTarget(currentTime);
-                    List<EntityID> path = this.target != null ? this.getRouteSearcher().getPath(currentTime, this.getID(), this.target) : this.getRouteSearcher().noTargetWalk(currentTime);
+                    //List<EntityID> path = this.target != null ? this.getRouteSearcher().getPath(currentTime, this.getID(), this.target) : this.getRouteSearcher().noTargetWalk(currentTime);
+                    List<EntityID> path = null;
+                    if(this.target != null) {
+                        path = this.getRouteSearcher().getPath(currentTime, this.getID(), this.target);
+                    }
+                    if(path == null) {
+                        path = this.getRouteSearcher().noTargetWalk(currentTime);
+                    }
                     return new ActionMove(this, path);
                 }
             }
@@ -144,7 +163,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         }
         else {
             this.beforeMove = true;
-            List<EntityID> path = new ArrayList<>(1);
+            List<EntityID> path = new ArrayList<>();
             path.add(roadID);
             return new ActionMove(this, path, (int) this.mainTargetPosition.getX(), (int) this.mainTargetPosition.getY());
         }
