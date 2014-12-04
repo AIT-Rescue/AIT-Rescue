@@ -7,7 +7,7 @@ import rescuecore2.worldmodel.EntityID;
 
 import java.util.List;
 
-public class ActionMove extends Action<Tactics> {
+public class ActionMove extends Action {
     
     private List<EntityID> path;
 

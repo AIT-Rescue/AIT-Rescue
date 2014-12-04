@@ -4,11 +4,11 @@ import adk.team.tactics.Tactics;
 import rescuecore2.messages.Message;
 import rescuecore2.worldmodel.EntityID;
 
-public abstract class Action<T extends Tactics> {
+public abstract class Action {
 
     private EntityID userID;
 
-    public Action(T tactics) {
+    public Action(Tactics tactics) {
         this.userID = tactics.getID();
     }
 

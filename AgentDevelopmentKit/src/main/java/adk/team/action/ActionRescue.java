@@ -6,7 +6,7 @@ import rescuecore2.standard.entities.Human;
 import rescuecore2.standard.messages.AKRescue;
 import rescuecore2.worldmodel.EntityID;
 
-public class ActionRescue extends ActionTarget<TacticsAmbulance> {
+public class ActionRescue extends ActionTarget {
 
 
     public ActionRescue(TacticsAmbulance tactics, EntityID targetID) {

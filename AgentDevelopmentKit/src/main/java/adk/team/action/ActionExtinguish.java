@@ -6,7 +6,7 @@ import rescuecore2.standard.entities.Building;
 import rescuecore2.standard.messages.AKExtinguish;
 import rescuecore2.worldmodel.EntityID;
 
-public class ActionExtinguish extends ActionTarget<TacticsFire> {
+public class ActionExtinguish extends ActionTarget {
     
     private int power;
     

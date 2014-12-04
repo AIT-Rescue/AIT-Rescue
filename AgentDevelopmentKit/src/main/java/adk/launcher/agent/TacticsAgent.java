@@ -4,6 +4,7 @@ import adk.team.action.Action;
 import adk.team.tactics.Tactics;
 import comlib.agent.CommunicationAgent;
 import comlib.manager.MessageManager;
+import rescuecore2.messages.Message;
 import rescuecore2.standard.entities.Refuge;
 import rescuecore2.standard.entities.StandardEntity;
 import rescuecore2.standard.entities.StandardEntityURN;
@@ -59,7 +60,9 @@ public abstract class TacticsAgent<E extends StandardEntity> extends Communicati
             return;
         }
         Action action = this.tactics.think(time, changed, this.manager);
-        this.send(action == null ? new AKRest(this.getID(), time) : action.getCommand(this.getID(), time));
+        Message message = action == null ? new AKRest(this.getID(), time) : action.getCommand(this.getID(), time);
+        System.out.println(message.getClass());
+        this.send(message);
     }
 
     @Override

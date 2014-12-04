@@ -6,7 +6,7 @@ import rescuecore2.standard.entities.Civilian;
 import rescuecore2.standard.messages.AKLoad;
 import rescuecore2.worldmodel.EntityID;
 
-public class ActionLoad extends ActionTarget<TacticsAmbulance> {
+public class ActionLoad extends ActionTarget {
 
     public ActionLoad(TacticsAmbulance tactics, EntityID targetID) {
         super(tactics, targetID);

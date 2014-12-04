@@ -5,7 +5,7 @@ import rescuecore2.messages.Message;
 import rescuecore2.standard.messages.AKRest;
 import rescuecore2.worldmodel.EntityID;
 
-public class ActionRest extends Action<Tactics> {
+public class ActionRest extends Action {
 
     public ActionRest(Tactics tactics) {
         super(tactics);

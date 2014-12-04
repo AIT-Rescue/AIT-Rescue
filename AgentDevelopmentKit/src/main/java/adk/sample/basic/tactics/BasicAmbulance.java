@@ -115,12 +115,12 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
                 this.victimSelector.add((Human)entity);
             }
             else if(entity instanceof Blockade) {
-                manager.addSendMessage(new RoadMessage(((Blockade)entity)));
+                //manager.addSendMessage(new RoadMessage(((Blockade)entity)));
             }
             else if(entity instanceof Building) {
                 Building b = (Building)entity;
                 if(b.isOnFire()) {
-                    manager.addSendMessage(new BuildingMessage(b));
+                    //manager.addSendMessage(new BuildingMessage(b));
                 }
             }
         }

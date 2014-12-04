@@ -127,11 +127,11 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
             if(entity instanceof Civilian) {
                 Civilian civilian = (Civilian)entity;
                 if(civilian.getBuriedness() > 0) {
-                    manager.addSendMessage(new CivilianMessage(civilian));
+                    //manager.addSendMessage(new CivilianMessage(civilian));
                 }
             }
             else if(entity instanceof Blockade) {
-                manager.addSendMessage(new RoadMessage((Blockade) entity));
+                //manager.addSendMessage(new RoadMessage((Blockade) entity));
             }
             else if(entity instanceof Building) {
                 this.buildingSelector.add((Building) entity);

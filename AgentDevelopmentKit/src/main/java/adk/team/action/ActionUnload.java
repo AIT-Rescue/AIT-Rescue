@@ -5,7 +5,7 @@ import rescuecore2.messages.Message;
 import rescuecore2.standard.messages.AKUnload;
 import rescuecore2.worldmodel.EntityID;
 
-public class ActionUnload extends Action<TacticsAmbulance> {
+public class ActionUnload extends Action {
 
     public ActionUnload(TacticsAmbulance tactics) {
         super(tactics);

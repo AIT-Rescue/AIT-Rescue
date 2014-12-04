@@ -7,7 +7,7 @@ import rescuecore2.standard.messages.AKClear;
 import rescuecore2.standard.messages.AKClearArea;
 import rescuecore2.worldmodel.EntityID;
 
-public class ActionClear extends ActionTarget<TacticsPolice> {
+public class ActionClear extends ActionTarget {
 
     private boolean usePosition;
     private int posX;
@@ -43,6 +43,6 @@ public class ActionClear extends ActionTarget<TacticsPolice> {
 
     @Override
     public Message getCommand(EntityID agentID, int time) {
-        return this.usePosition ? new AKClear(agentID, time, this.target) : new AKClearArea(agentID, time, this.posX, this.posY);
+        return this.usePosition ? new AKClearArea(agentID, time, this.posX, this.posY) : new AKClear(agentID, time, this.target);
     }
 }
