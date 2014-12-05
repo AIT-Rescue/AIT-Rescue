@@ -129,7 +129,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
             return new ActionClear(this, (int) (this.me.getX() + vector.getX()), (int) (this.me.getY() + vector.getY()));
         }
         if(this.beforeMove) {
-            //if(this.mainTargetPosition.equals(this.agentPosition)) {
+            //if(this.mainTargetPoint.equals(this.agentPosition)) {
             if(this.equalsPoint(this.agentPosition, this.mainTargetPosition, 3.0D)) {
                 this.removeTargetPoint(road, this.mainTargetPosition);
                 List<Point2D> clearPoint = this.getClearTargetPoint(road);
