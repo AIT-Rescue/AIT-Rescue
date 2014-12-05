@@ -98,15 +98,11 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
                 return new ActionMove(this, this.routeSearcher.noTargetWalk(currentTime));
             }
         }
-        if(!(roadID.getValue() == this.target.getValue())) {
+        if(roadID.getValue() != this.target.getValue()) {
             if(this.passable(road)) {
                 this.beforeMove = true;
-                //return new ActionMove(this, this.getRouteSearcher().getPath(currentTime, this.getID(), this.target));
                 List<EntityID> path = this.getRouteSearcher().getPath(currentTime, this.getID(), this.target);
-                if(path == null) {
-                    path = this.getRouteSearcher().noTargetWalk(currentTime);
-                }
-                return new ActionMove(this, path);
+                return new ActionMove(this, path != null ? path : this.getRouteSearcher().noTargetWalk(currentTime));
             }
             this.target = roadID;
         }
@@ -120,12 +116,13 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
             this.mainTargetPoint = this.getClearTargetPoint(road).get(this.count);
             Vector2D vector = this.getVector(this.agentPoint, this.mainTargetPoint, road);
             this.beforeMove = false;
-            return new ActionClear(this, (int) (this.me.getX() + vector.getX()), (int) (this.me.getY() + vector.getY()));
+            return new ActionClear(this, (int) (this.me().getX() + vector.getX()), (int) (this.me().getY() + vector.getY()));
         }
         if(this.beforeMove) {
             //if(this.mainTargetPoint.equals(this.agentPosition)) {
             if(this.equalsPoint(this.agentPoint, this.mainTargetPoint, 3.0D)) {
                 this.removeTargetPoint(road, this.mainTargetPoint);
+                this.mainTargetPoint = null;
                 List<Point2D> clearPoint = this.getClearTargetPoint(road);
                 this.beforeMove = true;
                 if(!clearPoint.isEmpty()) {
@@ -255,37 +252,37 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         }
     }
 
-    public boolean canStraightForward(Point2D position, Point2D targetPosition, EntityID roadID, Collection<Edge> edges) {
+    public boolean canStraightForward(Point2D point, Point2D targetPoint, EntityID roadID, Collection<Edge> edges) {
         for (Edge edge : edges) {
-            if (this.linesIntersect(position, targetPosition, edge)) {
+            if (this.linesIntersect(point, targetPoint, edge)) {
                 return false;
             }
         }
         for(List<Edge> list : this.neighbourEdgesMap.get(roadID)) {
-            if (!this.canStraightForward(position, targetPosition, list)) {
+            if (!this.canStraightForward(point, targetPoint, list)) {
                 return false;
             }
         }
         return true;
     }
 
-    public boolean canStraightForward(Point2D position, Point2D targetPosition, Collection<Edge> edges) {
+    public boolean canStraightForward(Point2D point, Point2D targetPoint, Collection<Edge> edges) {
         for (Edge edge : edges) {
-            if (this.linesIntersect(position, targetPosition, edge)) {
+            if (this.linesIntersect(point, targetPoint, edge)) {
                 return false;
             }
         }
         return true;
     }
 
-    public boolean linesIntersect(Point2D position, Point2D targetPosition, Edge edge) {
+    public boolean linesIntersect(Point2D point, Point2D targetPoint, Edge edge) {
         Point2D start = edge.getStart();
         double startX = start.getX();
         double startY = start.getY();
         Point2D end = edge.getEnd();
         double endX = end.getX();
         double endY = end.getY();
-        return Line2D.linesIntersect(position.getX(), position.getY(), targetPosition.getX(), targetPosition.getY(), startX, startY, endX, endY) && !this.equalsPoint(targetPosition, ((startX + endX) / 2.0D), (startY + endX) / 2.0D, 3.0D);
+        return Line2D.linesIntersect(point.getX(), point.getY(), targetPoint.getX(), targetPoint.getY(), startX, startY, endX, endY) && !this.equalsPoint(targetPoint, ((startX + endX) / 2.0D), (startY + endX) / 2.0D, 3.0D);
     }
 
     public Point2D getEdgePoint(Edge edge) {
@@ -294,8 +291,8 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         return new Point2D(((start.getX() + end.getX()) / 2.0D), ((start.getY() + end.getY()) / 2.0D));
     }
 
-    public boolean equalsPoint(Point2D point, Point2D target, double range) {
-        return this.equalsPoint(point.getX(), point.getY(), target.getX(), target.getY(), range);
+    public boolean equalsPoint(Point2D point, Point2D targetPoint, double range) {
+        return this.equalsPoint(point.getX(), point.getY(), targetPoint.getX(), targetPoint.getY(), range);
     }
 
     public boolean equalsPoint(Point2D point, double targetX, double targetY, double range) {
