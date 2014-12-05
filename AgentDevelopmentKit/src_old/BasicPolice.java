@@ -269,7 +269,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
 
     /*
     public void removeTargetPoint(EntityID roadID, Point2D point) {
-        List<Point2D> list = this.clearTargetPointMap.get(roadID);
+        List<Point2D> list = this.clearListMap.get(roadID);
         list.remove(point);
         if(list.isEmpty()) {
             this.debrisRemovalSelector.remove(roadID);

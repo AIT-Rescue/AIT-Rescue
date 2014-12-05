@@ -18,31 +18,13 @@ public class BasicPoliceEvent implements PoliceForceMessageEvent{
     }
 
     @Override
-    public void receivedRadio(PoliceForceMessage msg) {
-        PoliceForce policeForce = reflectedMessage(this.wp.getWorld(), msg);
+    public void receivedRadio(PoliceForceMessage message) {
+        PoliceForce policeForce = this.wp.reflectedMessage(message);
         this.vsp.getVictimSelector().add(policeForce);
     }
 
     @Override
-    public void receivedVoice(PoliceForceMessage msg) {
-        this.receivedRadio(msg);
-    }
-
-    public PoliceForce reflectedMessage(StandardWorldModel swm, PoliceForceMessage msg) {
-        PoliceForce policeforce = (PoliceForce) swm.getEntity(msg.getHumanID());
-        if (policeforce == null) {
-            swm.addEntity(new PoliceForce(msg.getHumanID()));
-            policeforce = (PoliceForce) swm.getEntity(msg.getHumanID());
-        }
-        policeforce.isHPDefined();
-        policeforce.isBuriednessDefined();
-        policeforce.isDamageDefined();
-        policeforce.isPositionDefined();
-        policeforce.setHP(msg.getHP());
-        policeforce.setBuriedness(msg.getBuriedness());
-        policeforce.setDamage(msg.getDamage());
-        policeforce.setPosition(msg.getPosition());
-
-        return policeforce;
+    public void receivedVoice(PoliceForceMessage message) {
+        this.receivedRadio(message);
     }
 }

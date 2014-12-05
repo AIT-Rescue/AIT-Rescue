@@ -18,31 +18,13 @@ public class BasicCivilianEvent implements CivilianMessageEvent{
     }
 
     @Override
-    public void receivedRadio(CivilianMessage msg) {
-        Civilian civilian = reflectedMessage(this.wp.getWorld(), msg);
+    public void receivedRadio(CivilianMessage message) {
+        Civilian civilian = this.wp.reflectedMessage(message);
         this.vsp.getVictimSelector().add(civilian);
     }
 
     @Override
-    public void receivedVoice(CivilianMessage msg) {
-        this.receivedRadio(msg);
-    }
-
-    public Civilian reflectedMessage(StandardWorldModel swm, CivilianMessage msg) {
-        Civilian civilian = (Civilian)swm.getEntity(msg.getHumanID());
-        if (civilian == null) {
-            swm.addEntity(new Civilian(msg.getHumanID()));
-            civilian = (Civilian) swm.getEntity(msg.getHumanID());
-        }
-        civilian.isHPDefined();
-        civilian.isBuriednessDefined();
-        civilian.isDamageDefined();
-        civilian.isPositionDefined();
-        civilian.setHP(msg.getHP());
-        civilian.setBuriedness(msg.getBuriedness());
-        civilian.setDamage(msg.getDamage());
-        civilian.setPosition(msg.getPosition());
-
-        return civilian;
+    public void receivedVoice(CivilianMessage message) {
+        this.receivedRadio(message);
     }
 }

@@ -18,31 +18,13 @@ public class BasicFireEvent implements FireBrigadeMessageEvent{
     }
 
     @Override
-    public void receivedRadio(FireBrigadeMessage msg) {
-        FireBrigade fireBrigade = reflectedMessage(this.wp.getWorld(), msg);
+    public void receivedRadio(FireBrigadeMessage message) {
+        FireBrigade fireBrigade = this.wp.reflectedMessage(message);
         this.vsp.getVictimSelector().add(fireBrigade);
     }
 
     @Override
-    public void receivedVoice(FireBrigadeMessage msg) {
-        this.receivedRadio(msg);
-    }
-
-    public FireBrigade reflectedMessage(StandardWorldModel swm, FireBrigadeMessage msg) {
-        FireBrigade firebrigade = (FireBrigade) swm.getEntity(msg.getHumanID());
-        if (firebrigade == null) {
-            swm.addEntity(new FireBrigade(msg.getHumanID()));
-            firebrigade = (FireBrigade) swm.getEntity(msg.getHumanID());
-        }
-        firebrigade.isHPDefined();
-        firebrigade.isBuriednessDefined();
-        firebrigade.isDamageDefined();
-        firebrigade.isPositionDefined();
-        firebrigade.setHP(msg.getHP());
-        firebrigade.setBuriedness(msg.getBuriedness());
-        firebrigade.setDamage(msg.getDamage());
-        firebrigade.setPosition(msg.getPosition());
-        firebrigade.setWater(msg.getWater());
-        return firebrigade;
+    public void receivedVoice(FireBrigadeMessage message) {
+        this.receivedRadio(message);
     }
 }

@@ -4,7 +4,6 @@ import adk.team.util.RouteSearcher;
 import adk.team.util.provider.WorldProvider;
 import rescuecore2.misc.collections.LazyMap;
 import rescuecore2.standard.entities.Area;
-import rescuecore2.standard.entities.Building;
 import rescuecore2.standard.entities.Human;
 import rescuecore2.standard.entities.Road;
 import rescuecore2.worldmodel.Entity;
@@ -12,6 +11,7 @@ import sample.SampleSearch;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BasicRouteSearcher implements RouteSearcher {
 
@@ -33,7 +33,6 @@ public class BasicRouteSearcher implements RouteSearcher {
 
     private void initRandomWalk()
     {
-        //RandomWalk向け
         this.neighbours = new LazyMap<EntityID, Set<EntityID>>() {
             @Override
             public Set<EntityID> createValue() {
@@ -42,14 +41,9 @@ public class BasicRouteSearcher implements RouteSearcher {
         };
         for (Entity next : this.provider.getWorld()) {
             if (next instanceof Area) {
-                //if(next instanceof Road) {
-                Collection<EntityID> areaNeighbours = ((Area)next).getNeighbours();
-                Set<EntityID> roadNeighbours = new HashSet<>();
-                for(EntityID id : areaNeighbours)
-                    if (this.provider.getWorld().getEntity(id) instanceof Road) {
-                        roadNeighbours.add(id);
-                    }
-                this.neighbours.get(next.getID()).addAll(roadNeighbours);
+                List<EntityID> neighbours = ((Area)next).getNeighbours();
+                Set<EntityID> roadNeighbours = neighbours.stream().filter(id -> this.provider.getWorld().getEntity(id) instanceof Road).collect(Collectors.toSet());
+                this.neighbours.put(next.getID(), roadNeighbours);
             }
         }
     }
@@ -64,16 +58,16 @@ public class BasicRouteSearcher implements RouteSearcher {
             seen.add(current);
             List<EntityID> possible = new ArrayList<>(this.neighbours.get(current));
             Collections.shuffle(possible, this.random);
-            boolean found = false;
+            boolean noTarget = true;
             for (EntityID next : possible) {
                 if (seen.contains(next)) {
                     continue;
                 }
                 current = next;
-                found = true;
+                noTarget = false;
                 break;
             }
-            if (!found) {
+            if (noTarget) {
                 break;
             }
         }

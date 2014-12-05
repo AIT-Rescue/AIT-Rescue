@@ -1,6 +1,7 @@
 package adk.sample.basic.tactics;
 
 import adk.team.action.*;
+import adk.team.util.PositionUtil;
 import adk.team.util.RouteSearcher;
 import adk.team.tactics.TacticsAmbulance;
 import adk.team.util.VictimSelector;
@@ -32,19 +33,25 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
     public abstract RouteSearcher initRouteSearcher();
 
     @Override
-    public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
-        this.organizingUpdateInfo(updateWorldData, manager);
+    public VictimSelector getVictimSelector() {
+        return this.victimSelector;
+    }
 
+    @Override
+    public RouteSearcher getRouteSearcher() {
+        return this.routeSearcher;
+    }
+
+    @Override
+    public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
+        this.organizeUpdateInfo(updateWorldData, manager);
         if(this.someoneOnBoard()) {
             if (this.location instanceof Refuge) {
                 this.target = null;
                 return new ActionUnload(this);
             }
-            else {
-                return this.moveRefuge(currentTime);
-            }
+            return this.moveRefuge(currentTime);
         }
-
         if(this.target != null) {
             Human target = (Human)this.model.getEntity(this.target);
             if(target.getPosition().equals(location.getID())) {
@@ -105,54 +112,37 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
         return path != null ? new ActionMove(this, path) : new ActionRest(this);
     }
 
-    private void organizingUpdateInfo(ChangeSet updateWorldInfo, MessageManager manager) {
+    private void organizeUpdateInfo(ChangeSet updateWorldInfo, MessageManager manager) {
         for (EntityID next : updateWorldInfo.getChangedEntities()) {
-            StandardEntity entity = model.getEntity(next);
+            StandardEntity entity = this.getWorld().getEntity(next);
             if(entity instanceof Civilian) {
                 this.victimSelector.add((Civilian) entity);
             }
             else if(entity instanceof Human) {
                 this.victimSelector.add((Human)entity);
             }
-            else if(entity instanceof Blockade) {
-                //manager.addSendMessage(new RoadMessage(((Blockade)entity)));
-            }
             else if(entity instanceof Building) {
                 Building b = (Building)entity;
                 if(b.isOnFire()) {
-                    //manager.addSendMessage(new BuildingMessage(b));
+                    manager.addSendMessage(new BuildingMessage(b));
                 }
             }
+            /*
+            else if(entity instanceof Blockade) {
+                //manager.addSendMessage(new RoadMessage(((Blockade)entity)));
+            }
+            */
         }
     }
 
 
     private boolean someoneOnBoard() {
-        return this.target != null && ((Human) this.model.getEntity(this.target)).getPosition().equals(this.agentID);
+        return this.target != null && (((Human) this.model.getEntity(this.target)).getPosition().getValue() == this.agentID.getValue());
     }
 
-    private Action moveRefuge(int currentTime) {
-        Refuge result = null;
-        int minDistance = Integer.MAX_VALUE;
-        for (Refuge refuge : this.refugeList) {
-            int d = this.model.getDistance(this.me, refuge);
-            if (minDistance >= d) {
-                minDistance = d;
-                result = refuge;
-            }
-        }
+    public Action moveRefuge(int currentTime) {
+        Refuge result = PositionUtil.getNearTarget(this.getWorld(), this.me(), this.getRefuges());
         List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, result);
-        return path != null ? new ActionMove(this, path) : new ActionMove(this, this.routeSearcher.noTargetWalk(currentTime));
-    }
-
-
-    @Override
-    public VictimSelector getVictimSelector() {
-        return this.victimSelector;
-    }
-
-    @Override
-    public RouteSearcher getRouteSearcher() {
-        return this.routeSearcher;
+        return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetWalk(currentTime));
     }
 }

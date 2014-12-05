@@ -10,6 +10,7 @@ import adk.team.util.PositionUtil;
 import adk.team.util.RouteSearcher;
 import adk.team.util.provider.DebrisRemovalSelectorProvider;
 import adk.team.util.provider.RouteSearcherProvider;
+import com.google.common.collect.Lists;
 import comlib.manager.MessageManager;
 import comlib.message.information.BuildingMessage;
 import comlib.message.information.CivilianMessage;
@@ -34,7 +35,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
     public boolean beforeMove;
     public Map<EntityID, List<List<Edge>>> neighbourEdgesMap;
     public Map<EntityID, List<Point2D>> passablePointMap;
-    public Map<EntityID, List<Point2D>> clearTargetPointMap;
+    public Map<EntityID, List<Point2D>> clearListMap;
     public Point2D mainTargetPoint;
     public int count;
 
@@ -45,7 +46,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         this.beforeMove = false;
         this.neighbourEdgesMap = new HashMap<>();
         this.passablePointMap = new HashMap<>();
-        this.clearTargetPointMap = new HashMap<>();
+        this.clearListMap = new HashMap<>();
         this.beforeMove = false;
         this.count = 0;
     }
@@ -70,7 +71,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         this.organizeUpdateInfo(updateWorldData, manager);
         StandardEntity area = this.location();
         EntityID areaID = area.getID();
-        return (area instanceof Road) ? this.thinkDebrisRemoval(currentTime, manager, areaID, (Road)area) : this.thinkMoveRoad(currentTime, manager);
+        return (area instanceof Road) ? this.thinkDebrisRemoval(currentTime, areaID, (Road)area) : this.thinkMoveRoad(currentTime, manager);
     }
 
     public Action thinkMoveRoad(int currentTime, MessageManager manager) {
@@ -90,7 +91,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         return new ActionMove(this, path != null ? path : this.getRouteSearcher().noTargetWalk(currentTime));
     }
 
-    public Action thinkDebrisRemoval(int currentTime, MessageManager manager, EntityID roadID, Road road) {
+    public Action thinkDebrisRemoval(int currentTime, EntityID roadID, Road road) {
         if(this.target == null) {
             this.target = this.debrisRemovalSelector.getTarget(currentTime);
             if(this.target == null) {
@@ -107,42 +108,32 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
             this.target = roadID;
         }
         if(this.mainTargetPoint == null) {
-            List<Point2D> clearTargetPoint = this.getClearTargetPoint(road);
-            this.count = clearTargetPoint.size();
+            this.count = this.getClearList(road).size();
         }
-        //初期状態．とりあえず対象点全部へClear
         if(this.count != 0) {
             this.count--;
-            this.mainTargetPoint = this.getClearTargetPoint(road).get(this.count);
+            this.mainTargetPoint = this.getClearList(road).get(this.count);
             Vector2D vector = this.getVector(this.agentPoint, this.mainTargetPoint, road);
             this.beforeMove = false;
             return new ActionClear(this, (int) (this.me().getX() + vector.getX()), (int) (this.me().getY() + vector.getY()));
         }
         if(this.beforeMove) {
-            //if(this.mainTargetPoint.equals(this.agentPosition)) {
-            if(this.equalsPoint(this.agentPoint, this.mainTargetPoint, 3.0D)) {
+            if(this.equalsPoint(this.agentPoint, this.mainTargetPoint, 1.0D)) {
                 this.removeTargetPoint(road, this.mainTargetPoint);
                 this.mainTargetPoint = null;
-                List<Point2D> clearPoint = this.getClearTargetPoint(road);
+                List<Point2D> clearPoint = this.clearListMap.get(roadID);
                 this.beforeMove = true;
                 if(!clearPoint.isEmpty()) {
                     this.mainTargetPoint = clearPoint.get(0);
-                    List<EntityID> path = new ArrayList<>();
-                    path.add(roadID);
-                    return new ActionMove(this, path, (int) this.mainTargetPoint.getX(), (int) this.mainTargetPoint.getY());
+                    return new ActionMove(this, Lists.newArrayList(roadID), (int) this.mainTargetPoint.getX(), (int) this.mainTargetPoint.getY());
                 }
                 else {
-                    this.mainTargetPoint = null;
                     this.target = this.debrisRemovalSelector.getTarget(currentTime);
-                    //List<EntityID> path = this.target != null ? this.getRouteSearcher().getPath(currentTime, this.getID(), this.target) : this.getRouteSearcher().noTargetWalk(currentTime);
                     List<EntityID> path = null;
                     if(this.target != null) {
                         path = this.getRouteSearcher().getPath(currentTime, this.getID(), this.target);
                     }
-                    if(path == null) {
-                        path = this.getRouteSearcher().noTargetWalk(currentTime);
-                    }
-                    return new ActionMove(this, path);
+                    return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetWalk(currentTime));
                 }
             }
             else {
@@ -153,15 +144,13 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         }
         else {
             this.beforeMove = true;
-            List<EntityID> path = new ArrayList<>();
-            path.add(roadID);
-            return new ActionMove(this, path, (int) this.mainTargetPoint.getX(), (int) this.mainTargetPoint.getY());
+            return new ActionMove(this, Lists.newArrayList(roadID), (int) this.mainTargetPoint.getX(), (int) this.mainTargetPoint.getY());
         }
     }
 
     public void organizeUpdateInfo(ChangeSet updateWorldInfo, MessageManager manager) {
         for (EntityID next : updateWorldInfo.getChangedEntities()) {
-            StandardEntity entity = this.model.getEntity(next);
+            StandardEntity entity = this.getWorld().getEntity(next);
             if(entity instanceof Blockade) {
                 this.debrisRemovalSelector.add((Blockade) entity);
             }
@@ -182,7 +171,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
 
     public Vector2D getVector(Point2D agentPos, Point2D targetPos, Road road) {
         EntityID roadID = road.getID();
-        if(!this.clearTargetPointMap.containsKey(roadID)) {
+        if(!this.clearListMap.containsKey(roadID)) {
             this.analysisRoad(road);
         }
         List<Edge> edges = road.getEdges();
@@ -202,52 +191,51 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         }
     }
 
-    public boolean passable(Road road) {
-        EntityID roadID = road.getID();
-        if(!this.clearTargetPointMap.containsKey(roadID)) {
-            this.analysisRoad(road);
-        }
-        return this.clearTargetPointMap.get(roadID).isEmpty();
-    }
-
-
     public void analysisRoad(Road road) {
         EntityID roadID = road.getID();
-        if(this.clearTargetPointMap.containsKey(roadID)) {
+        if(this.clearListMap.containsKey(roadID)) {
             return;
         }
         List<List<Edge>> neighbourEdges = new ArrayList<>();
         List<Point2D> passablePoint = new ArrayList<>();
         road.getEdges().stream().filter(Edge::isPassable).forEach(edge -> {
-            neighbourEdges.add(((Area) this.getWorld().getEntity(edge.getNeighbour())).getEdges());
+            List<Edge> edges = ((Area) this.getWorld().getEntity(edge.getNeighbour())).getEdges();
+            edges.remove(edge);
+            neighbourEdges.add(edges);
             passablePoint.add(this.getEdgePoint(edge));
         });
-        List<Point2D> clearTargetPoint;
+        List<Point2D> clearList;
         if(road.getBlockades().isEmpty()) {
-            clearTargetPoint = new ArrayList<>();
+            clearList = new ArrayList<>();
             this.debrisRemovalSelector.remove(road);
         }
         else {
-            clearTargetPoint = new ArrayList<>(passablePoint);
+            clearList = new ArrayList<>(passablePoint);
             this.debrisRemovalSelector.add(road);
         }
         this.neighbourEdgesMap.put(roadID, neighbourEdges);
         this.passablePointMap.put(roadID, passablePoint);
-        this.clearTargetPointMap.put(roadID, clearTargetPoint);
+        this.clearListMap.put(roadID, clearList);
     }
 
-    public List<Point2D> getClearTargetPoint(Road road) {
+    public List<Point2D> getClearList(Road road) {
         EntityID roadID = road.getID();
-        if(!this.clearTargetPointMap.containsKey(roadID)) {
+        if(!this.clearListMap.containsKey(roadID)) {
             this.analysisRoad(road);
         }
-        return this.clearTargetPointMap.get(roadID);
+        return this.clearListMap.get(roadID);
+    }
+
+    public boolean passable(Road road) {
+        return this.getClearList(road).isEmpty();
     }
 
     public void removeTargetPoint(Road road, Point2D point) {
-        List<Point2D> list = this.clearTargetPointMap.get(road.getID());
-        list.remove(point);
-        if(list.isEmpty()) {
+        EntityID roadID = road.getID();
+        List<Point2D> clearList = this.clearListMap.get(roadID);
+        clearList.remove(point);
+        this.clearListMap.put(roadID, clearList);
+        if(clearList.isEmpty()) {
             this.debrisRemovalSelector.remove(road);
         }
     }
@@ -282,7 +270,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         Point2D end = edge.getEnd();
         double endX = end.getX();
         double endY = end.getY();
-        return Line2D.linesIntersect(point.getX(), point.getY(), targetPoint.getX(), targetPoint.getY(), startX, startY, endX, endY) && !this.equalsPoint(targetPoint, ((startX + endX) / 2.0D), (startY + endX) / 2.0D, 3.0D);
+        return Line2D.linesIntersect(point.getX(), point.getY(), targetPoint.getX(), targetPoint.getY(), startX, startY, endX, endY) && !this.equalsPoint(targetPoint, ((startX + endX) / 2.0D), (startY + endX) / 2.0D, 1.0D);
     }
 
     public Point2D getEdgePoint(Edge edge) {

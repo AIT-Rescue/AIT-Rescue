@@ -1,9 +1,8 @@
 package adk.team.util.provider;
 
 
-import rescuecore2.standard.entities.Refuge;
-import rescuecore2.standard.entities.StandardEntity;
-import rescuecore2.standard.entities.StandardWorldModel;
+import comlib.message.information.*;
+import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.ChangeSet;
 import rescuecore2.worldmodel.EntityID;
 
@@ -26,18 +25,94 @@ public interface WorldProvider<E extends StandardEntity> {
     public List<Refuge> getRefugeList();
 
     default E me() {
-        return this.getOwner();
+        return getOwner();
     }
 
     default StandardEntity location() {
-        return this.getOwnerLocation();
+        return getOwnerLocation();
     }
 
     default List<Refuge> getRefuges() {
-        return this.getRefugeList();
+        return getRefugeList();
     }
 
     default EntityID getID() {
-        return this.getOwnerID();
+        return getOwnerID();
+    }
+
+    default Building reflectedMessage(BuildingMessage message) {
+        Building building = (Building) getWorld().getEntity(message.getBuildingID());
+        building.setFieryness(message.getFieryness());
+        building.setBrokenness(message.getBrokenness());
+        return building;
+    }
+
+    default AmbulanceTeam reflectedMessage(AmbulanceTeamMessage message) {
+        StandardWorldModel world = getWorld();
+        AmbulanceTeam ambulanceteam = (AmbulanceTeam) world.getEntity(message.getHumanID());
+        if (ambulanceteam == null) {
+            world.addEntity(new AmbulanceTeam(message.getHumanID()));
+            ambulanceteam = (AmbulanceTeam) world.getEntity(message.getHumanID());
+        }
+        ambulanceteam.setHP(message.getHP());
+        ambulanceteam.setBuriedness(message.getBuriedness());
+        ambulanceteam.setDamage(message.getDamage());
+        ambulanceteam.setPosition(message.getPosition());
+        return ambulanceteam;
+    }
+
+    default Civilian reflectedMessage(CivilianMessage message) {
+        StandardWorldModel world = getWorld();
+        Civilian civilian = (Civilian)world.getEntity(message.getHumanID());
+        if (civilian == null) {
+            world.addEntity(new Civilian(message.getHumanID()));
+            civilian = (Civilian) world.getEntity(message.getHumanID());
+        }
+        civilian.setHP(message.getHP());
+        civilian.setBuriedness(message.getBuriedness());
+        civilian.setDamage(message.getDamage());
+        civilian.setPosition(message.getPosition());
+        return civilian;
+    }
+
+    default FireBrigade reflectedMessage(FireBrigadeMessage message) {
+        StandardWorldModel world = getWorld();
+        FireBrigade firebrigade = (FireBrigade) world.getEntity(message.getHumanID());
+        if (firebrigade == null) {
+            world.addEntity(new FireBrigade(message.getHumanID()));
+            firebrigade = (FireBrigade) world.getEntity(message.getHumanID());
+        }
+        firebrigade.setHP(message.getHP());
+        firebrigade.setBuriedness(message.getBuriedness());
+        firebrigade.setDamage(message.getDamage());
+        firebrigade.setPosition(message.getPosition());
+        firebrigade.setWater(message.getWater());
+        return firebrigade;
+    }
+
+    default PoliceForce reflectedMessage(PoliceForceMessage message) {
+        StandardWorldModel world = getWorld();
+        PoliceForce policeforce = (PoliceForce) world.getEntity(message.getHumanID());
+        if (policeforce == null) {
+            world.addEntity(new PoliceForce(message.getHumanID()));
+            policeforce = (PoliceForce) world.getEntity(message.getHumanID());
+        }
+        policeforce.setHP(message.getHP());
+        policeforce.setBuriedness(message.getBuriedness());
+        policeforce.setDamage(message.getDamage());
+        policeforce.setPosition(message.getPosition());
+        return policeforce;
+    }
+
+    default Blockade  reflectedMessage(RoadMessage message) {
+        StandardWorldModel world = getWorld();
+        Blockade blockade = (Blockade) world.getEntity(message.getID());
+        if (blockade == null) {
+            world.addEntity(new Blockade(message.getID()));
+            blockade = (Blockade) world.getEntity(message.getID());
+        }
+        blockade.setPosition(message.getPosition());
+        blockade.setRepairCost(message.getRepairCost());
+        return blockade;
     }
 }

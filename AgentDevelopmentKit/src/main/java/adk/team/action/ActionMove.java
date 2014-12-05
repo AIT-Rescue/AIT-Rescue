@@ -21,12 +21,12 @@ public class ActionMove extends Action {
         this.path = movePath;
     }
     
-    public ActionMove(Tactics tactics, List<EntityID> movePath, int destX, int destY) {
+    public ActionMove(Tactics tactics, List<EntityID> movePath, int destinationX, int destinationY) {
         super(tactics);
         this.usePosition = true;
         this.path = movePath;
-        this.posX = destX;
-        this.posY = destY;
+        this.posX = destinationX;
+        this.posY = destinationY;
     }
 
     public List<EntityID> getPath() {

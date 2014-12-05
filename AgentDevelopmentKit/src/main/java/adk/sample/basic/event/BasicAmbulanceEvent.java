@@ -18,31 +18,15 @@ public class BasicAmbulanceEvent implements AmbulanceTeamMessageEvent {
     }
 
     @Override
-    public void receivedRadio(AmbulanceTeamMessage msg) {
-        AmbulanceTeam ambulanceTeam = reflectedMessage(this.wp.getWorld(), msg);
+    public void receivedRadio(AmbulanceTeamMessage message) {
+        AmbulanceTeam ambulanceTeam = this.wp.reflectedMessage(message);
         this.vsp.getVictimSelector().add(ambulanceTeam);
     }
 
     @Override
-    public void receivedVoice(AmbulanceTeamMessage msg) {
-        this.receivedRadio(msg);
+    public void receivedVoice(AmbulanceTeamMessage message) {
+        this.receivedRadio(message);
     }
 
-    public AmbulanceTeam reflectedMessage(StandardWorldModel swm, AmbulanceTeamMessage msg) {
-        AmbulanceTeam ambulanceteam = (AmbulanceTeam) swm.getEntity(msg.getHumanID());
-        if (ambulanceteam == null) {
-            swm.addEntity(new AmbulanceTeam(msg.getHumanID()));
-            ambulanceteam = (AmbulanceTeam) swm.getEntity(msg.getHumanID());
-        }
-        ambulanceteam.isHPDefined();
-        ambulanceteam.isBuriednessDefined();
-        ambulanceteam.isDamageDefined();
-        ambulanceteam.isPositionDefined();
-        ambulanceteam.setHP(msg.getHP());
-        ambulanceteam.setBuriedness(msg.getBuriedness());
-        ambulanceteam.setDamage(msg.getDamage());
-        ambulanceteam.setPosition(msg.getPosition());
 
-        return ambulanceteam;
-    }
 }

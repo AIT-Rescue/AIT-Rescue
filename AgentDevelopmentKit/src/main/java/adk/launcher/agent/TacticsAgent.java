@@ -69,7 +69,7 @@ public abstract class TacticsAgent<E extends StandardEntity> extends Communicati
     public void receiveBeforeEvent(int time, ChangeSet changed) {
         this.tactics.time = time;
         this.tactics.changed = changed;
-        this.tactics.model = this.getWorld();
+        //this.tactics.model = this.getWorld();
         this.setAgentEntity();
     }
 

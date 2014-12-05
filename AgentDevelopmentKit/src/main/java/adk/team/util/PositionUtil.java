@@ -37,21 +37,6 @@ public class PositionUtil {
         return (valueOfCompare(position, first) <= valueOfCompare(position, second)) ? first : second;
     }
 
-    /*
-    public static Pair<Integer, Integer> getNearPosition(StandardWorldModel world, StandardEntity position, Pair<Integer, Integer>... targets) {
-
-        return getNearPosition(position.getLocation(world), targets);
-    }
-
-    public static Pair<Integer, Integer> getNearPosition(Pair<Integer, Integer> position, Pair<Integer, Integer>... targets) {
-        Pair<Integer, Integer> result = null;
-        for(Pair<Integer, Integer> target : targets) {
-            result = (result != null) ? compareDistance(position, result, target) : target;
-        }
-        return result;
-    }
-    */
-
     public static Pair<Integer, Integer> getNearPosition(StandardWorldModel world, StandardEntity position, Collection<Pair<Integer, Integer>> targets) {
         return getNearPosition(position.getLocation(world), targets);
     }
@@ -71,40 +56,25 @@ public class PositionUtil {
     }
 
     public static StandardEntity getNearTarget(StandardWorldModel world, StandardEntity user, StandardEntity first, StandardEntity second) {
-        return (valueOfCompare(user.getLocation(world), first.getLocation(world)) <= valueOfCompare(user.getLocation(world), second.getLocation(world))) ? first : second;
+        return getNearTarget(world, user.getLocation(world), first, second);
     }
 
     public static StandardEntity getNearTarget(StandardWorldModel world, Pair<Integer, Integer> user, StandardEntity first, StandardEntity second) {
         return (valueOfCompare(user, first.getLocation(world)) <= valueOfCompare(user, second.getLocation(world))) ? first : second;
     }
 
-    /*
-    public static StandardEntity getNearTarget(StandardWorldModel world, StandardEntity user, StandardEntity... targets) {
+    public static <T extends StandardEntity> T getNearTarget(StandardWorldModel world, StandardEntity user, Collection<T> targets) {
         return getNearTarget(world, user.getLocation(world), targets);
     }
 
-    public static StandardEntity getNearTarget(StandardWorldModel world, Pair<Integer, Integer> user, StandardEntity... targets) {
+    public static <T extends StandardEntity> T getNearTarget(StandardWorldModel world, Pair<Integer, Integer> user, Collection<T> targets) {
         StandardEntity result = null;
         for(StandardEntity target : targets) {
             result = (result != null) ? getNearTarget(world, user, result, target) : target;
         }
-        return result;
-    }
-    */
-
-    public static StandardEntity getNearTarget(StandardWorldModel world, StandardEntity user, Collection<? extends StandardEntity> targets) {
-        return getNearTarget(world, user.getLocation(world), targets);
+        return (T)result;
     }
 
-    public static StandardEntity getNearTarget(StandardWorldModel world, Pair<Integer, Integer> user, Collection<? extends StandardEntity> targets) {
-        StandardEntity result = null;
-        for(StandardEntity target : targets) {
-            result = (result != null) ? getNearTarget(world, user, result, target) : target;
-        }
-        return result;
-    }
-
-    //Point2D向けのメソッドも用意するべき
     private static double valueOfCompare(Point2D position, Point2D another) {
         double dx = position.getX() - another.getX();
         double dy = position.getY() - another.getY();
