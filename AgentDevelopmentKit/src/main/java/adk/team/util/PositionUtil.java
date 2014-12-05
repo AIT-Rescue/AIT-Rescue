@@ -67,6 +67,7 @@ public class PositionUtil {
         return getNearTarget(world, user.getLocation(world), targets);
     }
 
+    @SuppressWarnings("unchecked")
     public static <T extends StandardEntity> T getNearTarget(StandardWorldModel world, Pair<Integer, Integer> user, Collection<T> targets) {
         StandardEntity result = null;
         for(StandardEntity target : targets) {
