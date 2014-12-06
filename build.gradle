@@ -6,8 +6,6 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.1'
 }
 
-//http://www.gradle.org/docs/current/dsl/org.gradle.api.tasks.bundling.Zip.html#org.gradle.api.tasks.bundling.Zip
-//task buildAgentDevelopmentKit(type: Zip,  dependsOn: [':AgentDevelopmentKit:makeArchive', ':CommunicationLibrary:makeArchive']) {
 task buildAgentDevelopmentKit(type: Zip) {
     Calendar calendar = Calendar.getInstance()
     SimpleDateFormat sdf = new SimpleDateFormat('yyyyMMdd')
