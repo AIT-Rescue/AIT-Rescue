@@ -40,7 +40,7 @@ artifacts {
 
 build.mustRunAfter 'clean'
 
-task makeArchive(dependsOn: [clean, build]) << {
+task makeArchive(dependsOn: ['clean', 'build']) << {
 }
 
 task start (type: JavaExec) {

@@ -12,7 +12,7 @@ public class OptionRetry extends Option {
     @Override
     public void setValue(Config config, String[] datas) {
         if(datas.length == 2) {
-            config.setValue(ConfigKey.KEY_RANDOM_RETRY, datas[1]);
+            config.setValue(ConfigKey.KEY_LOAD_RETRY, datas[1]);
         }
     }
 }

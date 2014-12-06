@@ -61,7 +61,7 @@ public class AgentConnector {
 		if(team == null) {
 			System.out.println("[ERROR] Team is Null !!");
 			if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
-				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_RANDOM_RETRY, 10); i++) {
+				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_LOAD_RETRY, 10); i++) {
 					System.out.println("[INFO ] Retry Load Team (teamName:" + name + ")");
 					team = this.loader.getRandomTeam();
 					if(team != null) {
@@ -83,7 +83,7 @@ public class AgentConnector {
 		if(team.getAmbulanceTeamTactics() == null) {
 			System.out.println("[ERROR] Cannot Load Ambulance Team Tactics !!");
 			if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
-				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_RANDOM_RETRY, 10); i++) {
+				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_LOAD_RETRY, 10); i++) {
 					System.out.println("[INFO ] Retry Load Team (teamName:" + name + ")");
 					team = this.loader.getRandomTeam();
 					if(team.getAmbulanceTeamTactics() != null) {
@@ -126,7 +126,7 @@ public class AgentConnector {
 		if(team == null) {
 			System.out.println("[ERROR] Team is Null !!");
 			if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
-				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_RANDOM_RETRY, 10); i++) {
+				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_LOAD_RETRY, 10); i++) {
 					System.out.println("[INFO ] Retry Load Team (teamName:" + name + ")");
 					team = this.loader.getRandomTeam();
 					if(team != null) {
@@ -148,7 +148,7 @@ public class AgentConnector {
 		if(team.getFireBrigadeTactics() == null) {
 			System.out.println("[ERROR] Cannot Load Fire Brigade Tactics !!");
 			if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
-				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_RANDOM_RETRY, 10); i++) {
+				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_LOAD_RETRY, 10); i++) {
 					System.out.println("[INFO ] Retry Load Team (teamName:" + name + ")");
 					team = this.loader.getRandomTeam();
 					if(team.getFireBrigadeTactics() != null) {
@@ -191,7 +191,7 @@ public class AgentConnector {
 		if(team == null) {
 			System.out.println("[ERROR] Team is Null !!");
 			if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
-				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_RANDOM_RETRY, 10); i++) {
+				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_LOAD_RETRY, 10); i++) {
 					System.out.println("[INFO ] Retry Load Team (teamName:" + name + ")");
 					team = this.loader.getRandomTeam();
 					if(team != null) {
@@ -213,7 +213,7 @@ public class AgentConnector {
 		if(team.getPoliceForceTactics() == null) {
 			System.out.println("[ERROR] Cannot Load Police Force Tactics !!");
 			if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
-				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_RANDOM_RETRY, 10); i++) {
+				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_LOAD_RETRY, 10); i++) {
 					System.out.println("[INFO ] Retry Load Team (teamName:" + name + ")");
 					team = this.loader.getRandomTeam();
 					if(team.getPoliceForceTactics() != null) {

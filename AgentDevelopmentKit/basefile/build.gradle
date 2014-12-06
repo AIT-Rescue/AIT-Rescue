@@ -1,0 +1,88 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply from: "tool.gradle"
+
+//バージョンの記述です。設定すると、Jarの名前が、[teamName]-[version].jarになります。
+//version = 1.0.0
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.google.guava:guava:18.0'
+    compile fileTree(dir: 'library', include: '*.jar')
+    compile fileTree(dir: 'library/util', include: '*.jar')
+    compile fileTree(dir: 'library/rescue/core', include: '*.jar')
+    compile fileTree(dir: 'library/rescue/util', include: '*.jar')
+}
+
+sourceSets {
+    main.java.srcDirs = ['src/java']
+}
+
+jar {
+    destinationDir = new File(projectDir, 'tactics')
+    baseName = teamName
+    manifest.attributes('Team-Class': teamClassName)
+}
+
+[compileJava, compileTestJava].each {
+    it.options.encoding = 'UTF-8'
+    it.options.compilerArgs += ['-source', '1.8', '-target', '1.8']
+}
+javadoc.options.encoding = 'UTF-8'
+
+task start (type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = "adk.Main"
+    if (project.hasProperty('args')) {
+        args project.args.split('\\s+')
+    }
+    jvmArgs '-Xms512m', '-Xmx4g'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.1'
+}
+
+def comlibJarPath = 'jar://$MODULE_DIR$/library/rescue/util/comlib.jar!/'
+def comlibSrcPath = 'jar://$MODULE_DIR$/library/rescue/util/comlib-sources.jar!/'
+def adkJarPath = 'jar://$MODULE_DIR$/library/rescue/util/agent-development-kit.jar!/'
+def adkSrcPath = 'jar://$MODULE_DIR$/library/rescue/util/agent-development-kit-sources.jar!/'
+
+idea.module.iml {
+    withXml {
+        it.asNode().component.orderEntry.library.each{
+            def children = it.children()
+            boolean adkLink = false
+            boolean comlibLink = false
+            for(int i = 0; i < children.size(); i++){
+                String nodeName = children.get(i).name()
+                if('CLASSES'.equals(nodeName)){
+                    String name = children.get(i).children().get(0).attribute('url')
+                    if(comlibJarPath.equals(name)){
+                        comlibLink = true
+                    }
+                    else if(adkJarPath.equals(name)){
+                        adkLink = true
+                    }
+                }
+            }
+            if(comlibLink) {
+                for(int i = 0; i < children.size(); i++){
+                    if ('SOURCES'.equals(children.get(i).name())){
+                        children.get(i).appendNode('root', [url: comlibSrcPath])
+                    }
+                }
+            }
+            else if(adkLink) {
+                for(int i = 0; i < children.size(); i++){
+                    if ('SOURCES'.equals(children.get(i).name())){
+                        children.get(i).appendNode('root', [url: adkSrcPath])
+                    }
+                }
+            }
+        }
+    }
+}

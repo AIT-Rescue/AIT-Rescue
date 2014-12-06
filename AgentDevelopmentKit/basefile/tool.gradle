@@ -1,0 +1,22 @@
+import java.text.SimpleDateFormat
+
+task backupSrc(type: Zip) {
+    SimpleDateFormat sdf = new SimpleDateFormat('yyyyMMddHHmmss')
+    String date = sdf.format(Calendar.getInstance().getTime())
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    destinationDir = new File(projectDir, 'backup')
+    String buildName = teamName + '-source-' + date
+    archiveName = buildName + '.zip'
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    into(buildName) {
+        into('src') {
+            from 'src'
+        }
+        into('config') {
+            from 'config'
+        }
+        from 'build.gradle'
+        from 'gradle.properties'
+        from 'tool.gradle'
+    }
+}

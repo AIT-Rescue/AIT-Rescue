@@ -1,6 +1,59 @@
+import java.text.SimpleDateFormat
+
 apply plugin: 'java'
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.1'
 }
 
+//http://www.gradle.org/docs/current/dsl/org.gradle.api.tasks.bundling.Zip.html#org.gradle.api.tasks.bundling.Zip
+//task buildAgentDevelopmentKit(type: Zip,  dependsOn: [':AgentDevelopmentKit:makeArchive', ':CommunicationLibrary:makeArchive']) {
+task buildAgentDevelopmentKit(type: Zip) {
+    Calendar calendar = Calendar.getInstance()
+    SimpleDateFormat sdf = new SimpleDateFormat('yyyyMMdd')
+    String date = sdf.format(calendar.getTime())
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    destinationDir = new File(projectDir, 'release')
+    String buildName = 'adk-workspace-' + date
+    archiveName = buildName + '.zip'
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    into(buildName) {
+        into('workspace') {
+            //gradle
+            from 'gradlew'
+            from 'gradlew.bat'
+            into('gradle') {
+                from 'gradle'
+            }
+            //build
+            from 'AgentDevelopmentKit/basefile/build.gradle'
+            from 'AgentDevelopmentKit/basefile/gradle.properties'
+            from 'AgentDevelopmentKit/basefile/tool.gradle'
+            //library
+            into('library') {
+                from 'library'
+                into('rescue/util') {
+                    from 'CommunicationLibrary/build/libs'
+                    from 'AgentDevelopmentKit/build/libs'
+                }
+            }
+            //src
+            into('src') {
+                into('java') {
+                    into('sample') {
+                        from 'AgentDevelopmentKit/basefile/sample'
+                    }
+                }
+            }
+            //tactics
+            into('tactics') {
+                from 'AgentDevelopmentKit/basefile/.gitkeep'
+            }
+            //config
+            into('config') {
+                from 'AgentDevelopmentKit/basefile/adk.cfg'
+            }
+        }
+        from 'LICENSE'
+    }
+}

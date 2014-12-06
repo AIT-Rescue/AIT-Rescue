@@ -4,7 +4,7 @@ public final class ConfigKey {
     
     public static final String KEY_DIRECTORY = "adk.launcher.directory";
 
-    public static final String KEY_RANDOM_RETRY = "adk.tactics.random.retry";
+    public static final String KEY_LOAD_RETRY = "adk.tactics.load.retry";
 
     public static final String KEY_DUMMY_SYSTEM = "adk.tactics.dummy.run";
     
