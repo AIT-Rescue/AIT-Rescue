@@ -29,6 +29,7 @@ hs_err_pid*
 
 # ignore shell script
 *.ignore.sh
+,*
 
 # vimFiles (no update/update yourself)
 tags
