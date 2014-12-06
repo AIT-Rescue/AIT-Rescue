@@ -46,70 +46,61 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
     public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
         this.organizeUpdateInfo(updateWorldData, manager);
         if(this.someoneOnBoard()) {
-            if (this.location instanceof Refuge) {
+            if (this.location() instanceof Refuge) {
                 this.target = null;
                 return new ActionUnload(this);
             }
             return this.moveRefuge(currentTime);
         }
-        if(this.target != null) {
-            Human target = (Human)this.model.getEntity(this.target);
-            if(target.getPosition().equals(location.getID())) {
-                if ((target instanceof Civilian) && target.getBuriedness() == 0 && !(this.location instanceof Refuge)) {
-                    Civilian civilian = (Civilian)target;
-                    manager.addSendMessage(new CivilianMessage(civilian));
-                    this.victimSelector.remove(civilian);
-                    return new ActionLoad(this, this.target);
-                } else if (target.getBuriedness() > 0) {
-                    return new ActionRescue(this, this.target);
-                }
-                else {
-                    if(target instanceof Civilian) {
-                        Civilian civilian = (Civilian)target;
-                        manager.addSendMessage(new CivilianMessage(civilian));
-                        this.victimSelector.remove(civilian);
-                    }
-                    if(target instanceof AmbulanceTeam) {
-                        AmbulanceTeam ambulanceTeam = (AmbulanceTeam)target;
-                        manager.addSendMessage(new AmbulanceTeamMessage(ambulanceTeam));
-                        this.victimSelector.remove(target);
-                    }
-                    if(target instanceof FireBrigade) {
-                        FireBrigade fireBrigade = (FireBrigade)target;
-                        manager.addSendMessage(new FireBrigadeMessage(fireBrigade));
-                        this.victimSelector.remove(target);
-                    }
-                    if(target instanceof PoliceForce) {
-                        PoliceForce policeForce = (PoliceForce)target;
-                        manager.addSendMessage(new PoliceForceMessage(policeForce));
-                        this.victimSelector.remove(target);
-                    }
-                    this.target = this.victimSelector.getTarget(currentTime);
-                    if (this.target != null) {
-                        List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
-                        return path != null ? new ActionMove(this, path) : new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
-                    }
-                    else {
-                        return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
-                    }
-                }
-            }
-            else {
-                List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
-                return path != null ? new ActionMove(this, path) : new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
+        if(this.me().getBuriedness() > 0) {
+            //自分自身をRescueできるのか？？
+            //return new ActionRest(this);
+            return new ActionRescue(this, this.getID());
+        }
+        //HPっていったいいくつなんだ
+        if(this.me().getHP() < 100) {
+            this.target = null;
+            return this.location() instanceof Refuge ? new ActionRest(this) : this.moveRefuge(currentTime);
+        }
+        if(this.target == null) {
+            this.target = this.victimSelector.getTarget(currentTime);
+            if(this.target == null) {
+                return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
             }
         }
-
-        if(this.me.getBuriedness() > 0) {
-            return new ActionRest(this);
+        Human victim = (Human)this.getWorld().getEntity(this.target);
+        if(victim.getPosition().getValue() != this.location().getID().getValue()) {
+            List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me(), this.target);
+            return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
         }
-
-        this.target = this.victimSelector.getTarget(currentTime);
-        List<EntityID> path = null;
-        if(this.target != null) {
-            path = this.routeSearcher.getPath(currentTime, this.me(), this.target);
+        else {
+            if ((victim instanceof Civilian) && victim.getBuriedness() == 0) {
+                Civilian civilian = (Civilian)victim;
+                manager.addSendMessage(new CivilianMessage(civilian));
+                this.victimSelector.remove(civilian);
+                return new ActionLoad(this, this.target);
+            }
+            else if (victim.getBuriedness() > 0) {
+                return new ActionRescue(this, this.target);
+            }
+            if(victim instanceof AmbulanceTeam) {
+                AmbulanceTeam ambulanceTeam = (AmbulanceTeam)victim;
+                manager.addSendMessage(new AmbulanceTeamMessage(ambulanceTeam));
+                this.victimSelector.remove(ambulanceTeam);
+            }
+            else if(victim instanceof FireBrigade) {
+                FireBrigade fireBrigade = (FireBrigade)victim;
+                manager.addSendMessage(new FireBrigadeMessage(fireBrigade));
+                this.victimSelector.remove(fireBrigade);
+            }
+            else if(victim instanceof PoliceForce) {
+                PoliceForce policeForce = (PoliceForce)victim;
+                manager.addSendMessage(new PoliceForceMessage(policeForce));
+                this.victimSelector.remove(policeForce);
+            }
+            this.target = this.victimSelector.getTarget(currentTime);
+            return this.moveTarget(currentTime);
         }
-        return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
     }
 
     public void organizeUpdateInfo(ChangeSet updateWorldInfo, MessageManager manager) {
@@ -135,14 +126,21 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
         }
     }
 
-
-    private boolean someoneOnBoard() {
-        return this.target != null && (((Human) this.model.getEntity(this.target)).getPosition().getValue() == this.agentID.getValue());
+    public boolean someoneOnBoard() {
+        return this.target != null && ((Human)this.getWorld().getEntity(this.target)).getPosition().getValue() == this.getID().getValue();
     }
 
     public Action moveRefuge(int currentTime) {
         Refuge result = PositionUtil.getNearTarget(this.getWorld(), this.me(), this.getRefuges());
-        List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, result);
+        List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me(), result);
+        return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
+    }
+
+    public Action moveTarget(int currentTime) {
+        List<EntityID> path = null;
+        if(this.target != null) {
+            path = this.routeSearcher.getPath(currentTime, this.me(), this.target);
+        }
         return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
     }
 }
