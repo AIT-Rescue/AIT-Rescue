@@ -109,7 +109,7 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
     public Action moveRefuge(int currentTime) {
         Refuge result = PositionUtil.getNearTarget(this.getWorld(), this.me(), this.getRefuges());
         List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, result);
-        return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetWalk(currentTime));
+        return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
     }
 
     public Action moveTarget(int currentTime) {
@@ -121,7 +121,7 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
             }
             this.target = null;
         }
-        return new ActionMove(this, this.routeSearcher.noTargetWalk(currentTime));
+        return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
     }
 
 }

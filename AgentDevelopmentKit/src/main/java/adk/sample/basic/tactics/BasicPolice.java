@@ -88,7 +88,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         if(this.target != null) {
             path = this.getRouteSearcher().getPath(currentTime, this.getID(), this.target);
         }
-        return new ActionMove(this, path != null ? path : this.getRouteSearcher().noTargetWalk(currentTime));
+        return new ActionMove(this, path != null ? path : this.getRouteSearcher().noTargetMove(currentTime));
     }
 
     public Action thinkDebrisRemoval(int currentTime, EntityID roadID, Road road) {
@@ -96,14 +96,14 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
             this.target = this.debrisRemovalSelector.getTarget(currentTime);
             if(this.target == null) {
                 this.beforeMove = true;
-                return new ActionMove(this, this.routeSearcher.noTargetWalk(currentTime));
+                return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
             }
         }
         if(roadID.getValue() != this.target.getValue()) {
             if(this.passable(road)) {
                 this.beforeMove = true;
                 List<EntityID> path = this.getRouteSearcher().getPath(currentTime, this.getID(), this.target);
-                return new ActionMove(this, path != null ? path : this.getRouteSearcher().noTargetWalk(currentTime));
+                return new ActionMove(this, path != null ? path : this.getRouteSearcher().noTargetMove(currentTime));
             }
             this.target = roadID;
         }
@@ -133,7 +133,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
                     if(this.target != null) {
                         path = this.getRouteSearcher().getPath(currentTime, this.getID(), this.target);
                     }
-                    return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetWalk(currentTime));
+                    return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
                 }
             }
             else {

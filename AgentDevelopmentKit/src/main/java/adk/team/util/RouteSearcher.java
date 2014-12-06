@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface RouteSearcher {
     
-    public List<EntityID> noTargetWalk(int time);
+    public List<EntityID> noTargetMove(int time);
     
     public List<EntityID> getPath(int time, EntityID from, EntityID to);
     

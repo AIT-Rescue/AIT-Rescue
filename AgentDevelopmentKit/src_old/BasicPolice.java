@@ -11,9 +11,6 @@ import adk.team.util.RouteSearcher;
 import adk.team.util.provider.DebrisRemovalSelectorProvider;
 import adk.team.util.provider.RouteSearcherProvider;
 import comlib.manager.MessageManager;
-import comlib.message.information.BuildingMessage;
-import comlib.message.information.CivilianMessage;
-import comlib.message.information.PoliceForceMessage;
 import rescuecore2.config.Config;
 import rescuecore2.misc.geometry.Point2D;
 import rescuecore2.misc.geometry.Vector2D;
@@ -83,13 +80,13 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         if(!(area instanceof Road)) {
             this.target = this.debrisRemovalSelector.getTarget(currentTime);
             this.beforeMove = true;
-            //List<EntityID> path = this.target != null ? this.getRouteSearcher().getPath(currentTime, this.getID(), this.target) : this.routeSearcher.noTargetWalk(currentTime);
+            //List<EntityID> path = this.target != null ? this.getRouteSearcher().getPath(currentTime, this.getID(), this.target) : this.routeSearcher.noTargetMove(currentTime);
             List<EntityID> path = null;
             if(this.target != null) {
                 path = this.getRouteSearcher().getPath(currentTime, this.getID(), this.target);
             }
             if(path == null) {
-                path = this.getRouteSearcher().noTargetWalk(currentTime);
+                path = this.getRouteSearcher().noTargetMove(currentTime);
             }
             return new ActionMove(this, path);
         }
@@ -99,7 +96,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
             this.target = this.debrisRemovalSelector.getTarget(currentTime);
             if(this.target == null) {
                 this.beforeMove = true;
-                return new ActionMove(this, this.routeSearcher.noTargetWalk(currentTime));
+                return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
             }
         }
         //今いる場所がTarget地点と違う場合，通れるなら移動を行う．通れないと判定された場合，対象を今の場所に変更を行う
@@ -109,7 +106,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
                 //return new ActionMove(this, this.getRouteSearcher().getPath(currentTime, this.getID(), this.target));
                 List<EntityID> path = this.getRouteSearcher().getPath(currentTime, this.getID(), this.target);
                 if(path == null) {
-                    path = this.getRouteSearcher().noTargetWalk(currentTime);
+                    path = this.getRouteSearcher().noTargetMove(currentTime);
                 }
                 return new ActionMove(this, path);
             }
@@ -143,13 +140,13 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
                 else {
                     this.mainTargetPosition = null;
                     this.target = this.debrisRemovalSelector.getTarget(currentTime);
-                    //List<EntityID> path = this.target != null ? this.getRouteSearcher().getPath(currentTime, this.getID(), this.target) : this.getRouteSearcher().noTargetWalk(currentTime);
+                    //List<EntityID> path = this.target != null ? this.getRouteSearcher().getPath(currentTime, this.getID(), this.target) : this.getRouteSearcher().noTargetMove(currentTime);
                     List<EntityID> path = null;
                     if(this.target != null) {
                         path = this.getRouteSearcher().getPath(currentTime, this.getID(), this.target);
                     }
                     if(path == null) {
-                        path = this.getRouteSearcher().noTargetWalk(currentTime);
+                        path = this.getRouteSearcher().noTargetMove(currentTime);
                     }
                     return new ActionMove(this, path);
                 }

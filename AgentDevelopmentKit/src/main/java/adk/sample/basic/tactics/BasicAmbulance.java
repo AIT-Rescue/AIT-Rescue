@@ -87,32 +87,32 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
                     this.target = this.victimSelector.getTarget(currentTime);
                     if (this.target != null) {
                         List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
-                        return path != null ? new ActionMove(this, path) : new ActionMove(this, this.routeSearcher.noTargetWalk(currentTime));
+                        return path != null ? new ActionMove(this, path) : new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
                     }
                     else {
-                        return new ActionMove(this, this.routeSearcher.noTargetWalk(currentTime));
+                        return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
                     }
                 }
             }
             else {
                 List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
-                return path != null ? new ActionMove(this, path) : new ActionMove(this, this.routeSearcher.noTargetWalk(currentTime));
+                return path != null ? new ActionMove(this, path) : new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
             }
         }
 
         if(this.me.getBuriedness() > 0) {
             return new ActionRest(this);
         }
+
         this.target = this.victimSelector.getTarget(currentTime);
-        if (this.target != null) {
-            List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
-            return path != null ? new ActionMove(this, path) : new ActionMove(this, this.routeSearcher.noTargetWalk(currentTime));
+        List<EntityID> path = null;
+        if(this.target != null) {
+            path = this.routeSearcher.getPath(currentTime, this.me(), this.target);
         }
-        List<EntityID> path = this.routeSearcher.noTargetWalk(currentTime);
-        return path != null ? new ActionMove(this, path) : new ActionRest(this);
+        return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
     }
 
-    private void organizeUpdateInfo(ChangeSet updateWorldInfo, MessageManager manager) {
+    public void organizeUpdateInfo(ChangeSet updateWorldInfo, MessageManager manager) {
         for (EntityID next : updateWorldInfo.getChangedEntities()) {
             StandardEntity entity = this.getWorld().getEntity(next);
             if(entity instanceof Civilian) {
@@ -143,6 +143,6 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
     public Action moveRefuge(int currentTime) {
         Refuge result = PositionUtil.getNearTarget(this.getWorld(), this.me(), this.getRefuges());
         List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, result);
-        return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetWalk(currentTime));
+        return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
     }
 }

@@ -49,7 +49,7 @@ public class BasicRouteSearcher implements RouteSearcher {
     }
 
     @Override
-    public List<EntityID> noTargetWalk(int time) {
+    public List<EntityID> noTargetMove(int time) {
         List<EntityID> result = new ArrayList<>(RANDOM_WALK_LENGTH);
         Set<EntityID> seen = new HashSet<>();
         EntityID current = this.provider.me().getPosition();
