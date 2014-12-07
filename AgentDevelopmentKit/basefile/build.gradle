@@ -21,9 +21,11 @@ sourceSets {
     main.java.srcDirs = ['src/java']
 }
 
+def defaultName = name
+
 jar {
     destinationDir = new File(projectDir, 'tactics')
-    baseName = teamName
+    baseName = 'default'.equalsIgnoreCase(teamName) ? defaultName : teamName;
     manifest.attributes('Team-Class': teamClassName)
 }
 
@@ -44,45 +46,4 @@ task start (type: JavaExec) {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.1'
-}
-
-def comlibJarPath = 'jar://$MODULE_DIR$/library/rescue/util/comlib.jar!/'
-def comlibSrcPath = 'jar://$MODULE_DIR$/library/rescue/util/comlib-sources.jar!/'
-def adkJarPath = 'jar://$MODULE_DIR$/library/rescue/util/agent-development-kit.jar!/'
-def adkSrcPath = 'jar://$MODULE_DIR$/library/rescue/util/agent-development-kit-sources.jar!/'
-
-idea.module.iml {
-    withXml {
-        it.asNode().component.orderEntry.library.each{
-            def children = it.children()
-            boolean adkLink = false
-            boolean comlibLink = false
-            for(int i = 0; i < children.size(); i++){
-                String nodeName = children.get(i).name()
-                if('CLASSES'.equals(nodeName)){
-                    String name = children.get(i).children().get(0).attribute('url')
-                    if(comlibJarPath.equals(name)){
-                        comlibLink = true
-                    }
-                    else if(adkJarPath.equals(name)){
-                        adkLink = true
-                    }
-                }
-            }
-            if(comlibLink) {
-                for(int i = 0; i < children.size(); i++){
-                    if ('SOURCES'.equals(children.get(i).name())){
-                        children.get(i).appendNode('root', [url: comlibSrcPath])
-                    }
-                }
-            }
-            else if(adkLink) {
-                for(int i = 0; i < children.size(); i++){
-                    if ('SOURCES'.equals(children.get(i).name())){
-                        children.get(i).appendNode('root', [url: adkSrcPath])
-                    }
-                }
-            }
-        }
-    }
 }

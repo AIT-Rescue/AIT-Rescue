@@ -20,3 +20,66 @@ task backupSrc(type: Zip) {
         from 'tool.gradle'
     }
 }
+
+def comlibJarPath = 'jar://$MODULE_DIR$/library/rescue/util/comlib.jar!/'
+def comlibSrcPath = 'jar://$MODULE_DIR$/library/rescue/util/comlib-sources.jar!/'
+def adkJarPath = 'jar://$MODULE_DIR$/library/rescue/util/agent-development-kit.jar!/'
+def adkSrcPath = 'jar://$MODULE_DIR$/library/rescue/util/agent-development-kit-sources.jar!/'
+
+idea.module.iml {
+    withXml {
+        it.asNode().component.orderEntry.library.each{
+            def children = it.children()
+            boolean adkLink = false
+            boolean comlibLink = false
+            boolean removeAdkLink = false;
+            boolean removeComlibLink = false;
+            for(int i = 0; i < children.size(); i++){
+                String nodeName = children.get(i).name()
+                if('CLASSES'.equals(nodeName)){
+                    String name = children.get(i).children().get(0).attribute('url')
+                    if(comlibJarPath.equals(name)){
+                        comlibLink = true
+                    }
+                    else if(adkJarPath.equals(name)){
+                        adkLink = true
+                    }
+                    if(comlibSrcPath.equals(name)){
+                        removeComlibLink = true
+                    }
+                    else if(adkSrcPath.equals(name)){
+                        removeAdkLink = true;
+                    }
+                }
+            }
+            if(comlibLink) {
+                for(int i = 0; i < children.size(); i++){
+                    if ('SOURCES'.equals(children.get(i).name())){
+                        children.get(i).appendNode('root', [url: comlibSrcPath])
+                    }
+                }
+            }
+            else if(adkLink) {
+                for(int i = 0; i < children.size(); i++){
+                    if ('SOURCES'.equals(children.get(i).name())){
+                        children.get(i).appendNode('root', [url: adkSrcPath])
+                    }
+                }
+            }
+            /*else if(removeComlibLink) {
+                for(int i = 0; i < children.size(); i++){
+                    if ('CLASSES'.equals(children.get(i).name())){
+                        children.get(i).remove('root', [url: comlibSrcPath])
+                    }
+                }
+            }
+            else if(removeAdkLink) {
+                for(int i = 0; i < children.size(); i++){
+                    if ('CLASSES'.equals(children.get(i).name())){
+                        children.get(i).remove('root', [url: adkSrcPath])
+                    }
+                }
+            }*/
+        }
+    }
+}
