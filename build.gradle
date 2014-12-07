@@ -31,9 +31,14 @@ task buildAgentDevelopmentKit(type: Zip) {
             into('library') {
                 from 'library'
                 into('rescue/util') {
-                    from 'CommunicationLibrary/build/libs'
-                    from 'AgentDevelopmentKit/build/libs'
+                    from 'AgentDevelopmentKit/build/libs/agent-development-kit.jar'
+                    from 'CommunicationLibrary/build/libs/comlib.jar'
+                    into('sources') {
+                        from 'AgentDevelopmentKit/build/libs/agent-development-kit-sources.jar'
+                        from 'CommunicationLibrary/build/libs/comlib-sources.jar'
+                    }
                 }
+
             }
             //src
             into('src') {
