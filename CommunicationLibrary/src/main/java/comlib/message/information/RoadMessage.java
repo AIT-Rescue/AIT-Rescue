@@ -2,67 +2,53 @@ package comlib.message.information;
 
 import comlib.message.MapMessage;
 import comlib.message.MessageID;
+import rescuecore2.standard.entities.Road;
 import rescuecore2.standard.entities.Blockade;
 import rescuecore2.worldmodel.EntityID;
 
-public class RoadMessage extends MapMessage {
+public class RoadMessage extends MapMessage
+{
+	protected int rawRoadID;
+	protected int rawBlockadeID;
+	protected EntityID roadID;
+	protected EntityID roadBlockadeID;
+	protected int blockadeRepairCost;
 
-    private int rawBlockadeID;
-    private int rawHumanPosition;
-    private EntityID blockadeID;
-    private EntityID humanPosition;
-    private int repairCost;
-    //private int[] apexes;
-    //private int x;
-    //private int y;
+	public RoadMessage(Road road, Blockade blockade)
+	{
+		super(MessageID.roadMessage);
+		this.roadID = road.getID();
+		this.roadBlockadeID = blockade.getID();
+		this.blockadeRepairCost = blockade.getRepairCost();
+	}
 
-    public RoadMessage(Blockade blockade) {
-        super(MessageID.roadMessage);
-        this.blockadeID = blockade.getID();
-        this.humanPosition = blockade.getPosition();
-        this.repairCost = blockade.getRepairCost();
-        //this.apexes = blockade.getApexes();
-        //this.x = blockade.getX();
-        //this.y = blockade.getY();
+	public RoadMessage(int time, int ttl, int id, int blockadeID, int repairCost)
+	{
+		super(MessageID.roadMessage, time, ttl);
+		this.rawRoadID = id;
+		this.rawBlockadeID = blockadeID;
+		this.blockadeRepairCost = repairCost;
+	}
 
-    }
+	public EntityID getRoadID()
+	{
+		if (this.roadID == null)
+		{ this.roadID = new EntityID(this.rawRoadID); }
 
-    public RoadMessage(int time, int ttl, int id, int position, int cost) {
-        super(MessageID.roadMessage, time, ttl);
-        this.rawBlockadeID = id;
-        this.rawHumanPosition = position;
-        this.repairCost = cost;
-    }
+		return this.roadID;
+	}
 
-    public EntityID getID() {
-        if(this.blockadeID == null) {
-            this.blockadeID = new EntityID(this.rawBlockadeID);
-        }
-        return this.blockadeID;
-    }
+	public EntityID getBlockadeID()
+	{
+		if (this.roadBlockadeID == null)
+		{ this.roadBlockadeID = new EntityID(this.rawBlockadeID); }
 
-    public EntityID getPosition() {
-        if(this.humanPosition == null) {
-            this.humanPosition = new EntityID(this.rawHumanPosition);
-        }
-        return this.humanPosition;
-    }
+		return this.roadBlockadeID;
+	}
 
-    public int getRepairCost() {
-        return this.repairCost;
-    }
-
-    /*
-    public int[] getApexes() {
-        return this.apexes;
-    }
-
-    public int getX() {
-        return this.x;
-    }
-
-    public int getY() {
-        return this.y;
-    }
-    */
+	public int getRepairCost()
+	{
+		return blockadeRepairCost;
+	}
 }
+

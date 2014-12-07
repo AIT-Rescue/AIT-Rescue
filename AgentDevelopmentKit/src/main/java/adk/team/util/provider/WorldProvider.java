@@ -106,12 +106,12 @@ public interface WorldProvider<E extends StandardEntity> {
 
     default Blockade  reflectedMessage(RoadMessage message) {
         StandardWorldModel world = getWorld();
-        Blockade blockade = (Blockade) world.getEntity(message.getID());
+        Blockade blockade = (Blockade) world.getEntity(message.getBlockadeID());
         if (blockade == null) {
-            world.addEntity(new Blockade(message.getID()));
-            blockade = (Blockade) world.getEntity(message.getID());
+            world.addEntity(new Blockade(message.getBlockadeID()));
+            blockade = (Blockade) world.getEntity(message.getBlockadeID());
         }
-        blockade.setPosition(message.getPosition());
+        // blockade.setPosition(message.getPosition());
         blockade.setRepairCost(message.getRepairCost());
         return blockade;
     }
