@@ -4,7 +4,6 @@ import adk.team.util.provider.WorldProvider;
 import rescuecore2.standard.entities.Road;
 import rescuecore2.standard.entities.StandardEntity;
 import rescuecore2.standard.entities.StandardEntityURN;
-import rescuecore2.standard.entities.StandardWorldModel;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.*;
@@ -73,3 +72,5 @@ public class RouteGraph {
 両側道路→Bad
 片側道路→Edgeに内包されるListになる
  */
+
+private Map<EntityID, Map<EntityID, RouteEdge>> edgeMap;
