@@ -57,8 +57,8 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
             //return new ActionRest(this);
             return new ActionRescue(this, this.getID());
         }
-        //HPっていったいいくつなんだ
-        if(this.me().getHP() < 100) {
+        //HP -> 10000
+        if(this.me().getHP() < 1000) {
             this.target = null;
             return this.location() instanceof Refuge ? new ActionRest(this) : this.moveRefuge(currentTime);
         }

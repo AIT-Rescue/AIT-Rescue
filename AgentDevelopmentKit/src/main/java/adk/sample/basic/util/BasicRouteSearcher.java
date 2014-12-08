@@ -43,7 +43,8 @@ public class BasicRouteSearcher implements RouteSearcher {
             if (next instanceof Area) {
                 List<EntityID> neighbours = ((Area)next).getNeighbours();
                 Set<EntityID> roadNeighbours = neighbours.stream().filter(id -> this.provider.getWorld().getEntity(id) instanceof Road).collect(Collectors.toSet());
-                this.neighbours.put(next.getID(), roadNeighbours);
+                //Set<EntityID> roadNeighbours = new HashSet<>(neighbours);
+                        this.neighbours.put(next.getID(), roadNeighbours);
             }
         }
     }

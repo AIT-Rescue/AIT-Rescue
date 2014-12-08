@@ -198,12 +198,14 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         }
         List<List<Edge>> neighbourEdges = new ArrayList<>();
         List<Point2D> passablePoint = new ArrayList<>();
-        road.getEdges().stream().filter(Edge::isPassable).forEach(edge -> {
-            List<Edge> edges = ((Area) this.getWorld().getEntity(edge.getNeighbour())).getEdges();
-            edges.remove(edge);
-            neighbourEdges.add(edges);
-            passablePoint.add(this.getEdgePoint(edge));
-        });
+        for(Edge edge : road.getEdges()) {
+            if(edge.isPassable()) {
+                List<Edge> edges = new ArrayList<>(((Area) this.getWorld().getEntity(edge.getNeighbour())).getEdges());
+                edges.remove(edge);
+                neighbourEdges.add(edges);
+                passablePoint.add(this.getEdgePoint(edge));
+            }
+        }
         List<Point2D> clearList;
         if(road.getBlockades().isEmpty()) {
             clearList = new ArrayList<>();
