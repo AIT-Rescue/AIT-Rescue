@@ -49,7 +49,7 @@ public class PositionUtil {
         return result;
     }
 
-    private static long valueOfCompare(Pair<Integer, Integer> position, Pair<Integer, Integer> another) {
+    public static long valueOfCompare(Pair<Integer, Integer> position, Pair<Integer, Integer> another) {
         long dx = position.first() - another.first();
         long dy = position.second() - another.second();
         return dx*dx + dy*dy;
@@ -76,7 +76,7 @@ public class PositionUtil {
         return (T)result;
     }
 
-    private static double valueOfCompare(Point2D position, Point2D another) {
+    public static double valueOfCompare(Point2D position, Point2D another) {
         double dx = position.getX() - another.getX();
         double dy = position.getY() - another.getY();
         return dx*dx + dy*dy;
