@@ -18,13 +18,18 @@ public class BasicRoadEvent implements RoadMessageEvent {
     }
 
     @Override
-    public void receivedRadio(RoadMessage msg) {
-        Blockade blockade = this.wp.reflectedMessage(msg);
-        this.drsp.getDebrisRemovalSelector().add(blockade);
+    public void receivedRadio(RoadMessage message) {
+        if(message.getPassable()) {
+            this.drsp.getDebrisRemovalSelector().remove(message.getRoadID());
+        }
+        else {
+            Blockade blockade = this.wp.reflectedMessage(message);
+            this.drsp.getDebrisRemovalSelector().add(blockade);
+        }
     }
 
     @Override
-    public void receivedVoice(RoadMessage msg) {
-        this.receivedRadio(msg);
+    public void receivedVoice(RoadMessage message) {
+        this.receivedRadio(message);
     }
 }
