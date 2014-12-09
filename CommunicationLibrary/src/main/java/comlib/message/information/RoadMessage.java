@@ -13,21 +13,24 @@ public class RoadMessage extends MapMessage
 	protected EntityID roadID;
 	protected EntityID roadBlockadeID;
 	protected int blockadeRepairCost;
+	protected boolean roadPassable;
 
-	public RoadMessage(Road road, Blockade blockade)
+	public RoadMessage(Road road, Blockade blockade, boolean isPassable)
 	{
 		super(MessageID.roadMessage);
 		this.roadID = road.getID();
 		this.roadBlockadeID = blockade.getID();
 		this.blockadeRepairCost = blockade.getRepairCost();
+		this.roadPassable = isPassable;
 	}
 
-	public RoadMessage(int time, int ttl, int id, int blockadeID, int repairCost)
+	public RoadMessage(int time, int ttl, int id, int blockadeID, int repairCost, boolean isPassable)
 	{
 		super(MessageID.roadMessage, time, ttl);
 		this.rawRoadID = id;
 		this.rawBlockadeID = blockadeID;
 		this.blockadeRepairCost = repairCost;
+		this.roadPassable = isPassable;
 	}
 
 	public EntityID getRoadID()
@@ -49,6 +52,11 @@ public class RoadMessage extends MapMessage
 	public int getRepairCost()
 	{
 		return blockadeRepairCost;
+	}
+
+	public boolean getPassable()
+	{
+		return roadPassable;
 	}
 }
 
