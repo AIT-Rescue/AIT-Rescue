@@ -1,7 +1,7 @@
 package adk.sample.basic.util;
 
 import adk.team.util.BuildingSelector;
-import adk.team.util.PositionUtil;
+import adk.team.util.graph.PositionUtil;
 import adk.team.util.provider.WorldProvider;
 import rescuecore2.standard.entities.Building;
 import rescuecore2.standard.entities.StandardEntity;

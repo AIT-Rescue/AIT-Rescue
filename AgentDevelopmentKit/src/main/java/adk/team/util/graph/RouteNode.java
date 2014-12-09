@@ -1,30 +1,41 @@
 package adk.team.util.graph;
 
+import com.google.common.collect.Table;
+import rescuecore2.standard.entities.Area;
+import rescuecore2.standard.entities.Building;
+import rescuecore2.standard.entities.Edge;
+import rescuecore2.standard.entities.Road;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.List;
+import java.util.Map;
 
 public abstract class RouteNode {
 
-    /*private EntityID nodeID;
+    private EntityID nodeID;
+    //private Table<EntityID, EntityID, Edge> neighbourEdge;
+    private Map<EntityID, RouteNode> neighbourNode;
+    private Map<EntityID, Edge> neighbourEdge;
 
-    public RouteNode(EntityID id) {
-        this.nodeID = id;
+    private RouteGraph graph;
+
+    public RouteNode(RouteGraph routeGraph, EntityID areaID) {
+        this.nodeID = areaID;
+        this.graph = routeGraph;
     }
 
-    public abstract EntityID[] getNeighbours();
+    public RouteNode(RouteGraph routeGraph, Area area) {
+        this(routeGraph, area.getID());
+    }
 
-    public abstract RouteNode[] getNodes();
-
-    public abstract RouteEdge[] getEdges();
-
-    public abstract EntityID getNodeID();
-    */
-    public abstract EntityID getNodeID();
+    public EntityID getNodeID() {
+        return this.nodeID;
+    }
 
     public abstract List<EntityID> getPath(RouteNode from, EntityID target);
 
-    public RouteNode[] getNeighbourNodes() {
-        return null;
+    public boolean addPath(List<EntityID> path) {
+        path.add(getNodeID());
+        return true;
     }
 }

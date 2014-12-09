@@ -6,7 +6,7 @@ import adk.team.action.ActionMove;
 import adk.team.action.ActionRest;
 import adk.team.tactics.TacticsPolice;
 import adk.team.util.DebrisRemovalSelector;
-import adk.team.util.PositionUtil;
+import adk.team.util.graph.PositionUtil;
 import adk.team.util.RouteSearcher;
 import adk.team.util.provider.DebrisRemovalSelectorProvider;
 import adk.team.util.provider.RouteSearcherProvider;
@@ -182,7 +182,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
             Point2D edgePoint;
             Point2D min = null;
             for (Edge edge : edges) {
-                edgePoint = this.getEdgePoint(edge);
+                edgePoint = PositionUtil.getEdgePoint(edge);
                 if (this.canStraightForward(agentPos, edgePoint, roadID, edges)) {
                     min = min != null ? PositionUtil.compareDistance(agentPos, min, edgePoint).translate(0.0D, 0.0D) : edgePoint.translate(0.0D, 0.0D);
                 }
@@ -203,7 +203,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
                 List<Edge> edges = new ArrayList<>(((Area) this.getWorld().getEntity(edge.getNeighbour())).getEdges());
                 edges.remove(edge);
                 neighbourEdges.add(edges);
-                passablePoint.add(this.getEdgePoint(edge));
+                passablePoint.add(PositionUtil.getEdgePoint(edge));
             }
         }
         List<Point2D> clearList;
@@ -275,11 +275,11 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         return Line2D.linesIntersect(point.getX(), point.getY(), targetPoint.getX(), targetPoint.getY(), startX, startY, endX, endY) && !this.equalsPoint(targetPoint, ((startX + endX) / 2.0D), (startY + endX) / 2.0D, 1.0D);
     }
 
-    public Point2D getEdgePoint(Edge edge) {
+    /*public Point2D getEdgePoint(Edge edge) {
         Point2D start = edge.getStart();
         Point2D end = edge.getEnd();
         return new Point2D(((start.getX() + end.getX()) / 2.0D), ((start.getY() + end.getY()) / 2.0D));
-    }
+    }*/
 
     public boolean equalsPoint(Point2D point, Point2D targetPoint, double range) {
         return this.equalsPoint(point.getX(), point.getY(), targetPoint.getX(), targetPoint.getY(), range);

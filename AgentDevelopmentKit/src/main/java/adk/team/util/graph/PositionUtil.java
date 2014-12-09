@@ -1,7 +1,8 @@
-package adk.team.util;
+package adk.team.util.graph;
 
 import rescuecore2.misc.Pair;
 import rescuecore2.misc.geometry.Point2D;
+import rescuecore2.standard.entities.Edge;
 import rescuecore2.standard.entities.StandardEntity;
 import rescuecore2.standard.entities.StandardWorldModel;
 
@@ -92,5 +93,21 @@ public class PositionUtil {
             result = (result != null) ? compareDistance(position, result, target) : target;
         }
         return result;
+    }
+
+    public static Point2D getEdgePoint(Edge edge) {
+        Point2D start = edge.getStart();
+        Point2D end = edge.getEnd();
+        return new Point2D(((start.getX() + end.getX()) / 2.0D), ((start.getY() + end.getY()) / 2.0D));
+    }
+
+    public static double pointDistance(Edge from, Edge to) {
+        return pointDistance(getEdgePoint(from), getEdgePoint(to));
+    }
+
+    public static double pointDistance(Point2D from, Point2D to) {
+        double dx = from.getX() - to.getX();
+        double dy = from.getY() - to.getY();
+        return Math.hypot(dx, dy);
     }
 }

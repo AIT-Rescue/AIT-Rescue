@@ -1,7 +1,7 @@
 package adk.sample.basic.util;
 
 import adk.team.util.DebrisRemovalSelector;
-import adk.team.util.PositionUtil;
+import adk.team.util.graph.PositionUtil;
 import adk.team.util.provider.WorldProvider;
 import rescuecore2.standard.entities.Blockade;
 import rescuecore2.standard.entities.Road;

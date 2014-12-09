@@ -1,7 +1,7 @@
 package adk.sample.basic.tactics;
 
 import adk.team.action.*;
-import adk.team.util.PositionUtil;
+import adk.team.util.graph.PositionUtil;
 import adk.team.util.RouteSearcher;
 import adk.team.tactics.TacticsAmbulance;
 import adk.team.util.VictimSelector;
