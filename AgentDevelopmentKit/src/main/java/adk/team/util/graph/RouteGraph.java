@@ -3,6 +3,7 @@ package adk.team.util.graph;
 import adk.team.util.provider.WorldProvider;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import org.omg.IOP.TAG_ALTERNATE_IIOP_ADDRESS;
 import rescuecore2.standard.entities.Area;
 import rescuecore2.standard.entities.Edge;
 import rescuecore2.worldmodel.EntityID;
@@ -13,7 +14,7 @@ import java.util.Map;
 
 public class RouteGraph {
     //roadID <neiA, neiB, distance>
-    private Map<EntityID, Table<EntityID, EntityID, Double>> distanceMap;
+    //private Map<EntityID, Table<EntityID, EntityID, Double>> distanceMap;
     private Map<EntityID, RouteNode> nodeMap;
     private Map<EntityID, RouteEdge> edgeMap;
     private Table<EntityID, EntityID, RouteEdge> edgeTable;
@@ -21,14 +22,14 @@ public class RouteGraph {
     private WorldProvider provider;
 
     public RouteGraph(WorldProvider worldProvider) {
-        this.distanceMap = new HashMap<>();
+        //this.distanceMap = new HashMap<>();
         this.provider = worldProvider;
         this.nodeMap = new HashMap<>();
         this.edgeMap = new HashMap<>();
         this.edgeTable = HashBasedTable.create();
     }
 
-    public double getDistance(EntityID areaID, EntityID from, EntityID to) {
+    /*public double getDistance(EntityID areaID, EntityID from, EntityID to) {
         Table<EntityID, EntityID, Double> distanceTable;
         if(this.distanceMap.containsKey(areaID)) {
             distanceTable = this.distanceMap.get(areaID);
@@ -51,7 +52,13 @@ public class RouteGraph {
         return Double.NaN;
     }
 
-    public void setDistanceTable(EntityID areaID){
-
-    }
+    public void setDistanceTable(EntityID areaID, Table<EntityID, EntityID, Double> distanceTable){
+        Table<EntityID, EntityID, Double> table = this.distanceMap.get(areaID);
+        if (table == null) {
+            table = distanceTable;
+        } else {
+            table.putAll(distanceTable);
+        }
+        this.distanceMap.put(areaID, table);
+    }*/
 }
