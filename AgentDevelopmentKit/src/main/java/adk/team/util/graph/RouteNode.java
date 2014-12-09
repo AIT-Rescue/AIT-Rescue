@@ -9,15 +9,18 @@ import rescuecore2.standard.entities.Edge;
 import rescuecore2.standard.entities.Road;
 import rescuecore2.worldmodel.EntityID;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class RouteNode implements GraphElement {
 
     private EntityID nodeID;
     private Table<EntityID, EntityID, Double> distanceTable;
-    private Map<EntityID, RouteNode> neighbourNode;
-    private Map<EntityID, Edge> neighbourEdge;
+    //private Map<EntityID, RouteNode> neighbourNode;
+    //private Map<EntityID, Edge> neighbourEdge;
+    private Set<EntityID> neighbourNodes;
 
     private RouteGraph graph;
     private WorldProvider provider;
@@ -28,16 +31,25 @@ public class RouteNode implements GraphElement {
         this.graph = routeGraph;
         this.provider = worldProvider;
         this.distanceTable = HashBasedTable.create();
+        this.neighbourNodes = new HashSet<>();
 
     }
 
-    public RouteNode(EntityID areaID, RouteGraph routeGraph, WorldProvider worldProvider) {
+    public void addNeighbourNode(EntityID id) {
+        this.neighbourNodes.add(id);
+    }
+
+    public Set<EntityID> getNeighbourNodes() {
+        return this.neighbourNodes;
+    }
+
+    /*public RouteNode(EntityID areaID, RouteGraph routeGraph, WorldProvider worldProvider) {
         this.nodeID = areaID;
         this.graph = routeGraph;
         this.provider = worldProvider;
         this.distanceTable = HashBasedTable.create();
         Area area = (Area)worldProvider.getWorld().getEntity(areaID);
-    }
+    }*/
 
     public EntityID getNodeID() {
         return this.nodeID;

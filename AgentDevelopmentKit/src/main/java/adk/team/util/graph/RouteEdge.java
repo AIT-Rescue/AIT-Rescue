@@ -16,6 +16,8 @@ public class RouteEdge {
     */
     private Map<EntityID, Table<EntityID, EntityID, Double>> distanceMap;
 
+    private double edgeDistance;
+
     public boolean addPath(List<EntityID> path) {
         return true;
     }
