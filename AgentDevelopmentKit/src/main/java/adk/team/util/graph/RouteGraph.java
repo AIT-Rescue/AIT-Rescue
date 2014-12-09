@@ -2,6 +2,7 @@ package adk.team.util.graph;
 
 import adk.team.util.provider.WorldProvider;
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
 import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.EntityID;
@@ -45,7 +46,13 @@ public class RouteGraph {
             EntityID buildingID = building.getID();
             if(!processed.contains(buildingID)) {
                 RouteNode node = new RouteNode(buildingID);
+                List<EntityID> path = Lists.newArrayList(buildingID);
+                boolean foundNode = false;
+                while(!foundNode) {
+                    
+                }
                 this.nodeMap.put(buildingID, node);
+                processed.add(buildingID);
             }
         }
     }
