@@ -3,14 +3,10 @@ package adk.team.util.graph;
 import adk.team.util.provider.WorldProvider;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import org.omg.IOP.TAG_ALTERNATE_IIOP_ADDRESS;
-import rescuecore2.standard.entities.Area;
-import rescuecore2.standard.entities.Edge;
+import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.EntityID;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class RouteGraph {
     //roadID <neiA, neiB, distance>
@@ -29,36 +25,28 @@ public class RouteGraph {
         this.edgeTable = HashBasedTable.create();
     }
 
-    /*public double getDistance(EntityID areaID, EntityID from, EntityID to) {
-        Table<EntityID, EntityID, Double> distanceTable;
-        if(this.distanceMap.containsKey(areaID)) {
-            distanceTable = this.distanceMap.get(areaID);
-            if(distanceTable.contains(from, to)) {
-                return distanceTable.get(from, to);
-            }
+    public Map<EntityID, Double> getDistanceMap(StandardWorldModel world, List<EntityID> path) {
+        Map<EntityID, Double> result = new HashMap<>();
+        int size = path.size() - 2;
+        for(int i = 1; i < size; i++) {
+            EntityID areaID = path.get(i);
+            Area area = (Area)world.getEntity(areaID);
+            double distance = PositionUtil.pointDistance(area.getEdgeTo(path.get(i - 1)), area.getEdgeTo(path.get(i + 1)));
+            result.put(areaID, distance);
         }
-        else {
-            distanceTable = HashBasedTable.create();
-        }
-        Area area = (Area)this.provider.getWorld().getEntity(areaID);
-        List<EntityID> neighbours = area.getNeighbours();
-        if(neighbours.contains(from) && neighbours.contains(to)) {
-            double distance = PositionUtil.pointDistance(area.getEdgeTo(from), area.getEdgeTo(to));
-            distanceTable.put(from, to, distance);
-            distanceTable.put(to, from, distance);
-            this.distanceMap.put(areaID, distanceTable);
-            return distance;
-        }
-        return Double.NaN;
+        return result;
     }
 
-    public void setDistanceTable(EntityID areaID, Table<EntityID, EntityID, Double> distanceTable){
-        Table<EntityID, EntityID, Double> table = this.distanceMap.get(areaID);
-        if (table == null) {
-            table = distanceTable;
-        } else {
-            table.putAll(distanceTable);
+    public void analysis(StandardWorldModel world) {
+        Set<EntityID> processed = new HashSet<>();
+        //Buildings
+        for(StandardEntity entity : world.getEntitiesOfType(StandardEntityURN.BUILDING, StandardEntityURN.REFUGE)) {
+            Building building = (Building)entity;
+            EntityID buildingID = building.getID();
+            if(!processed.contains(buildingID)) {
+                RouteNode node = new RouteNode(buildingID);
+                this.nodeMap.put(buildingID, node);
+            }
         }
-        this.distanceMap.put(areaID, table);
-    }*/
+    }
 }
