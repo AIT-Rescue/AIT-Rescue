@@ -7,6 +7,7 @@ import comlib.message.information.RoadMessage;
 import comlib.provider.MapMessageProvider;
 import comlib.util.BitOutputStream;
 import comlib.util.BitStreamReader;
+import comlib.util.BooleanHelper;
 
 public class RoadMessageProvider extends MapMessageProvider<RoadMessage, RoadMessageEvent>
 {
@@ -21,6 +22,7 @@ public class RoadMessageProvider extends MapMessageProvider<RoadMessage, RoadMes
 		bos.writeBits(msg.getRoadID().getValue(), 32);
 		bos.writeBits(msg.getBlockadeID().getValue(), 32);
 		bos.writeBits(msg.getRepairCost(), 32);
+		bos.writeBits(BooleanHelper.toInt(msg.getPassable()), 1);
 	}
 
 	protected void writeMessage(VoiceConfig config, StringBuilder sb, RoadMessage msg)
@@ -33,7 +35,8 @@ public class RoadMessageProvider extends MapMessageProvider<RoadMessage, RoadMes
 		return new RoadMessage(time, -1,
 				bsr.getBits(32),
 				bsr.getBits(32),
-				bsr.getBits(32)
+				bsr.getBits(32),
+				BooleanHelper.valueOf(bsr.getBits(1))
 				);
 	}
 
