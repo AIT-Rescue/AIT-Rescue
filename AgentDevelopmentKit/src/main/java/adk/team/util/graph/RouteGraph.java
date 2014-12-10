@@ -77,14 +77,8 @@ public class RouteGraph {
                         }
                     }
                 }
+                this.register(world, path);
                 this.nodeMap.put(roadID, roadNode);
-                RouteEdge edge = new RouteEdge(world, path);
-                int size = path.size() - 1;
-                for(int i = 1; i < size; i++) {
-                    this.edgeMap.put(path.get(i), edge);
-                }
-                this.edgeTable.put(path.get(0), path.get(size), edge);
-                this.edgeTable.put(path.get(size), path.get(0), edge);
             }
             else if(roadNeighbours.size() >= 3) {
                 RouteNode routeNode = this.nodeMap.get(roadID);
@@ -100,33 +94,13 @@ public class RouteGraph {
                     while (edgeFlag) {
                         EntityID areaID = area.getID();
                         List<EntityID> neighbourList = area.getNeighbours();
-                        int neighbourListSize = neighbourList.size();
-                        if(neighbourListSize == 2) {
+                        if(neighbourList.size() == 2) {
                             neighbourList.remove(neighbourID);
                             path.add(areaID);
                             processedRoad.add(area);
                             neighbourID = areaID;
                             area = (Area)world.getEntity(neighbourList.get(0));
                         }
-                        /*else if(neighbourListSize >= 3) {
-                            edgeFlag = false;
-                            path.add(areaID);
-                            routeNode = this.nodeMap.get(areaID);
-                            RouteNode node = routeNode != null ? routeNode : new RouteNode(areaID);
-                            node.addNode(neighbourID, roadID);
-                            roadNode.addNode(id, areaID);
-                            this.nodeMap.put(areaID, node);
-                        }
-                        else if(neighbourListSize == 1) {
-                            edgeFlag = false;
-                            processedRoad.add(area);
-                            path.add(areaID);
-                            routeNode = this.nodeMap.get(areaID);
-                            RouteNode node = routeNode != null ? routeNode : new RouteNode(areaID);
-                            node.addNode(neighbourID, roadID);
-                            roadNode.addNode(id, areaID);
-                            this.nodeMap.put(areaID, node);
-                        }*/
                         else {
                             edgeFlag = false;
                             if (neighbourList.isEmpty()) {
@@ -146,21 +120,92 @@ public class RouteGraph {
                             }
                         }
                     }
-                    this.nodeMap.put(roadID, roadNode);
-                    RouteEdge edge = new RouteEdge(world, path);
-                    int size = path.size() - 1;
-                    for(int i = 1; i < size; i++) {
-                        this.edgeMap.put(path.get(i), edge);
-                    }
-                    this.edgeTable.put(path.get(0), path.get(size), edge);
-                    this.edgeTable.put(path.get(size), path.get(0), edge);
+                    this.register(world, path);
                 }
+                this.nodeMap.put(roadID, roadNode);
             }
             else if(roadNeighbours.size() == 2) {
                 if (this.edgeMap.containsKey(roadID)) {
                     continue;
                 }
-                System.out.println("aaa");
+                EntityID start = null;
+                List<EntityID> startPath = new ArrayList<>();
+                Area area = (Area)world.getEntity(roadNeighbours.get(0));
+                EntityID neighbourID = roadID;
+                boolean edgeFlag = true;
+                while (edgeFlag) {
+                    EntityID areaID = area.getID();
+                    List<EntityID> neighbourList = area.getNeighbours();
+                    if(neighbourList.size() == 2) {
+                        neighbourList.remove(neighbourID);
+                        startPath.add(areaID);
+                        processedRoad.add(area);
+                        neighbourID = areaID;
+                        area = (Area)world.getEntity(neighbourList.get(0));
+                    }
+                    else {
+                        edgeFlag = false;
+                        if (neighbourList.isEmpty()) {
+                            System.out.println("[ERROR] Bad Map (unknown Area)");
+                        }
+                        else {
+                            if(neighbourList.size() == 1) {
+                                processedRoad.add(area);
+                            }
+                            edgeFlag = false;
+                            startPath.add(areaID);
+                            start = areaID;
+                        }
+                    }
+                }
+                EntityID end = null;
+                List<EntityID> endPath = new ArrayList<>();
+                area = (Area)world.getEntity(roadNeighbours.get(1));
+                neighbourID = roadID;
+                edgeFlag = true;
+                while (edgeFlag) {
+                    EntityID areaID = area.getID();
+                    List<EntityID> neighbourList = area.getNeighbours();
+                    if(neighbourList.size() == 2) {
+                        neighbourList.remove(neighbourID);
+                        endPath.add(areaID);
+                        processedRoad.add(area);
+                        neighbourID = areaID;
+                        area = (Area)world.getEntity(neighbourList.get(0));
+                    }
+                    else {
+                        edgeFlag = false;
+                        if (neighbourList.isEmpty()) {
+                            System.out.println("[ERROR] Bad Map (unknown Area)");
+                        }
+                        else {
+                            if(neighbourList.size() == 1) {
+                                processedRoad.add(area);
+                            }
+                            edgeFlag = false;
+                            endPath.add(areaID);
+                            end = areaID;
+                        }
+                    }
+                }
+                if(start != null && end != null) {
+                    List<EntityID> path = new ArrayList<>();
+                    Collections.reverse(startPath);
+                    path.addAll(startPath);
+                    path.add(roadID);
+                    path.addAll(endPath);
+                    this.register(world, path);
+                    /*routeNode = this.nodeMap.get(areaID);
+                    RouteNode node = routeNode != null ? routeNode : new RouteNode(areaID);
+                    node.addNode(neighbourID, buildingID);
+                    buildingNode.addNode(id, areaID);*/
+                    RouteNode startNode = this.nodeMap.containsKey(start) ? this.nodeMap.get(start) : new RouteNode(start);
+                    startNode.addNode(path.get(1), end);
+                    this.nodeMap.put(start, startNode);
+                    RouteNode endNode = this.nodeMap.containsKey(end) ? this.nodeMap.get(end) : new RouteNode(end);
+                    endNode.addNode(path.get(path.size() - 2), start);
+                    this.nodeMap.put(end, endNode);
+                }
             }
         }
     }
@@ -223,16 +268,20 @@ public class RouteGraph {
                         }
                     }
                 }
-                RouteEdge edge = new RouteEdge(world, path);
-                int size = path.size() - 1;
-                for(int i = 1; i < size; i++) {
-                    this.edgeMap.put(path.get(i), edge);
-                }
-                this.edgeTable.put(path.get(0), path.get(size), edge);
-                this.edgeTable.put(path.get(size), path.get(0), edge);
+                this.register(world, path);
             }
             this.nodeMap.put(buildingID, buildingNode);
         }
         return processedRoad;
+    }
+
+    private void register(StandardWorldModel world, List<EntityID> path) {
+        RouteEdge edge = new RouteEdge(world, path);
+        int size = path.size() - 1;
+        for(int i = 1; i < size; i++) {
+            this.edgeMap.put(path.get(i), edge);
+        }
+        this.edgeTable.put(path.get(0), path.get(size), edge);
+        this.edgeTable.put(path.get(size), path.get(0), edge);
     }
 }
