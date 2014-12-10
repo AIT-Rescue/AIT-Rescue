@@ -8,8 +8,9 @@ import java.util.*;
 public class RouteNode {
 
     private EntityID nodeID;
-
+    //nodeID
     private Set<EntityID> neighbourNode;
+    //neighbourID nodeID
     private Map<EntityID, EntityID> nodeMap;
 
     public RouteNode(EntityID areaID) {

@@ -21,6 +21,34 @@ public class RouteGraph {
         this.analysis(worldProvider.getWorld());
     }
 
+    public RouteNode getNode(EntityID nodeID) {
+        return this.nodeMap.get(nodeID);
+    }
+
+    public boolean containsNode(EntityID nodeID) {
+        return this.nodeMap.containsKey(nodeID);
+    }
+
+    public RouteEdge getEdge(EntityID roadID) {
+        return this.edgeMap.get(roadID);
+    }
+
+    public boolean containsEdge(EntityID roadID) {
+        return this.edgeMap.containsKey(roadID);
+    }
+
+    public RouteEdge getEdge(EntityID start, EntityID end) {
+        return this.edgeTable.get(start, end);
+    }
+
+    public boolean containsEdge(EntityID start, EntityID end) {
+        return this.edgeTable.contains(start, end);
+    }
+
+    public boolean contains(EntityID areaID) {
+        return this.nodeMap.containsKey(areaID) || this.edgeMap.containsKey(areaID);
+    }
+
     private void analysis(StandardWorldModel world) {
         Set<StandardEntity> processedRoad = this.analysisBuilding(world);
         Collection<StandardEntity> roads = world.getEntitiesOfType(StandardEntityURN.ROAD, StandardEntityURN.HYDRANT);
@@ -195,10 +223,6 @@ public class RouteGraph {
                     path.add(roadID);
                     path.addAll(endPath);
                     this.register(world, path);
-                    /*routeNode = this.nodeMap.get(areaID);
-                    RouteNode node = routeNode != null ? routeNode : new RouteNode(areaID);
-                    node.addNode(neighbourID, buildingID);
-                    buildingNode.addNode(id, areaID);*/
                     RouteNode startNode = this.nodeMap.containsKey(start) ? this.nodeMap.get(start) : new RouteNode(start);
                     startNode.addNode(path.get(1), end);
                     this.nodeMap.put(start, startNode);

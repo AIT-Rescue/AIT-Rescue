@@ -42,6 +42,14 @@ public class RouteEdge {
         }
     }
 
+    public EntityID getStartNodeID() {
+        return this.startNodeID;
+    }
+
+    public EntityID getEndNodeID() {
+        return this.endNodeID;
+    }
+
     public double getDistance() {
         return this.endDistance.get(this.startNodeID);
     }
