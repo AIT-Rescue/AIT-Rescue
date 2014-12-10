@@ -108,7 +108,7 @@ public class RouteGraph {
                             neighbourID = areaID;
                             area = (Area)world.getEntity(neighbourList.get(0));
                         }
-                        else if(neighbourListSize >= 3) {
+                        /*else if(neighbourListSize >= 3) {
                             edgeFlag = false;
                             path.add(areaID);
                             routeNode = this.nodeMap.get(areaID);
@@ -126,6 +126,24 @@ public class RouteGraph {
                             node.addNode(neighbourID, roadID);
                             roadNode.addNode(id, areaID);
                             this.nodeMap.put(areaID, node);
+                        }*/
+                        else {
+                            edgeFlag = false;
+                            if (neighbourList.isEmpty()) {
+                                System.out.println("[ERROR] Bad Map (unknown Area)");
+                            }
+                            else {
+                                if(neighbourList.size() == 1) {
+                                    processedRoad.add(area);
+                                }
+                                edgeFlag = false;
+                                path.add(areaID);
+                                routeNode = this.nodeMap.get(areaID);
+                                RouteNode node = routeNode != null ? routeNode : new RouteNode(areaID);
+                                node.addNode(neighbourID, roadID);
+                                roadNode.addNode(id, areaID);
+                                this.nodeMap.put(areaID, node);
+                            }
                         }
                     }
                     this.nodeMap.put(roadID, roadNode);
@@ -172,7 +190,6 @@ public class RouteGraph {
                 while (edgeFlag) {
                     EntityID areaID = area.getID();
                     List<EntityID> neighbourList = area.getNeighbours();
-                    int neighbourListSize = neighbourList.size();
                     path.add(areaID);
                     if(area instanceof Building) {
                         edgeFlag = false;
@@ -187,23 +204,6 @@ public class RouteGraph {
                         processedRoad.add(area);
                         neighbourID = areaID;
                         area = (Area)world.getEntity(neighbourList.get(0));
-                    }
-                    else if(neighbourListSize >= 3) {
-                        edgeFlag = false;
-                        routeNode = this.nodeMap.get(areaID);
-                        RouteNode node = routeNode != null ? routeNode : new RouteNode(areaID);
-                        node.addNode(neighbourID, buildingID);
-                        buildingNode.addNode(id, areaID);
-                        this.nodeMap.put(areaID, node);
-                    }
-                    else if(neighbourListSize == 1) {
-                        edgeFlag = false;
-                        processedRoad.add(area);
-                        routeNode = this.nodeMap.get(areaID);
-                        RouteNode node = routeNode != null ? routeNode : new RouteNode(areaID);
-                        node.addNode(neighbourID, buildingID);
-                        buildingNode.addNode(id, areaID);
-                        this.nodeMap.put(areaID, node);
                     }
                     else {
                         edgeFlag = false;
