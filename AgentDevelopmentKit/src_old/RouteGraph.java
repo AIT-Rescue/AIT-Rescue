@@ -74,3 +74,21 @@ public class RouteGraph {
  */
 
 private Map<EntityID, Map<EntityID, RouteEdge>> edgeMap;
+
+                    /*else if(neighbourListSize >= 3) {
+                        edgeFlag = false;
+                        RouteNode routeNode = this.nodeMap.get(areaID);
+                        RouteNode node = routeNode != null ? routeNode : new RouteNode(areaID);
+                        node.addNode(neighbourID, roadID);
+                        roadNode.addNode(roadNeighbourID, areaID);
+                        this.nodeMap.put(areaID, node);
+                    }
+                    else if(neighbourListSize == 1) {
+                        edgeFlag = false;
+                        processedRoad.add(area);
+                        RouteNode routeNode = this.nodeMap.get(areaID);
+                        RouteNode node = routeNode != null ? routeNode : new RouteNode(areaID);
+                        node.addNode(neighbourID, roadID);
+                        roadNode.addNode(roadNeighbourID, areaID);
+                        this.nodeMap.put(areaID, node);
+                    }*/
