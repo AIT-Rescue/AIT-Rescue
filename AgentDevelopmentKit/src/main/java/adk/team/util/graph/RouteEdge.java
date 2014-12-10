@@ -20,20 +20,17 @@ public class RouteEdge {
 
     private Table<EntityID, EntityID, List<EntityID>> pathMap;
 
-    //public RouteEdge(List<EntityID> path, Map<EntityID, Double> distanceMap) {
     public RouteEdge(StandardWorldModel world, List<EntityID> path) {
         this.areas = path;
         this.startNodeID = path.get(0);
         this.endNodeID = path.get(path.size() - 1);
-        this.roadDistance = getDistanceMap(world, path);
+        this.roadDistance = PositionUtil.getDistanceMap(world, path);
         this.pathMap = HashBasedTable.create();
         this.endDistance = new HashMap<>();
         this.init();
     }
 
     private void init() {
-        this.roadDistance.put(this.startNodeID, 0.0D);
-        this.roadDistance.put(this.endNodeID, 0.0D);
         this.endDistance.put(this.endNodeID, 0.0D);
         double result = 0.0D;
         for(int i = this.areas.size() - 2; i >= 0; i--) {
@@ -43,18 +40,6 @@ public class RouteEdge {
             this.roadDistance.put(areaID, areaDistance);
             result += areaDistance;
         }
-    }
-
-    public Map<EntityID, Double> getDistanceMap(StandardWorldModel world, List<EntityID> path) {
-        Map<EntityID, Double> result = new HashMap<>();
-        int size = path.size() - 2;
-        for(int i = 1; i < size; i++) {
-            EntityID areaID = path.get(i);
-            Area area = (Area)world.getEntity(areaID);
-            double distance = PositionUtil.pointDistance(area.getEdgeTo(path.get(i - 1)), area.getEdgeTo(path.get(i + 1)));
-            result.put(areaID, distance);
-        }
-        return result;
     }
 
     public double getDistance() {

@@ -2,11 +2,13 @@ package adk.team.util.graph;
 
 import rescuecore2.misc.Pair;
 import rescuecore2.misc.geometry.Point2D;
+import rescuecore2.standard.entities.Area;
 import rescuecore2.standard.entities.Edge;
 import rescuecore2.standard.entities.StandardEntity;
 import rescuecore2.standard.entities.StandardWorldModel;
+import rescuecore2.worldmodel.EntityID;
 
-import java.util.Collection;
+import java.util.*;
 
 public class PositionUtil {
 
@@ -109,5 +111,19 @@ public class PositionUtil {
         double dx = from.getX() - to.getX();
         double dy = from.getY() - to.getY();
         return Math.hypot(dx, dy);
+    }
+
+    public static Map<EntityID, Double> getDistanceMap(StandardWorldModel world, List<EntityID> path) {
+        Map<EntityID, Double> result = new HashMap<>();
+        result.put(path.get(0), 0.0D);
+        result.put(path.get(path.size() - 1), 0.0D);
+        int size = path.size() - 1;
+        for(int i = 1; i < size; i++) {
+            EntityID areaID = path.get(i);
+            Area area = (Area)world.getEntity(areaID);
+            double distance = PositionUtil.pointDistance(area.getEdgeTo(path.get(i - 1)), area.getEdgeTo(path.get(i + 1)));
+            result.put(areaID, distance);
+        }
+        return result;
     }
 }

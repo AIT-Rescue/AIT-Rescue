@@ -24,36 +24,53 @@ public class RouteGraph {
         this.nodeMap = new HashMap<>();
         this.edgeMap = new HashMap<>();
         this.edgeTable = HashBasedTable.create();
-    }
-
-    public Map<EntityID, Double> getDistanceMap(StandardWorldModel world, List<EntityID> path) {
-        Map<EntityID, Double> result = new HashMap<>();
-        int size = path.size() - 2;
-        for(int i = 1; i < size; i++) {
-            EntityID areaID = path.get(i);
-            Area area = (Area)world.getEntity(areaID);
-            double distance = PositionUtil.pointDistance(area.getEdgeTo(path.get(i - 1)), area.getEdgeTo(path.get(i + 1)));
-            result.put(areaID, distance);
-        }
-        return result;
+        this.analysis(this.provider.getWorld());
     }
 
     public void analysis(StandardWorldModel world) {
-        Set<EntityID> processed = new HashSet<>();
+        //edge road only
+        Set<StandardEntity> processedRoad = new HashSet<>();
         //Buildings
         for(StandardEntity entity : world.getEntitiesOfType(StandardEntityURN.BUILDING, StandardEntityURN.REFUGE)) {
             Building building = (Building)entity;
             EntityID buildingID = building.getID();
-            if(!processed.contains(buildingID)) {
-                RouteNode node = new RouteNode(buildingID);
-                List<EntityID> path = Lists.newArrayList(buildingID);
-                boolean foundNode = false;
-                while(!foundNode) {
-                    
+            RouteNode routeNode = this.nodeMap.get(buildingID);
+            RouteNode buildingNode = routeNode != null ? routeNode : new RouteNode(buildingID);
+            for(EntityID id : building.getNeighbours()) {
+                if(buildingNode.contains(id)) {
+                    continue;
                 }
-                this.nodeMap.put(buildingID, node);
-                processed.add(buildingID);
+                List<EntityID> path = Lists.newArrayList(buildingID);
+                Area area = (Area)world.getEntity(id);
+                EntityID neighbourID = buildingID;
+                boolean edgeFlag = true;
+                while (edgeFlag) {
+                    EntityID areaID = area.getID();
+                    List<EntityID> neighbours = area.getNeighbours();
+                    if(area instanceof Building) {
+                        edgeFlag = false;
+                        path.add(areaID);
+                        RouteNode node = new RouteNode(areaID);
+                        node.addNode(id, buildingID);
+                        buildingNode.addNode(areaID, id);
+                        this.nodeMap.put(areaID, node);
+                    }
+                    if(neighbours.size() == 2) {
+                        neighbours.remove(neighbourID);
+                        path.add(areaID);
+                        processedRoad.add((StandardEntity)area);
+                        EntityID nextID = neighbours.get(0);
+                        area = (Area)world.getEntity(nextID);
+                        neighbourID = areaID;
+                    }
+                }
+                RouteEdge edge = new RouteEdge(world, path);
+                int size = path.size() - 1;
+                for(int i = 1; i < size; i++) {
+                    this.edgeMap.put(path.get(i), edge);
+                }
             }
+            this.nodeMap.put(buildingID, buildingNode);
         }
     }
 }

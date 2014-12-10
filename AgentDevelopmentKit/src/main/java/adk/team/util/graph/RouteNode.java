@@ -10,14 +10,29 @@ public class RouteNode {
     private EntityID nodeID;
 
     private Set<EntityID> neighbourNode;
+    private Map<EntityID, EntityID> nodeMap;
 
     public RouteNode(EntityID areaID) {
         this.nodeID = areaID;
         this.neighbourNode = new HashSet<>();
+        this.nodeMap = new HashMap<>();
     }
 
     public void addNode(EntityID areaID) {
         this.neighbourNode.add(areaID);
+    }
+
+    public void removeNode(EntityID areaID) {
+        this.neighbourNode.remove(areaID);
+    }
+
+    public void addNode(EntityID neighbourID, EntityID areaID) {
+        this.neighbourNode.add(areaID);
+        this.nodeMap.put(neighbourID, areaID);
+    }
+
+    public boolean contains(EntityID neighbourID) {
+        return this.nodeMap.containsKey(neighbourID);
     }
 
     public Set<EntityID> getNeighbourNode() {
