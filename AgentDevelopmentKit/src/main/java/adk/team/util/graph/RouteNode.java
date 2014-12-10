@@ -1,6 +1,9 @@
 package adk.team.util.graph;
 
 import com.google.common.collect.Lists;
+import rescuecore2.standard.entities.Area;
+import rescuecore2.standard.entities.StandardEntity;
+import rescuecore2.standard.entities.StandardWorldModel;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.*;
@@ -8,15 +11,20 @@ import java.util.*;
 public class RouteNode {
 
     private EntityID nodeID;
+    private int x;
+    private int y;
     //nodeID
     private Set<EntityID> neighbourNode;
     //neighbourID nodeID
     private Map<EntityID, EntityID> nodeMap;
 
-    public RouteNode(EntityID areaID) {
+    public RouteNode(StandardWorldModel world, EntityID areaID) {
         this.nodeID = areaID;
         this.neighbourNode = new HashSet<>();
         this.nodeMap = new HashMap<>();
+        Area area = (Area)world.getEntity(areaID);
+        this.x = area.getX();
+        this.y = area.getY();
     }
 
     /*
@@ -48,5 +56,13 @@ public class RouteNode {
 
     public List<EntityID> getPath() {
         return Lists.newArrayList(this.nodeID);
+    }
+
+    public int getX() {
+        return this.x;
+    }
+
+    public int getY() {
+        return  this.y;
     }
 }

@@ -126,4 +126,10 @@ public class PositionUtil {
         }
         return result;
     }
+
+    public static double getDistance(RouteNode from, RouteNode to) {
+        double dx = from.getX() - to.getX();
+        double dy = from.getY() - to.getY();
+        return Math.hypot(dx, dy);
+    }
 }

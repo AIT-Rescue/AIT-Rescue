@@ -58,18 +58,6 @@ public class RouteEdge {
             return Double.NaN;
         }
         if(this.areas.contains(areaID) && this.areas.contains(target)) {
-            /*if(this.areas.indexOf(areaID) < this.areas.indexOf(target)) {
-                double start = this.endDistance.get(areaID);
-                double end = this.endDistance.get(target);
-                double road = this.roadDistance.get(target);
-                return Math.abs(start - end - road);
-            }
-            else {
-                double start = this.endDistance.get(target);
-                double end = this.endDistance.get(areaID);
-                double road = this.roadDistance.get(areaID);
-                return Math.abs(start - end - road);
-            }*/
             boolean reverse = this.areas.indexOf(areaID) > this.areas.indexOf(target);
             double start = this.endDistance.get(reverse ? target : areaID);
             double end = this.endDistance.get(reverse ? areaID : target);
