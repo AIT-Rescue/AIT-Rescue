@@ -66,13 +66,13 @@ public class RouteGraph {
             EntityID roadID = road.getID();
             List<EntityID> roadNeighbours = road.getNeighbours();
             if(roadNeighbours.isEmpty()) {
-                this.nodeMap.put(roadID, new RouteNode(roadID));
+                this.nodeMap.put(roadID, new RouteNode(world, roadID));
             }
             else if(roadNeighbours.size() == 1) {
                 if(this.nodeMap.containsKey(roadID)) {
                     continue;
                 }
-                RouteNode roadNode = new RouteNode(roadID);
+                RouteNode roadNode = new RouteNode(world, roadID);
                 List<EntityID> path = Lists.newArrayList(roadID);
                 EntityID roadNeighbourID = roadNeighbours.get(0);
                 Area area = (Area)world.getEntity(roadNeighbourID);
@@ -98,7 +98,7 @@ public class RouteGraph {
                                 processedRoad.add(area);
                             }
                             RouteNode routeNode = this.nodeMap.get(areaID);
-                            RouteNode node = routeNode != null ? routeNode : new RouteNode(areaID);
+                            RouteNode node = routeNode != null ? routeNode : new RouteNode(world, areaID);
                             node.addNode(neighbourID, roadID);
                             roadNode.addNode(roadNeighbourID, areaID);
                             this.nodeMap.put(areaID, node);
@@ -110,7 +110,7 @@ public class RouteGraph {
             }
             else if(roadNeighbours.size() >= 3) {
                 RouteNode routeNode = this.nodeMap.get(roadID);
-                RouteNode roadNode = routeNode != null ? routeNode : new RouteNode(roadID);
+                RouteNode roadNode = routeNode != null ? routeNode : new RouteNode(world, roadID);
                 for(EntityID id : roadNeighbours) {
                     if(roadNode.contains(id)) {
                         continue;
@@ -141,7 +141,7 @@ public class RouteGraph {
                                 edgeFlag = false;
                                 path.add(areaID);
                                 routeNode = this.nodeMap.get(areaID);
-                                RouteNode node = routeNode != null ? routeNode : new RouteNode(areaID);
+                                RouteNode node = routeNode != null ? routeNode : new RouteNode(world, areaID);
                                 node.addNode(neighbourID, roadID);
                                 roadNode.addNode(id, areaID);
                                 this.nodeMap.put(areaID, node);
@@ -223,10 +223,10 @@ public class RouteGraph {
                     path.add(roadID);
                     path.addAll(endPath);
                     this.register(world, path);
-                    RouteNode startNode = this.nodeMap.containsKey(start) ? this.nodeMap.get(start) : new RouteNode(start);
+                    RouteNode startNode = this.nodeMap.containsKey(start) ? this.nodeMap.get(start) : new RouteNode(world, start);
                     startNode.addNode(path.get(1), end);
                     this.nodeMap.put(start, startNode);
-                    RouteNode endNode = this.nodeMap.containsKey(end) ? this.nodeMap.get(end) : new RouteNode(end);
+                    RouteNode endNode = this.nodeMap.containsKey(end) ? this.nodeMap.get(end) : new RouteNode(world, end);
                     endNode.addNode(path.get(path.size() - 2), start);
                     this.nodeMap.put(end, endNode);
                 }
@@ -242,7 +242,7 @@ public class RouteGraph {
             Building building = (Building)entity;
             EntityID buildingID = building.getID();
             RouteNode routeNode = this.nodeMap.get(buildingID);
-            RouteNode buildingNode = routeNode != null ? routeNode : new RouteNode(buildingID);
+            RouteNode buildingNode = routeNode != null ? routeNode : new RouteNode(world, buildingID);
             List<EntityID> buildingNeighbours = building.getNeighbours();
             if(buildingNeighbours.isEmpty()) {
                 this.nodeMap.put(buildingID, buildingNode);
@@ -263,7 +263,7 @@ public class RouteGraph {
                     if(area instanceof Building) {
                         edgeFlag = false;
                         routeNode = this.nodeMap.get(areaID);
-                        RouteNode node = routeNode != null ? routeNode : new RouteNode(areaID);
+                        RouteNode node = routeNode != null ? routeNode : new RouteNode(world, areaID);
                         node.addNode(neighbourID, buildingID);
                         buildingNode.addNode(id, areaID);
                         this.nodeMap.put(areaID, node);
@@ -285,7 +285,7 @@ public class RouteGraph {
                             }
                             edgeFlag = false;
                             routeNode = this.nodeMap.get(areaID);
-                            RouteNode node = routeNode != null ? routeNode : new RouteNode(areaID);
+                            RouteNode node = routeNode != null ? routeNode : new RouteNode(world, areaID);
                             node.addNode(neighbourID, buildingID);
                             buildingNode.addNode(id, areaID);
                             this.nodeMap.put(areaID, node);
