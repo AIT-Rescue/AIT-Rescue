@@ -19,13 +19,11 @@ public class RouteNode {
         this.nodeMap = new HashMap<>();
     }
 
+    /*
     public void addNode(EntityID areaID) {
         this.neighbourNode.add(areaID);
     }
-
-    public void removeNode(EntityID areaID) {
-        this.neighbourNode.remove(areaID);
-    }
+    */
 
     public void addNode(EntityID neighbourID, EntityID areaID) {
         this.neighbourNode.add(areaID);
@@ -36,8 +34,12 @@ public class RouteNode {
         return this.nodeMap.containsKey(neighbourID);
     }
 
-    public Set<EntityID> getNeighbourNode() {
+    public Set<EntityID> getNeighbourNodes() {
         return this.neighbourNode;
+    }
+
+    public EntityID getNeighbourNode(EntityID neighborID) {
+        return this.nodeMap.get(neighborID);
     }
 
     public EntityID getNodeID() {

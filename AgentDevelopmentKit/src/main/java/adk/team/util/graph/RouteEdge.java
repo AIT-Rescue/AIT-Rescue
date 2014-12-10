@@ -2,7 +2,6 @@ package adk.team.util.graph;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import rescuecore2.standard.entities.Area;
 import rescuecore2.standard.entities.StandardWorldModel;
 import rescuecore2.worldmodel.EntityID;
 
@@ -54,11 +53,27 @@ public class RouteEdge {
         return this.endDistance.get(this.startNodeID);
     }
 
-    public double getDistance(EntityID nodeID, EntityID target) {
-        if(this.areas.contains(nodeID) && this.areas.contains(target)) {
-            double start = this.endDistance.get(nodeID);
-            double end = this.endDistance.get(target);
-            double road = this.roadDistance.get(target);
+    public double getDistance(EntityID areaID, EntityID target) {
+        if(areaID.getValue() == target.getValue()) {
+            return Double.NaN;
+        }
+        if(this.areas.contains(areaID) && this.areas.contains(target)) {
+            /*if(this.areas.indexOf(areaID) < this.areas.indexOf(target)) {
+                double start = this.endDistance.get(areaID);
+                double end = this.endDistance.get(target);
+                double road = this.roadDistance.get(target);
+                return Math.abs(start - end - road);
+            }
+            else {
+                double start = this.endDistance.get(target);
+                double end = this.endDistance.get(areaID);
+                double road = this.roadDistance.get(areaID);
+                return Math.abs(start - end - road);
+            }*/
+            boolean reverse = this.areas.indexOf(areaID) > this.areas.indexOf(target);
+            double start = this.endDistance.get(reverse ? target : areaID);
+            double end = this.endDistance.get(reverse ? areaID : target);
+            double road = this.roadDistance.get(reverse ? areaID : target);
             return Math.abs(start - end - road);
         }
         return Double.NaN;
