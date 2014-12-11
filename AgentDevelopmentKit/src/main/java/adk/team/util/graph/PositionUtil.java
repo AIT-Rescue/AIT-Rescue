@@ -8,7 +8,10 @@ import rescuecore2.standard.entities.StandardEntity;
 import rescuecore2.standard.entities.StandardWorldModel;
 import rescuecore2.worldmodel.EntityID;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PositionUtil {
 
@@ -127,9 +130,9 @@ public class PositionUtil {
         return result;
     }
 
-    public static double getDistance(RouteNode from, RouteNode to) {
+    /*public static double getDistance(RouteNode from, RouteNode to) {
         double dx = from.getX() - to.getX();
         double dy = from.getY() - to.getY();
         return Math.hypot(dx, dy);
-    }
+    }*/
 }

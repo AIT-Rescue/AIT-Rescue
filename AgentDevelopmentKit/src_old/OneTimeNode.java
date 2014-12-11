@@ -1,7 +1,6 @@
 package adk.team.util.graph;
 
 import com.google.common.collect.Lists;
-import rescuecore2.standard.entities.StandardWorldModel;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.List;
