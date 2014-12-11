@@ -14,48 +14,76 @@ public class RouteGraph {
     private Map<EntityID, RouteEdge> edgeMap;
     private Table<EntityID, EntityID, RouteEdge> edgeTable;
 
-    private Table<EntityID, EntityID, Double> neighbourDistance;
+
+    private int time;
+    private Map<EntityID, RouteEdge> originalEdgeMap;
+    private Set<OneTimeNode> oneTimeNodes;
 
     public RouteGraph(WorldProvider worldProvider) {
         this.nodeMap = new HashMap<>();
         this.edgeMap = new HashMap<>();
         this.edgeTable = HashBasedTable.create();
+        this.time = -1;
+        this.originalEdgeMap = new HashMap<>();
+        this.oneTimeNodes = new HashSet<>();
         this.analysis(worldProvider.getWorld());
     }
 
-    public RouteNode getNode(EntityID nodeID) {
+    public RouteNode getNode(int currentTime, EntityID nodeID) {
+        this.resetGraph(currentTime);
         return this.nodeMap.get(nodeID);
     }
 
-    public boolean containsNode(EntityID nodeID) {
+    public boolean containsNode(int currentTime, EntityID nodeID) {
+        this.resetGraph(currentTime);
         return this.nodeMap.containsKey(nodeID);
     }
 
-    public RouteEdge getEdge(EntityID roadID) {
+    public RouteEdge getEdge(int currentTime, EntityID roadID) {
+        this.resetGraph(currentTime);
         return this.edgeMap.get(roadID);
     }
 
-    public boolean containsEdge(EntityID roadID) {
+    public boolean containsEdge(int currentTime, EntityID roadID) {
+        this.resetGraph(currentTime);
         return this.edgeMap.containsKey(roadID);
     }
 
-    public RouteEdge getEdge(EntityID start, EntityID end) {
+    public RouteEdge getEdge(int currentTime, EntityID start, EntityID end) {
+        this.resetGraph(currentTime);
         return this.edgeTable.get(start, end);
     }
 
-    public boolean containsEdge(EntityID start, EntityID end) {
+    public boolean containsEdge(int currentTime, EntityID start, EntityID end) {
+        this.resetGraph(currentTime);
         return this.edgeTable.contains(start, end);
     }
 
-    public boolean contains(EntityID areaID) {
+    public boolean contains(int currentTime,EntityID areaID) {
+        this.resetGraph(currentTime);
         return this.nodeMap.containsKey(areaID) || this.edgeMap.containsKey(areaID);
     }
 
-    private int time = -1;
-    private Map<EntityID, RouteEdge> originalEdgeMap;
-    private Set<OneTimeNode> oneTimeNodes;
+    public OneTimeNode create(int currentTime, WorldProvider provider, EntityID areaID) {
+        this.resetGraph(currentTime);
+        if(this.nodeMap.containsKey(areaID)) {
+            return null;
+        }
+        RouteEdge routeEdge = this.edgeMap.get(areaID);
+        OneTimeNode node = OneTimeNode.create(areaID, routeEdge);
+        if(node == null) {
+            return null;
+        }
+        for(EntityID id : routeEdge.getPath(routeEdge.getFirstNodeID())) {
+            this.originalEdgeMap.put(id, this.edgeMap.get(id));
+        }
+        this.register(provider.getWorld(), node.getFirstNeighbourPath());
+        this.register(provider.getWorld(), node.getSecondNeighbourPath());
+        this.oneTimeNodes.add(node);
+        return node;
+    }
 
-    public OneTimeNode create(int currentTime, StandardWorldModel world, EntityID areaID) {
+    private void resetGraph(int currentTime) {
         if(this.time != currentTime) {
             this.time = currentTime;
             for(EntityID id: this.originalEdgeMap.keySet()) {
@@ -73,21 +101,6 @@ public class RouteGraph {
             }
             this.oneTimeNodes = new HashSet<>();
         }
-        if(this.nodeMap.containsKey(areaID)) {
-            return null;
-        }
-        RouteEdge routeEdge = this.edgeMap.get(areaID);
-        OneTimeNode node = OneTimeNode.create(areaID, routeEdge);
-        if(node == null) {
-            return null;
-        }
-        for(EntityID id : routeEdge.getPath(routeEdge.getFirstNodeID())) {
-            this.originalEdgeMap.put(id, this.edgeMap.get(id));
-        }
-        this.register(world, node.getFirstNeighbourPath());
-        this.register(world, node.getSecondNeighbourPath());
-        this.oneTimeNodes.add(node);
-        return node;
     }
 
     private void analysis(StandardWorldModel world) {

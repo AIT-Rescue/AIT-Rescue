@@ -1,6 +1,5 @@
 package adk.team.util.provider;
 
-
 import comlib.message.information.*;
 import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.ChangeSet;
@@ -40,14 +39,14 @@ public interface WorldProvider<E extends StandardEntity> {
         return getOwnerID();
     }
 
-    default Building reflectedMessage(BuildingMessage message) {
+    default Building reflectedMessage(MessageBuilding message) {
         Building building = (Building) getWorld().getEntity(message.getBuildingID());
         building.setFieryness(message.getFieryness());
         building.setBrokenness(message.getBrokenness());
         return building;
     }
 
-    default AmbulanceTeam reflectedMessage(AmbulanceTeamMessage message) {
+    default AmbulanceTeam reflectedMessage(MessageAmbulanceTeam message) {
         StandardWorldModel world = getWorld();
         AmbulanceTeam ambulanceteam = (AmbulanceTeam) world.getEntity(message.getHumanID());
         if (ambulanceteam == null) {
@@ -61,7 +60,7 @@ public interface WorldProvider<E extends StandardEntity> {
         return ambulanceteam;
     }
 
-    default Civilian reflectedMessage(CivilianMessage message) {
+    default Civilian reflectedMessage(MessageCivilian message) {
         StandardWorldModel world = getWorld();
         Civilian civilian = (Civilian)world.getEntity(message.getHumanID());
         if (civilian == null) {
@@ -75,7 +74,7 @@ public interface WorldProvider<E extends StandardEntity> {
         return civilian;
     }
 
-    default FireBrigade reflectedMessage(FireBrigadeMessage message) {
+    default FireBrigade reflectedMessage(MessageFireBrigade message) {
         StandardWorldModel world = getWorld();
         FireBrigade firebrigade = (FireBrigade) world.getEntity(message.getHumanID());
         if (firebrigade == null) {
@@ -90,7 +89,7 @@ public interface WorldProvider<E extends StandardEntity> {
         return firebrigade;
     }
 
-    default PoliceForce reflectedMessage(PoliceForceMessage message) {
+    default PoliceForce reflectedMessage(MessagePoliceForce message) {
         StandardWorldModel world = getWorld();
         PoliceForce policeforce = (PoliceForce) world.getEntity(message.getHumanID());
         if (policeforce == null) {
@@ -104,7 +103,7 @@ public interface WorldProvider<E extends StandardEntity> {
         return policeforce;
     }
 
-    default Blockade  reflectedMessage(RoadMessage message) {
+    default Blockade  reflectedMessage(MessageRoad message) {
         StandardWorldModel world = getWorld();
         Blockade blockade = (Blockade) world.getEntity(message.getBlockadeID());
         if (blockade == null) {

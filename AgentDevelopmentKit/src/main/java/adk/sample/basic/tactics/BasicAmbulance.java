@@ -76,7 +76,7 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
         else {
             if ((victim instanceof Civilian) && victim.getBuriedness() == 0) {
                 Civilian civilian = (Civilian)victim;
-                manager.addSendMessage(new CivilianMessage(civilian));
+                manager.addSendMessage(new MessageCivilian(civilian));
                 this.victimSelector.remove(civilian);
                 return new ActionLoad(this, this.target);
             }
@@ -85,17 +85,17 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
             }
             if(victim instanceof AmbulanceTeam) {
                 AmbulanceTeam ambulanceTeam = (AmbulanceTeam)victim;
-                manager.addSendMessage(new AmbulanceTeamMessage(ambulanceTeam));
+                manager.addSendMessage(new MessageAmbulanceTeam(ambulanceTeam));
                 this.victimSelector.remove(ambulanceTeam);
             }
             else if(victim instanceof FireBrigade) {
                 FireBrigade fireBrigade = (FireBrigade)victim;
-                manager.addSendMessage(new FireBrigadeMessage(fireBrigade));
+                manager.addSendMessage(new MessageFireBrigade(fireBrigade));
                 this.victimSelector.remove(fireBrigade);
             }
             else if(victim instanceof PoliceForce) {
                 PoliceForce policeForce = (PoliceForce)victim;
-                manager.addSendMessage(new PoliceForceMessage(policeForce));
+                manager.addSendMessage(new MessagePoliceForce(policeForce));
                 this.victimSelector.remove(policeForce);
             }
             this.target = this.victimSelector.getTarget(currentTime);
@@ -115,7 +115,7 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
             else if(entity instanceof Building) {
                 Building b = (Building)entity;
                 if(b.isOnFire()) {
-                    manager.addSendMessage(new BuildingMessage(b));
+                    manager.addSendMessage(new MessageBuilding(b));
                 }
             }
             /*

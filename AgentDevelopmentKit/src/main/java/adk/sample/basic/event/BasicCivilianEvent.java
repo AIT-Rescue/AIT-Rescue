@@ -2,12 +2,11 @@ package adk.sample.basic.event;
 
 import adk.team.util.provider.VictimSelectorProvider;
 import adk.team.util.provider.WorldProvider;
-import comlib.event.information.CivilianMessageEvent;
-import comlib.message.information.CivilianMessage;
+import comlib.event.information.EventMessageCivilian;
+import comlib.message.information.MessageCivilian;
 import rescuecore2.standard.entities.Civilian;
-import rescuecore2.standard.entities.StandardWorldModel;
 
-public class BasicCivilianEvent implements CivilianMessageEvent{
+public class BasicCivilianEvent implements EventMessageCivilian{
 
     private WorldProvider wp;
     private VictimSelectorProvider vsp;
@@ -18,13 +17,13 @@ public class BasicCivilianEvent implements CivilianMessageEvent{
     }
 
     @Override
-    public void receivedRadio(CivilianMessage message) {
+    public void receivedRadio(MessageCivilian message) {
         Civilian civilian = this.wp.reflectedMessage(message);
         this.vsp.getVictimSelector().add(civilian);
     }
 
     @Override
-    public void receivedVoice(CivilianMessage message) {
+    public void receivedVoice(MessageCivilian message) {
         this.receivedRadio(message);
     }
 }

@@ -42,16 +42,6 @@ public class OneTimeNode {
         return this.secondNeighbour;
     }
 
-    /*private void register(StandardWorldModel world, List<EntityID> path) {
-        RouteEdge edge = new RouteEdge(world, path);
-        int size = path.size() - 1;
-        for(int i = 1; i < size; i++) {
-            this.edgeMap.put(path.get(i), edge);
-        }
-        this.edgeTable.put(path.get(0), path.get(size), edge);
-        this.edgeTable.put(path.get(size), path.get(0), edge);
-    }*/
-
     public List<EntityID> getFirstNeighbourPath() {
         return this.firstNeighbourPath;
     }

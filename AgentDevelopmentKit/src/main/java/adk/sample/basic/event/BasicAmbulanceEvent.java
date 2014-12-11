@@ -2,12 +2,11 @@ package adk.sample.basic.event;
 
 import adk.team.util.provider.VictimSelectorProvider;
 import adk.team.util.provider.WorldProvider;
-import comlib.event.information.AmbulanceTeamMessageEvent;
-import comlib.message.information.AmbulanceTeamMessage;
+import comlib.event.information.EventMessageAmbulanceTeam;
+import comlib.message.information.MessageAmbulanceTeam;
 import rescuecore2.standard.entities.AmbulanceTeam;
-import rescuecore2.standard.entities.StandardWorldModel;
 
-public class BasicAmbulanceEvent implements AmbulanceTeamMessageEvent {
+public class BasicAmbulanceEvent implements EventMessageAmbulanceTeam {
 
     private WorldProvider wp;
     private VictimSelectorProvider vsp;
@@ -18,13 +17,13 @@ public class BasicAmbulanceEvent implements AmbulanceTeamMessageEvent {
     }
 
     @Override
-    public void receivedRadio(AmbulanceTeamMessage message) {
+    public void receivedRadio(MessageAmbulanceTeam message) {
         AmbulanceTeam ambulanceTeam = this.wp.reflectedMessage(message);
         this.vsp.getVictimSelector().add(ambulanceTeam);
     }
 
     @Override
-    public void receivedVoice(AmbulanceTeamMessage message) {
+    public void receivedVoice(MessageAmbulanceTeam message) {
         this.receivedRadio(message);
     }
 

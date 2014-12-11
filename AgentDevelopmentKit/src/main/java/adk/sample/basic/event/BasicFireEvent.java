@@ -2,12 +2,11 @@ package adk.sample.basic.event;
 
 import adk.team.util.provider.VictimSelectorProvider;
 import adk.team.util.provider.WorldProvider;
-import comlib.event.information.FireBrigadeMessageEvent;
-import comlib.message.information.FireBrigadeMessage;
+import comlib.event.information.EventMessageFireBrigade;
+import comlib.message.information.MessageFireBrigade;
 import rescuecore2.standard.entities.FireBrigade;
-import rescuecore2.standard.entities.StandardWorldModel;
 
-public class BasicFireEvent implements FireBrigadeMessageEvent{
+public class BasicFireEvent implements EventMessageFireBrigade{
 
     private WorldProvider wp;
     private VictimSelectorProvider vsp;
@@ -18,13 +17,13 @@ public class BasicFireEvent implements FireBrigadeMessageEvent{
     }
 
     @Override
-    public void receivedRadio(FireBrigadeMessage message) {
+    public void receivedRadio(MessageFireBrigade message) {
         FireBrigade fireBrigade = this.wp.reflectedMessage(message);
         this.vsp.getVictimSelector().add(fireBrigade);
     }
 
     @Override
-    public void receivedVoice(FireBrigadeMessage message) {
+    public void receivedVoice(MessageFireBrigade message) {
         this.receivedRadio(message);
     }
 }

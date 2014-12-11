@@ -11,8 +11,8 @@ import adk.team.util.RouteSearcher;
 import adk.team.util.provider.BuildingSelectorProvider;
 import adk.team.util.provider.RouteSearcherProvider;
 import comlib.manager.MessageManager;
-import comlib.message.information.CivilianMessage;
-import comlib.message.information.FireBrigadeMessage;
+import comlib.message.information.MessageCivilian;
+import comlib.message.information.MessageFireBrigade;
 import rescuecore2.config.Config;
 import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.ChangeSet;
@@ -50,7 +50,7 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
     public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
         this.organizeUpdateInfo(updateWorldData, manager);
         if(this.me().getBuriedness() > 0) {
-            manager.addSendMessage(new FireBrigadeMessage(this.me()));
+            manager.addSendMessage(new MessageFireBrigade(this.me()));
             this.target = this.buildingSelector.getTarget(currentTime);
             if(this.target != null) {
                 Building building = (Building) this.getWorld().getEntity(this.target);
@@ -95,7 +95,7 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
             else if(entity instanceof Civilian) {
                 Civilian civilian = (Civilian)entity;
                 if(civilian.getBuriedness() > 0) {
-                    manager.addSendMessage(new CivilianMessage(civilian));
+                    manager.addSendMessage(new MessageCivilian(civilian));
                 }
             }
             /*

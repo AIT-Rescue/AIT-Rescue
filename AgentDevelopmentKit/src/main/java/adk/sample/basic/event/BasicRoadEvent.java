@@ -2,12 +2,11 @@ package adk.sample.basic.event;
 
 import adk.team.util.provider.DebrisRemovalSelectorProvider;
 import adk.team.util.provider.WorldProvider;
-import comlib.event.information.RoadMessageEvent;
-import comlib.message.information.RoadMessage;
+import comlib.event.information.EventMessageRoad;
+import comlib.message.information.MessageRoad;
 import rescuecore2.standard.entities.Blockade;
-import rescuecore2.standard.entities.StandardWorldModel;
 
-public class BasicRoadEvent implements RoadMessageEvent {
+public class BasicRoadEvent implements EventMessageRoad {
 
     private WorldProvider wp;
     private DebrisRemovalSelectorProvider drsp;
@@ -18,7 +17,7 @@ public class BasicRoadEvent implements RoadMessageEvent {
     }
 
     @Override
-    public void receivedRadio(RoadMessage message) {
+    public void receivedRadio(MessageRoad message) {
         if(message.getPassable()) {
             this.drsp.getDebrisRemovalSelector().remove(message.getRoadID());
         }
@@ -29,7 +28,7 @@ public class BasicRoadEvent implements RoadMessageEvent {
     }
 
     @Override
-    public void receivedVoice(RoadMessage message) {
+    public void receivedVoice(MessageRoad message) {
         this.receivedRadio(message);
     }
 }

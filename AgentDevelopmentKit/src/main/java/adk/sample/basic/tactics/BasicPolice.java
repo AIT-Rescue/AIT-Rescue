@@ -13,9 +13,9 @@ import adk.team.util.provider.DebrisRemovalSelectorProvider;
 import adk.team.util.provider.RouteSearcherProvider;
 import com.google.common.collect.Lists;
 import comlib.manager.MessageManager;
-import comlib.message.information.BuildingMessage;
-import comlib.message.information.CivilianMessage;
-import comlib.message.information.PoliceForceMessage;
+import comlib.message.information.MessageBuilding;
+import comlib.message.information.MessageCivilian;
+import comlib.message.information.MessagePoliceForce;
 import rescuecore2.config.Config;
 import rescuecore2.misc.geometry.Point2D;
 import rescuecore2.misc.geometry.Vector2D;
@@ -71,7 +71,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
                 StandardEntityURN.ROAD,
                 StandardEntityURN.HYDRANT
         )) {
-            if(!routeGraph.contains(entity.getID())) {
+            if(!routeGraph.contains(-1, entity.getID())) {
                 return false;
             }
         }
@@ -105,7 +105,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         if(this.me().getBuriedness() > 0) {
             if(!this.beforeMove) {
                 this.beforeMove = true;
-                manager.addSendMessage(new PoliceForceMessage(this.me()));
+                manager.addSendMessage(new MessagePoliceForce(this.me()));
             }
             return new ActionRest(this);
         }
@@ -184,13 +184,13 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
             else if(entity instanceof Civilian) {
                 Civilian civilian = (Civilian)entity;
                 if(civilian.getBuriedness() > 0) {
-                    manager.addSendMessage(new CivilianMessage(civilian));
+                    manager.addSendMessage(new MessageCivilian(civilian));
                 }
             }
             else if(entity instanceof Building) {
                 Building b = (Building)entity;
                 if(b.isOnFire()) {
-                    manager.addSendMessage(new BuildingMessage(b));
+                    manager.addSendMessage(new MessageBuilding(b));
                 }
             }
         }
