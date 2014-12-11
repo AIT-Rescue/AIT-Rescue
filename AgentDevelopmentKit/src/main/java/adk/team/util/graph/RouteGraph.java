@@ -51,6 +51,45 @@ public class RouteGraph {
         return this.nodeMap.containsKey(areaID) || this.edgeMap.containsKey(areaID);
     }
 
+    private int time = -1;
+    private Map<EntityID, RouteEdge> originalEdgeMap;
+    private Set<OneTimeNode> oneTimeNodes;
+
+    public OneTimeNode create(int currentTime, StandardWorldModel world, EntityID areaID) {
+        if(this.time != currentTime) {
+            this.time = currentTime;
+            for(EntityID id: this.originalEdgeMap.keySet()) {
+                this.edgeMap.put(id, this.originalEdgeMap.get(id));
+            }
+            this.originalEdgeMap = new HashMap<>();
+            for(OneTimeNode node : this.oneTimeNodes) {
+                EntityID nodeID = node.getNodeID();
+                EntityID firstNeighbour = node.getFirstNeighbour();
+                EntityID secondNeighbour = node.getSecondNeighbour();
+                this.edgeTable.remove(nodeID, firstNeighbour);
+                this.edgeTable.remove(firstNeighbour, nodeID);
+                this.edgeTable.remove(nodeID, secondNeighbour);
+                this.edgeTable.remove(secondNeighbour, nodeID);
+            }
+            this.oneTimeNodes = new HashSet<>();
+        }
+        if(this.nodeMap.containsKey(areaID)) {
+            return null;
+        }
+        RouteEdge routeEdge = this.edgeMap.get(areaID);
+        OneTimeNode node = OneTimeNode.create(areaID, routeEdge);
+        if(node == null) {
+            return null;
+        }
+        for(EntityID id : routeEdge.getPath(routeEdge.getFirstNodeID())) {
+            this.originalEdgeMap.put(id, this.edgeMap.get(id));
+        }
+        this.register(world, node.getFirstNeighbourPath());
+        this.register(world, node.getSecondNeighbourPath());
+        this.oneTimeNodes.add(node);
+        return node;
+    }
+
     private void analysis(StandardWorldModel world) {
         Set<StandardEntity> processedRoad = this.analysisBuilding(world);
         Collection<StandardEntity> roads = world.getEntitiesOfType(StandardEntityURN.ROAD, StandardEntityURN.HYDRANT);
