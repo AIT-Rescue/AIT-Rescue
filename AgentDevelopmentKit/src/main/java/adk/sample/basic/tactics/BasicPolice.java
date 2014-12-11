@@ -69,7 +69,10 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
                 StandardEntityURN.POLICE_OFFICE,
                 StandardEntityURN.GAS_STATION,
                 StandardEntityURN.ROAD,
-                StandardEntityURN.HYDRANT
+                StandardEntityURN.HYDRANT,
+                StandardEntityURN.CIVILIAN,
+                StandardEntityURN.POLICE_FORCE
+
         )) {
             if(!routeGraph.contains(-1, entity.getID())) {
                 return false;
