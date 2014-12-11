@@ -14,6 +14,8 @@ public class RouteGraph {
     private Map<EntityID, RouteEdge> edgeMap;
     private Table<EntityID, EntityID, RouteEdge> edgeTable;
 
+    private Table<EntityID, EntityID, Double> neighbourDistance;
+
     public RouteGraph(WorldProvider worldProvider) {
         this.nodeMap = new HashMap<>();
         this.edgeMap = new HashMap<>();

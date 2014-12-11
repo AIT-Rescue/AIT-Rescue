@@ -116,8 +116,8 @@ public class PositionUtil {
     public static Map<EntityID, Double> getDistanceMap(StandardWorldModel world, List<EntityID> path) {
         Map<EntityID, Double> result = new HashMap<>();
         result.put(path.get(0), 0.0D);
-        result.put(path.get(path.size() - 1), 0.0D);
         int size = path.size() - 1;
+        result.put(path.get(size), 0.0D);
         for(int i = 1; i < size; i++) {
             EntityID areaID = path.get(i);
             Area area = (Area)world.getEntity(areaID);

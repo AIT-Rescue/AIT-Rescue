@@ -2,52 +2,47 @@ package adk.team.util.graph;
 
 import com.google.common.collect.Lists;
 import rescuecore2.standard.entities.Area;
-import rescuecore2.standard.entities.StandardEntity;
 import rescuecore2.standard.entities.StandardWorldModel;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.*;
 
 public class RouteNode {
-
+    //nodeID (area.getID())
     private EntityID nodeID;
+    //nodeX (area.getX())
     private int x;
+    //nodeY (area.getY())
     private int y;
-    //nodeID
-    private Set<EntityID> neighbourNode;
-    //neighbourID nodeID
-    private Map<EntityID, EntityID> nodeMap;
+    //neighbour nodeID <nodeID>
+    private Set<EntityID> neighbours;
+    //neighbour nodeID <neighbourAreaID nodeID>
+    private Map<EntityID, EntityID> neighbourMap;
 
     public RouteNode(StandardWorldModel world, EntityID areaID) {
         this.nodeID = areaID;
-        this.neighbourNode = new HashSet<>();
-        this.nodeMap = new HashMap<>();
+        this.neighbours = new HashSet<>();
+        this.neighbourMap = new HashMap<>();
         Area area = (Area)world.getEntity(areaID);
         this.x = area.getX();
         this.y = area.getY();
     }
 
-    /*
-    public void addNode(EntityID areaID) {
-        this.neighbourNode.add(areaID);
-    }
-    */
-
-    public void addNode(EntityID neighbourID, EntityID areaID) {
-        this.neighbourNode.add(areaID);
-        this.nodeMap.put(neighbourID, areaID);
+    public void addNode(EntityID neighbourAreaID, EntityID neighbourNodeID) {
+        this.neighbours.add(neighbourNodeID);
+        this.neighbourMap.put(neighbourAreaID, neighbourNodeID);
     }
 
     public boolean contains(EntityID neighbourID) {
-        return this.nodeMap.containsKey(neighbourID);
+        return this.neighbourMap.containsKey(neighbourID);
     }
 
-    public Set<EntityID> getNeighbourNodes() {
-        return this.neighbourNode;
+    public Set<EntityID> getNeighbours() {
+        return this.neighbours;
     }
 
     public EntityID getNeighbourNode(EntityID neighborID) {
-        return this.nodeMap.get(neighborID);
+        return this.neighbourMap.get(neighborID);
     }
 
     public EntityID getNodeID() {

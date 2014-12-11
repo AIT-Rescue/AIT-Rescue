@@ -8,36 +8,35 @@ import rescuecore2.worldmodel.EntityID;
 import java.util.*;
 
 public class RouteEdge {
-
-    private EntityID startNodeID;
-    private EntityID endNodeID;
-    //start > road > ... > road > end
+    //path <areaID> (start -> road -> ... -> road -> end)
     private List<EntityID> areas;
-    private Map<EntityID, Double> endDistance;
-    //道路自体の距離 > 隣接するのは2つのみだから
+    //path cache <startID, targetID, cache>
+    private Table<EntityID, EntityID, List<EntityID>> pathTable;
+    //node (areas.get(0))
+    private EntityID startNodeID;
+    //node (areas.get(areas.size() - 1))
+    private EntityID endNodeID;
+    //distance <areaID, distance>
+    private Map<EntityID, Double> distanceToTheEndNode;
     private Map<EntityID, Double> roadDistance;
-
-    private Table<EntityID, EntityID, List<EntityID>> pathMap;
 
     public RouteEdge(StandardWorldModel world, List<EntityID> path) {
         this.areas = path;
         this.startNodeID = path.get(0);
         this.endNodeID = path.get(path.size() - 1);
         this.roadDistance = PositionUtil.getDistanceMap(world, path);
-        this.pathMap = HashBasedTable.create();
-        this.endDistance = new HashMap<>();
+        this.pathTable = HashBasedTable.create();
+        this.distanceToTheEndNode = new HashMap<>();
         this.init();
     }
 
     private void init() {
-        this.endDistance.put(this.endNodeID, 0.0D);
+        this.distanceToTheEndNode.put(this.endNodeID, 0.0D);
         double result = 0.0D;
         for(int i = this.areas.size() - 2; i >= 0; i--) {
             EntityID areaID = this.areas.get(i);
-            this.endDistance.put(areaID, result);
-            double areaDistance = Math.abs(this.roadDistance.get(areaID));
-            this.roadDistance.put(areaID, areaDistance);
-            result += areaDistance;
+            this.distanceToTheEndNode.put(areaID, result);
+            result += this.roadDistance.get(areaID);
         }
     }
 
@@ -50,7 +49,7 @@ public class RouteEdge {
     }
 
     public double getDistance() {
-        return this.endDistance.get(this.startNodeID);
+        return this.distanceToTheEndNode.get(this.startNodeID);
     }
 
     public double getDistance(EntityID areaID, EntityID target) {
@@ -59,8 +58,8 @@ public class RouteEdge {
         }
         if(this.areas.contains(areaID) && this.areas.contains(target)) {
             boolean reverse = this.areas.indexOf(areaID) > this.areas.indexOf(target);
-            double start = this.endDistance.get(reverse ? target : areaID);
-            double end = this.endDistance.get(reverse ? areaID : target);
+            double start = this.distanceToTheEndNode.get(reverse ? target : areaID);
+            double end = this.distanceToTheEndNode.get(reverse ? areaID : target);
             double road = this.roadDistance.get(reverse ? areaID : target);
             return Math.abs(start - end - road);
         }
@@ -69,37 +68,37 @@ public class RouteEdge {
 
     public List<EntityID> getPath(EntityID nodeID) {
         if(this.startNodeID.getValue() == nodeID.getValue()) {
-            if (pathMap.contains(this.startNodeID, this.endNodeID)) {
-                return this.pathMap.get(this.startNodeID, this.endNodeID);
+            if (pathTable.contains(this.startNodeID, this.endNodeID)) {
+                return this.pathTable.get(this.startNodeID, this.endNodeID);
             }
             List<EntityID> result = new ArrayList<>(this.areas);
             result.remove(this.startNodeID);
             result.remove(this.endNodeID);
             List<EntityID> reverse = new ArrayList<>(result);
             Collections.reverse(reverse);
-            this.pathMap.put(this.startNodeID, this.endNodeID, result);
-            this.pathMap.put(this.endNodeID, this.startNodeID, reverse);
+            this.pathTable.put(this.startNodeID, this.endNodeID, result);
+            this.pathTable.put(this.endNodeID, this.startNodeID, reverse);
             return result;
         }
         if(this.endNodeID.getValue() == nodeID.getValue()) {
-            if (pathMap.contains(this.endNodeID, this.startNodeID)) {
-                return this.pathMap.get(this.endNodeID, this.startNodeID);
+            if (pathTable.contains(this.endNodeID, this.startNodeID)) {
+                return this.pathTable.get(this.endNodeID, this.startNodeID);
             }
             List<EntityID> reverse = new ArrayList<>(this.areas);
             reverse.remove(this.startNodeID);
             reverse.remove(this.endNodeID);
             List<EntityID> result = new ArrayList<>(reverse);
             Collections.reverse(result);
-            this.pathMap.put(this.startNodeID, this.endNodeID, reverse);
-            this.pathMap.put(this.endNodeID, this.startNodeID, result);
+            this.pathTable.put(this.startNodeID, this.endNodeID, reverse);
+            this.pathTable.put(this.endNodeID, this.startNodeID, result);
             return result;
         }
         return null;
     }
 
     public List<EntityID> getPath(EntityID nodeID, EntityID target) {
-        if(pathMap.contains(nodeID, target)) {
-            return this.pathMap.get(nodeID, target);
+        if(pathTable.contains(nodeID, target)) {
+            return this.pathTable.get(nodeID, target);
         }
         if(this.areas.contains(nodeID) && this.areas.contains(target)) {
             List<EntityID> path = new ArrayList<>();
@@ -119,10 +118,10 @@ public class RouteEdge {
                     path.add(this.areas.get(i));
                 }
             }
-            this.pathMap.put(nodeID, target, path);
+            this.pathTable.put(nodeID, target, path);
             List<EntityID> reversePath = new ArrayList<>(path);
             Collections.reverse(reversePath);
-            this.pathMap.put(target, nodeID, reversePath);
+            this.pathTable.put(target, nodeID, reversePath);
             return path;
         }
         return null;
