@@ -2,8 +2,8 @@ package comlib.provider.information;
 
 import comlib.provider.HumanMessageProvider;
 
-import comlib.event.information.CivilianMessageEvent;
-import comlib.message.information.CivilianMessage;
+import comlib.event.information.MessageCivilianEvent;
+import comlib.message.information.MessageCivilian;
 import comlib.manager.RadioConfig;
 import comlib.manager.VoiceConfig;
 import comlib.util.BitOutputStream;
@@ -11,27 +11,27 @@ import comlib.util.BitStreamReader;
 import rescuecore2.worldmodel.EntityID;
 
 
-public class CivilianMessageProvider extends HumanMessageProvider<CivilianMessage, CivilianMessageEvent>
+public class ProviderMessageCivilian extends HumanMessageProvider<MessageCivilian, MessageCivilianEvent>
 {
-	public CivilianMessageProvider(int id)
+	public ProviderMessageCivilian(int id)
 	{
 		super(id);
 	}
 
-	protected void writeMessage(RadioConfig config, BitOutputStream bos, CivilianMessage msg)
+	protected void writeMessage(RadioConfig config, BitOutputStream bos, MessageCivilian msg)
 	{
 		super.writeMessage(config, bos, msg);
 		bos.writeBits(msg.getHumanID().getValue(), config.getSizeOfCivilianID());
 	}
 
-	protected void writeMessage(VoiceConfig config, StringBuilder sb, CivilianMessage msg)
+	protected void writeMessage(VoiceConfig config, StringBuilder sb, MessageCivilian msg)
 	{
 		//config.appendData(sb, String.valueOf(msg.getValue()));
 	}
 
-	protected CivilianMessage createMessage(RadioConfig config, int time, BitStreamReader bsr)
+	protected MessageCivilian createMessage(RadioConfig config, int time, BitStreamReader bsr)
 	{
-		return new CivilianMessage(time, -1,
+		return new MessageCivilian(time, -1,
 				bsr.getBits(config.getSizeOfHumanHP()),
 				bsr.getBits(config.getSizeOfHumanBuriedness()),
 				bsr.getBits(config.getSizeOfHumanDamage()),
@@ -40,10 +40,10 @@ public class CivilianMessageProvider extends HumanMessageProvider<CivilianMessag
 				);
 	}
 
-	protected CivilianMessage createMessage(VoiceConfig config, int time, int ttl, String[] data, int next)
+	protected MessageCivilian createMessage(VoiceConfig config, int time, int ttl, String[] data, int next)
 	{
 		return null;
-		// return new CivilianMessage(
+		// return new MessageCivilian(
 		// 		time, ttl,
 		// 		Integer.parseInt(data[next])
 		// 		);

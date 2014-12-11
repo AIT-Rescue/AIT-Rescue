@@ -7,14 +7,14 @@ import rescuecore2.standard.entities.Building;
 import rescuecore2.worldmodel.EntityID;
 
 
-public class BuildingMessage extends MapMessage
+public class MessageBuilding extends MapMessage
 {
 	protected int rawBuildingID;
 	protected EntityID buildingID;
 	protected int buildingBrokenness;
 	protected int buildingFieryness;
 
-	public BuildingMessage(Building building)
+	public MessageBuilding(Building building)
 	{
 		super(MessageID.buildingMessage);
 		this.buildingID = building.getID();
@@ -22,7 +22,7 @@ public class BuildingMessage extends MapMessage
 		this.buildingFieryness  = building.getFieryness();
 	}
 
-	public BuildingMessage(int time, int ttl, int id, int brokenness, int fieryness)
+	public MessageBuilding(int time, int ttl, int id, int brokenness, int fieryness)
 	{
 		super(MessageID.buildingMessage, time, ttl);
 		this.rawBuildingID = id;

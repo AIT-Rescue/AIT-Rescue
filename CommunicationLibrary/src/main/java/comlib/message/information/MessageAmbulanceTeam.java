@@ -6,14 +6,14 @@ import rescuecore2.standard.entities.AmbulanceTeam;
 import rescuecore2.standard.entities.Human;
 
 
-public class AmbulanceTeamMessage extends HumanMessage
+public class MessageAmbulanceTeam extends HumanMessage
 {
-	public AmbulanceTeamMessage(AmbulanceTeam ambulanceTeam)
+	public MessageAmbulanceTeam(AmbulanceTeam ambulanceTeam)
 	{
 		super(MessageID.ambulanceTeamMessage, (Human)ambulanceTeam);
 	}
 
-	public AmbulanceTeamMessage(int time, int ttl, int hp, int buriedness, int damage, int position, int id)
+	public MessageAmbulanceTeam(int time, int ttl, int hp, int buriedness, int damage, int position, int id)
 	{
 		super(MessageID.ambulanceTeamMessage, time, ttl, hp, buriedness, damage, position, id);
 	}

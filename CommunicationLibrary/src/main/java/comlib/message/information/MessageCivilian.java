@@ -7,14 +7,14 @@ import rescuecore2.standard.entities.Civilian;
 import rescuecore2.standard.entities.Human;
 
 
-public class CivilianMessage extends HumanMessage
+public class MessageCivilian extends HumanMessage
 {
-	public CivilianMessage(Civilian civilian)
+	public MessageCivilian(Civilian civilian)
 	{
 		super(MessageID.civilianMessage, (Human)civilian);
 	}
 
-	public CivilianMessage(int time, int ttl, int hp, int buriedness, int damage, int position, int id)
+	public MessageCivilian(int time, int ttl, int hp, int buriedness, int damage, int position, int id)
 	{
 		super(MessageID.civilianMessage, time, ttl, hp, buriedness, damage, position, id);
 	}

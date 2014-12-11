@@ -28,7 +28,7 @@ public abstract class InformationMessageProvider<M extends CommunicationMessage,
 	protected M createMessage(RadioConfig config, int time, BitStreamReader bsr)
 	{
 		return null;
-		// return new CivilianMessage(time, -1,
+		// return new MessageCivilian(time, -1,
 		// 		bsr.getBits(config.getSizeOfCivilianValue())
 		// 		);
 	}
@@ -36,7 +36,7 @@ public abstract class InformationMessageProvider<M extends CommunicationMessage,
 	protected M createMessage(VoiceConfig config, int time, int ttl, String[] data, int next)
 	{
 		return null;
-		// return new CivilianMessage(
+		// return new MessageCivilian(
 		// 		time, ttl,
 		// 		Integer.parseInt(data[next])
 		// 		);

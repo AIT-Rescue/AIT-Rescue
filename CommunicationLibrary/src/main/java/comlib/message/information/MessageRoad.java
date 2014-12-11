@@ -6,7 +6,7 @@ import rescuecore2.standard.entities.Road;
 import rescuecore2.standard.entities.Blockade;
 import rescuecore2.worldmodel.EntityID;
 
-public class RoadMessage extends MapMessage
+public class MessageRoad extends MapMessage
 {
 	protected int rawRoadID;
 	protected int rawBlockadeID;
@@ -15,7 +15,7 @@ public class RoadMessage extends MapMessage
 	protected int blockadeRepairCost;
 	protected boolean roadPassable;
 
-	public RoadMessage(Road road, Blockade blockade, boolean isPassable)
+	public MessageRoad(Road road, Blockade blockade, boolean isPassable)
 	{
 		super(MessageID.roadMessage);
 		this.roadID = road.getID();
@@ -24,7 +24,7 @@ public class RoadMessage extends MapMessage
 		this.roadPassable = isPassable;
 	}
 
-	public RoadMessage(int time, int ttl, int id, int blockadeID, int repairCost, boolean isPassable)
+	public MessageRoad(int time, int ttl, int id, int blockadeID, int repairCost, boolean isPassable)
 	{
 		super(MessageID.roadMessage, time, ttl);
 		this.rawRoadID = id;
