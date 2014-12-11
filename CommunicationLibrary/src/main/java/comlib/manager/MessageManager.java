@@ -1,6 +1,6 @@
 package comlib.manager;
 
-import comlib.provider.DummyMessageProvider;
+import comlib.provider.ProviderMessageDummy;
 import comlib.provider.MessageProvider;
 import comlib.event.MessageEvent;
 import comlib.message.CommunicationMessage;
@@ -214,7 +214,7 @@ public class MessageManager
 	private void initLoadProvider()
 	{
 		// TODO: Load provider
-		this.registerStandardProvider(new DummyMessageProvider(MessageID.dummyMessage));
+		this.registerStandardProvider(new ProviderMessageDummy(MessageID.dummyMessage));
 		this.registerStandardProvider(new ProviderMessageCivilian(MessageID.civilianMessage));
 		this.registerStandardProvider(new ProviderMessageFireBrigade(MessageID.fireBrigadeMessage));
 		this.registerStandardProvider(new ProviderMessagePoliceForce(MessageID.policeForceMessage));

@@ -1,17 +1,17 @@
 package comlib.message;
 
 
-public class DummyMessage extends CommunicationMessage
+public class MessageDummy extends CommunicationMessage
 {
 	private int dummyTest;
 
-	public DummyMessage(int test)
+	public MessageDummy(int test)
 	{
 		super(MessageID.dummyMessage);
 		dummyTest = test;
 	}
 
-	public DummyMessage(int time, int ttl, int test)
+	public MessageDummy(int time, int ttl, int test)
 	{
 		super(MessageID.dummyMessage, time, ttl);
 		dummyTest = test;
