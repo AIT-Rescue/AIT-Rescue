@@ -19,10 +19,13 @@ public class RouteNode {
     //neighbour nodeID <neighbourAreaID nodeID>
     private Map<EntityID, EntityID> neighbourMap;
 
+    private boolean passable;
+
     public RouteNode(StandardWorldModel world, EntityID areaID) {
         this.nodeID = areaID;
         this.neighbours = new HashSet<>();
         this.neighbourMap = new HashMap<>();
+        this.passable = true;
         Area area = (Area)world.getEntity(areaID);
         this.x = area.getX();
         this.y = area.getY();
@@ -63,5 +66,13 @@ public class RouteNode {
 
     public int getY() {
         return  this.y;
+    }
+
+    public boolean passable() {
+        return this.passable;
+    }
+
+    public void setPassable(boolean flag) {
+        this.passable = flag;
     }
 }

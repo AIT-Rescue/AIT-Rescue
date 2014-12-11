@@ -20,6 +20,8 @@ public class RouteEdge {
     private Map<EntityID, Double> distanceToTheEndNode;
     private Map<EntityID, Double> roadDistance;
 
+    private Set<EntityID> impassableAreas;
+
     public RouteEdge(StandardWorldModel world, List<EntityID> path) {
         this.areas = path;
         this.firstNodeID = path.get(0);
@@ -27,6 +29,7 @@ public class RouteEdge {
         this.roadDistance = PositionUtil.getDistanceMap(world, path);
         this.pathTable = HashBasedTable.create();
         this.distanceToTheEndNode = new HashMap<>();
+        this.impassableAreas = new HashSet<>();
         this.initDistance();
     }
 
@@ -118,7 +121,7 @@ public class RouteEdge {
         if(this.contains(nodeID) && this.contains(target)) {
             List<EntityID> path = new ArrayList<>();
             int start = this.isFirstNode(nodeID) ? 1 : this.isSecondNode(nodeID) ? this.areas.size() - 2 : this.areas.indexOf(nodeID);
-            int end = this.isSecondNode(target) ? this.areas.size() - 2 : this.isFirstNode(target) ? 1 : this.areas.indexOf(target);
+            int end = this.isSecondNode(target) ? this.areas.size() - 2 : this.areas.indexOf(target);
             if(start < end) {
                 for(int i = start; i <= end; i++) {
                     path.add(this.areas.get(i));
@@ -136,5 +139,21 @@ public class RouteEdge {
             return path;
         }
         return null;
+    }
+
+    public boolean passable() {
+        return this.impassableAreas.isEmpty();
+    }
+
+    public void addImpassableArea(EntityID areaID) {
+        if(this.areas.contains(areaID)) {
+            this.impassableAreas.add(areaID);
+        }
+    }
+
+    public void removeImpassableArea(EntityID areaID) {
+        if(this.areas.contains(areaID)) {
+            this.impassableAreas.remove(areaID);
+        }
     }
 }

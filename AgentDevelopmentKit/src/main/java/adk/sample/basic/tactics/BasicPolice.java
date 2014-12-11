@@ -8,6 +8,7 @@ import adk.team.tactics.TacticsPolice;
 import adk.team.util.DebrisRemovalSelector;
 import adk.team.util.graph.PositionUtil;
 import adk.team.util.RouteSearcher;
+import adk.team.util.graph.RouteGraph;
 import adk.team.util.provider.DebrisRemovalSelectorProvider;
 import adk.team.util.provider.RouteSearcherProvider;
 import com.google.common.collect.Lists;
@@ -49,6 +50,32 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         this.clearListMap = new HashMap<>();
         this.beforeMove = false;
         this.count = 0;
+        //test
+        if(this.complete()) {
+            System.out.println("Success Analysis!!!");
+        }
+        else {
+            System.out.println("Error Analysis!!!");
+        }
+    }
+
+    private boolean complete() {
+        RouteGraph routeGraph = new RouteGraph(this);
+        for (StandardEntity entity : this.getWorld().getEntitiesOfType(
+                StandardEntityURN.BUILDING,
+                StandardEntityURN.REFUGE,
+                StandardEntityURN.AMBULANCE_CENTRE,
+                StandardEntityURN.FIRE_STATION,
+                StandardEntityURN.POLICE_OFFICE,
+                StandardEntityURN.GAS_STATION,
+                StandardEntityURN.ROAD,
+                StandardEntityURN.HYDRANT
+        )) {
+            if(!routeGraph.contains(entity.getID())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public abstract DebrisRemovalSelector initDebrisRemovalSelector();

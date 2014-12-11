@@ -240,7 +240,15 @@ public class RouteGraph {
         //edge road only
         Set<StandardEntity> processedRoad = new HashSet<>();
         //Buildings
-        for(StandardEntity entity : world.getEntitiesOfType(StandardEntityURN.BUILDING, StandardEntityURN.REFUGE)) {
+        //AmbulanceCentre, FireStation, GasStation, PoliceOffice, Refuge
+        for(StandardEntity entity : world.getEntitiesOfType(
+                StandardEntityURN.BUILDING,
+                StandardEntityURN.REFUGE,
+                StandardEntityURN.AMBULANCE_CENTRE,
+                StandardEntityURN.FIRE_STATION,
+                StandardEntityURN.POLICE_OFFICE,
+                StandardEntityURN.GAS_STATION
+        )) {
             Building building = (Building)entity;
             EntityID buildingID = building.getID();
             RouteNode routeNode = this.nodeMap.get(buildingID);
