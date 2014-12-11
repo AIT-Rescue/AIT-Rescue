@@ -33,8 +33,12 @@ public class RouteNode {
         this.neighbourMap.put(neighbourAreaID, neighbourNodeID);
     }
 
-    public boolean contains(EntityID neighbourID) {
-        return this.neighbourMap.containsKey(neighbourID);
+    public boolean containsKey(EntityID neighbourAreaID) {
+        return this.neighbourMap.containsKey(neighbourAreaID);
+    }
+
+    public boolean contains(EntityID neighbourNodeID) {
+        return this.neighbours.contains(neighbourNodeID);
     }
 
     public Set<EntityID> getNeighbours() {

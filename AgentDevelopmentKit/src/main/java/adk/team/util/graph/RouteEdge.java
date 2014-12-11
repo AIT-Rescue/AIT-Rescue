@@ -13,50 +13,65 @@ public class RouteEdge {
     //path cache <startID, targetID, cache>
     private Table<EntityID, EntityID, List<EntityID>> pathTable;
     //node (areas.get(0))
-    private EntityID startNodeID;
+    private EntityID firstNodeID;
     //node (areas.get(areas.size() - 1))
-    private EntityID endNodeID;
+    private EntityID secondNodeID;
     //distance <areaID, distance>
     private Map<EntityID, Double> distanceToTheEndNode;
     private Map<EntityID, Double> roadDistance;
 
     public RouteEdge(StandardWorldModel world, List<EntityID> path) {
         this.areas = path;
-        this.startNodeID = path.get(0);
-        this.endNodeID = path.get(path.size() - 1);
+        this.firstNodeID = path.get(0);
+        this.secondNodeID = path.get(path.size() - 1);
         this.roadDistance = PositionUtil.getDistanceMap(world, path);
         this.pathTable = HashBasedTable.create();
         this.distanceToTheEndNode = new HashMap<>();
-        this.init();
+        this.initDistance();
     }
 
-    private void init() {
-        this.distanceToTheEndNode.put(this.endNodeID, 0.0D);
+    private void initDistance() {
         double result = 0.0D;
-        for(int i = this.areas.size() - 2; i >= 0; i--) {
+        for(int i = this.areas.size() - 1; i >= 0; i--) {
             EntityID areaID = this.areas.get(i);
             this.distanceToTheEndNode.put(areaID, result);
             result += this.roadDistance.get(areaID);
         }
     }
 
-    public EntityID getStartNodeID() {
-        return this.startNodeID;
+    public EntityID getFirstNodeID() {
+        return this.firstNodeID;
     }
 
-    public EntityID getEndNodeID() {
-        return this.endNodeID;
+    public EntityID getSecondNodeID() {
+        return this.secondNodeID;
+    }
+
+    public boolean contains(EntityID areaID) {
+        return this.areas.contains(areaID);
+    }
+
+    public boolean isNode(EntityID areaID) {
+        return this.isFirstNode(areaID) || this.isSecondNode(areaID);
+    }
+
+    public boolean isFirstNode(EntityID areaID) {
+        return this.firstNodeID.getValue() == areaID.getValue();
+    }
+
+    public boolean isSecondNode(EntityID areaID) {
+        return this.secondNodeID.getValue() == areaID.getValue();
     }
 
     public double getDistance() {
-        return this.distanceToTheEndNode.get(this.startNodeID);
+        return this.distanceToTheEndNode.get(this.firstNodeID);
     }
 
     public double getDistance(EntityID areaID, EntityID target) {
         if(areaID.getValue() == target.getValue()) {
             return Double.NaN;
         }
-        if(this.areas.contains(areaID) && this.areas.contains(target)) {
+        if(this.contains(areaID) && this.contains(target)) {
             boolean reverse = this.areas.indexOf(areaID) > this.areas.indexOf(target);
             double start = this.distanceToTheEndNode.get(reverse ? target : areaID);
             double end = this.distanceToTheEndNode.get(reverse ? areaID : target);
@@ -67,30 +82,30 @@ public class RouteEdge {
     }
 
     public List<EntityID> getPath(EntityID nodeID) {
-        if(this.startNodeID.getValue() == nodeID.getValue()) {
-            if (pathTable.contains(this.startNodeID, this.endNodeID)) {
-                return this.pathTable.get(this.startNodeID, this.endNodeID);
+        if(this.isFirstNode(nodeID)) {
+            if (pathTable.contains(this.firstNodeID, this.secondNodeID)) {
+                return this.pathTable.get(this.firstNodeID, this.secondNodeID);
             }
             List<EntityID> result = new ArrayList<>(this.areas);
-            result.remove(this.startNodeID);
-            result.remove(this.endNodeID);
+            result.remove(this.firstNodeID);
+            result.remove(this.secondNodeID);
             List<EntityID> reverse = new ArrayList<>(result);
             Collections.reverse(reverse);
-            this.pathTable.put(this.startNodeID, this.endNodeID, result);
-            this.pathTable.put(this.endNodeID, this.startNodeID, reverse);
+            this.pathTable.put(this.firstNodeID, this.secondNodeID, result);
+            this.pathTable.put(this.secondNodeID, this.firstNodeID, reverse);
             return result;
         }
-        if(this.endNodeID.getValue() == nodeID.getValue()) {
-            if (pathTable.contains(this.endNodeID, this.startNodeID)) {
-                return this.pathTable.get(this.endNodeID, this.startNodeID);
+        if(this.isSecondNode(nodeID)) {
+            if (pathTable.contains(this.secondNodeID, this.firstNodeID)) {
+                return this.pathTable.get(this.secondNodeID, this.firstNodeID);
             }
             List<EntityID> reverse = new ArrayList<>(this.areas);
-            reverse.remove(this.startNodeID);
-            reverse.remove(this.endNodeID);
+            reverse.remove(this.firstNodeID);
+            reverse.remove(this.secondNodeID);
             List<EntityID> result = new ArrayList<>(reverse);
             Collections.reverse(result);
-            this.pathTable.put(this.startNodeID, this.endNodeID, reverse);
-            this.pathTable.put(this.endNodeID, this.startNodeID, result);
+            this.pathTable.put(this.firstNodeID, this.secondNodeID, reverse);
+            this.pathTable.put(this.secondNodeID, this.firstNodeID, result);
             return result;
         }
         return null;
@@ -100,14 +115,10 @@ public class RouteEdge {
         if(pathTable.contains(nodeID, target)) {
             return this.pathTable.get(nodeID, target);
         }
-        if(this.areas.contains(nodeID) && this.areas.contains(target)) {
+        if(this.contains(nodeID) && this.contains(target)) {
             List<EntityID> path = new ArrayList<>();
-            int sValue = this.startNodeID.getValue();
-            int eValue = this.endNodeID.getValue();
-            int nValue = nodeID.getValue();
-            int tValue = target.getValue();
-            int start = (sValue == nValue) ? 1 : (eValue == nValue) ? areas.size() - 2 : areas.indexOf(nodeID);
-            int end = (eValue == tValue) ? areas.size() - 2 : (sValue == tValue) ? 1 : areas.indexOf(target);
+            int start = this.isFirstNode(nodeID) ? 1 : this.isSecondNode(nodeID) ? this.areas.size() - 2 : this.areas.indexOf(nodeID);
+            int end = this.isSecondNode(target) ? this.areas.size() - 2 : this.isFirstNode(target) ? 1 : this.areas.indexOf(target);
             if(start < end) {
                 for(int i = start; i <= end; i++) {
                     path.add(this.areas.get(i));
