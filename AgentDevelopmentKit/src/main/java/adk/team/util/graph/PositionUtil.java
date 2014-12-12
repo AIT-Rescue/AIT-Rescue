@@ -116,23 +116,9 @@ public class PositionUtil {
         return Math.hypot(dx, dy);
     }
 
-    public static Map<EntityID, Double> getDistanceMap(StandardWorldModel world, List<EntityID> path) {
-        Map<EntityID, Double> result = new HashMap<>();
-        result.put(path.get(0), 0.0D);
-        int size = path.size() - 1;
-        result.put(path.get(size), 0.0D);
-        for(int i = 1; i < size; i++) {
-            EntityID areaID = path.get(i);
-            Area area = (Area)world.getEntity(areaID);
-            double distance = PositionUtil.pointDistance(area.getEdgeTo(path.get(i - 1)), area.getEdgeTo(path.get(i + 1)));
-            result.put(areaID, distance);
-        }
-        return result;
-    }
-
-    /*public static double getDistance(RouteNode from, RouteNode to) {
+    public static double getLinearDistance(RouteNode from, RouteNode to) {
         double dx = from.getX() - to.getX();
         double dy = from.getY() - to.getY();
         return Math.hypot(dx, dy);
-    }*/
+    }
 }

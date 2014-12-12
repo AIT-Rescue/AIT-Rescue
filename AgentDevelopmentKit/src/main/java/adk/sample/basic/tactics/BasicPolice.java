@@ -9,6 +9,7 @@ import adk.team.util.DebrisRemovalSelector;
 import adk.team.util.graph.PositionUtil;
 import adk.team.util.RouteSearcher;
 import adk.team.util.graph.RouteGraph;
+import adk.team.util.graph.RouteManager;
 import adk.team.util.provider.DebrisRemovalSelectorProvider;
 import adk.team.util.provider.RouteSearcherProvider;
 import com.google.common.collect.Lists;
@@ -60,7 +61,8 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
     }
 
     private boolean complete() {
-        RouteGraph routeGraph = new RouteGraph(this);
+        RouteManager routeManager = new RouteManager(this.getWorld());
+        RouteGraph routeGraph = routeManager.getGraph(this.getWorld(), null);
         for (StandardEntity entity : this.getWorld().getEntitiesOfType(
                 StandardEntityURN.BUILDING,
                 StandardEntityURN.REFUGE,
@@ -70,11 +72,9 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
                 StandardEntityURN.GAS_STATION,
                 StandardEntityURN.ROAD,
                 StandardEntityURN.HYDRANT,
-                StandardEntityURN.CIVILIAN,
                 StandardEntityURN.POLICE_FORCE
-
         )) {
-            if(!routeGraph.contains(-1, entity.getID())) {
+            if(!routeGraph.contains(entity.getID())) {
                 return false;
             }
         }

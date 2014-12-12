@@ -1,59 +1,86 @@
 package adk.team.util.graph;
 
+import adk.team.util.provider.WorldProvider;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
+import rescuecore2.misc.Pair;
+import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.EntityID;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class RouteNode {
-    // Node ID
+
+    // Node ID (Road or Building)
     private EntityID nodeID;
     // Node Position
+    private Pair<Integer, Integer> position;
     private int posX;
     private int posY;
-    // Node is Road (is not Building)
-    private boolean isRoad;
-    // Node passable
+    // Node is Road
+    private Boolean isRoad;
+
     private boolean passable;
 
-    //neighbour nodeID <nodeID>
     private Set<EntityID> neighbours;
-    //neighbour nodeID <neighbourAreaID nodeID>
-    private Map<EntityID, EntityID> neighbourMap; //???
 
-    public boolean isNeighbourNode(RouteNode node) {
-        return this.isNeighbourNode(node.getID());
+    private RouteNode(StandardWorldModel world, Road road) {
+        this.nodeID = road.getID();
+        this.posX = road.getX();
+        this.posY = road.getY();
+        this.position = road.getLocation(world);
+        this.isRoad = Boolean.TRUE;
+        this.passable = true;
+        this.neighbours = new HashSet<>();
     }
 
-    //Nodeの場合は，Edgeを介して隣接しているNodeのID
-    //Edgeの場合は，EdgeにつながっているNodeのID
-    public boolean isNeighbourNode(EntityID nodeID) {
-        return this.neighbours.contains(nodeID);
+    private RouteNode(StandardWorldModel world, Building building) {
+        this.nodeID = building.getID();
+        this.posX = building.getX();
+        this.posY = building.getY();
+        this.position = building.getLocation(world);
+        this.isRoad = Boolean.FALSE;
+        this.passable = true;
+        this.neighbours = new HashSet<>();
     }
 
-    public boolean isNeighbourEdge(RouteEdge edge) {
-        return edge.contains(this.nodeID);
+    public static RouteNode getInstance(StandardWorldModel world, Road road) {
+        return world != null && road != null ? new RouteNode(world, road) : null;
     }
 
-    //Nodeの場合は，Edgeを介して隣接しているNodeのIDのSet
-    //Edgeの場合は，EdgeにつながっているNodeのIDのSet
-    public Set<EntityID> getNeighbours() {
-        return this.neighbours;
+    public static RouteNode getInstance(StandardWorldModel world, Building building) {
+        return world != null && building != null ? new RouteNode(world, building) : null;
     }
 
-    public boolean passable() {
-        return this.passable;
+    public static RouteNode getInstance(StandardWorldModel world, Area area) {
+        if(world != null && area != null) {
+            if(area instanceof Road) {
+                return new RouteNode(world, (Road)area);
+            }
+            if(area instanceof Building) {
+                return new RouteNode(world, (Building)area);
+            }
+        }
+        return null;
+    }
+
+    public static RouteNode getInstance(StandardWorldModel world, EntityID areaID) {
+        if(world != null && areaID != null) {
+            StandardEntity area = world.getEntity(areaID);
+            if(area instanceof Road) {
+                return new RouteNode(world, (Road)area);
+            }
+            if(area instanceof Building) {
+                return new RouteNode(world, (Building)area);
+            }
+        }
+        return null;
     }
 
     public EntityID getID() {
         return this.nodeID;
-    }
-
-    public List<EntityID> getPath() {
-        return Lists.newArrayList(this.nodeID);
     }
 
     public int getX() {
@@ -64,8 +91,39 @@ public class RouteNode {
         return this.posY;
     }
 
+    public Pair<Integer, Integer> getPosition() {
+        return this.position;
+    }
+
     public boolean isRoad() {
         return this.isRoad;
+    }
+
+    public boolean passable() {
+        return this.passable;
+    }
+
+    public void setPassable(boolean flag) {
+        this.passable = flag;
+    }
+
+    public boolean isNeighbourNode(RouteNode node) {
+        return this.isNeighbourNode(node.getID());
+    }
+
+    public boolean isNeighbourNode(EntityID nodeID) {
+        return this.neighbours.contains(nodeID);
+    }
+
+    public Set<EntityID> getNeighbours() {
+        return this.neighbours;
+    }
+    public void addNode(RouteNode node) {
+        this.neighbours.add(node.getID());
+    }
+
+    public List<EntityID> getPath() {
+        return Lists.newArrayList(this.nodeID);
     }
 
     @Override
@@ -78,6 +136,10 @@ public class RouteNode {
         return o instanceof RouteNode && this.nodeID.getValue() == ((RouteNode)o).getID().getValue();
     }
 
+    public boolean equals(RouteNode node) {
+        return this.nodeID.getValue() == node.getID().getValue();
+    }
+
     @Override
     public String toString(){
         return MoreObjects.toStringHelper(this)
@@ -85,6 +147,8 @@ public class RouteNode {
                 .add("posX", this.posX)
                 .add("posY", this.posY)
                 .add("isRoad", this.isRoad)
+                .add("passable", this.passable)
+                .add("neighbours", this.neighbours)
                 .toString();
     }
 }
