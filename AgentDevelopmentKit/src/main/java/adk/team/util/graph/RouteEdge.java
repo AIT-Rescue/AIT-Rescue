@@ -12,8 +12,9 @@ import java.util.*;
 public class RouteEdge {
 
     private List<EntityID> route;
-    //path cache <startID, targetID, cache>
-    //いらなくね？？？
+    // path cache <startID, targetID, cache>
+    // いらなくね？？？
+    // RouteManagerに移動
     private Table<EntityID, EntityID, List<EntityID>> pathCache;
 
     private EntityID firstNodeID;
@@ -23,6 +24,16 @@ public class RouteEdge {
 
     private Table<EntityID, EntityID, Double> routeDistance;
     private Map<EntityID, Double> roadDistance;
+
+    public RouteEdge(RouteEdge original) {
+        this.firstNodeID = original.getFirstNodeID();
+        this.secondNodeID = original.getSecondNodeID();
+        this.route = original.getAllElement();
+        this.impassable = new HashSet<>(original.getImpassable());
+        this.pathCache = HashBasedTable.create(original.getCache());
+        this.routeDistance = HashBasedTable.create(original.getDistanceTable());
+        this.roadDistance = new HashMap<>(original.getDistanceMap());
+    }
 
     private RouteEdge(StandardWorldModel world, List<EntityID> path) {
         this.firstNodeID = path.get(0);
@@ -71,6 +82,16 @@ public class RouteEdge {
         return this.secondNodeID;
     }
 
+    public EntityID getAnotherNodeID(EntityID nodeID) {
+        if(this.firstNodeID.getValue() == nodeID.getValue()) {
+            return this.secondNodeID;
+        }
+        if(this.secondNodeID.getValue() == nodeID.getValue()) {
+            return this.firstNodeID;
+        }
+        return null;
+    }
+
     public boolean isNeighbourNode(RouteNode node) {
         return this.isNeighbourNode(node.getID());
     }
@@ -99,8 +120,32 @@ public class RouteEdge {
         return this.route.contains(areaID);
     }
 
+    public List<EntityID> getAllElement() {
+        return this.route;
+    }
+
+    public Set<EntityID> getImpassable() {
+        return this.impassable;
+    }
+
+    public Table<EntityID, EntityID, List<EntityID>> getCache() {
+        return this.pathCache;
+    }
+
+    public Table<EntityID, EntityID, Double> getDistanceTable() {
+        return  this.routeDistance;
+    }
+
+    public Map<EntityID, Double> getDistanceMap() {
+        return this.roadDistance;
+    }
+
     public Set<EntityID> getNeighbours() {
         return Sets.newHashSet(this.firstNodeID, this.secondNodeID);
+    }
+
+    public boolean isLoop() {
+        return this.firstNodeID.getValue() == this.secondNodeID.getValue();
     }
 
     public boolean passable() {
@@ -165,7 +210,7 @@ public class RouteEdge {
         if(this.isEdgeElement(nodeID) && this.isEdgeElement(target)) {
             List<EntityID> path = new ArrayList<>();
             int start = this.isFirstNode(nodeID) ? 1 : this.isSecondNode(nodeID) ? this.route.size() - 2 : this.route.indexOf(nodeID);
-            int end = this.isSecondNode(target) ? this.route.size() - 2 : this.route.indexOf(target);
+            int end = this.isSecondNode(target) ? this.route.size() - 2 : this.isFirstNode(nodeID) ? 1 : this.route.indexOf(target);
             if(start < end) {
                 for(int i = start; i <= end; i++) {
                     path.add(this.route.get(i));

@@ -26,6 +26,16 @@ public class RouteNode {
 
     private Set<EntityID> neighbours;
 
+    public RouteNode(RouteNode original) {
+        this.nodeID = original.getID();
+        this.posX = original.getX();
+        this.posY = original.getY();
+        this.position = original.getPosition();
+        this.isRoad = original.isRoad();
+        this.passable = original.passable();
+        this.neighbours = new HashSet<>(original.getNeighbours());
+    }
+
     private RouteNode(StandardWorldModel world, Road road) {
         this.nodeID = road.getID();
         this.posX = road.getX();
@@ -115,11 +125,36 @@ public class RouteNode {
         return this.neighbours.contains(nodeID);
     }
 
+    public boolean isSingleNode() {
+        if(this.neighbours.isEmpty()) {
+            return true;
+        }
+        for(EntityID id : this.neighbours) {
+            if(this.nodeID.getValue() != id.getValue()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public Set<EntityID> getNeighbours() {
         return this.neighbours;
     }
+
     public void addNode(RouteNode node) {
-        this.neighbours.add(node.getID());
+        this.addNode(node.getID());
+    }
+
+    public void addNode(EntityID id) {
+        this.neighbours.add(id);
+    }
+
+    public void removeNode(RouteNode node) {
+        this.removeNode(node.getID());
+    }
+
+    public void removeNode(EntityID id) {
+        this.neighbours.remove(id);
     }
 
     public List<EntityID> getPath() {

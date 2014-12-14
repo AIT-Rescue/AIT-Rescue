@@ -93,9 +93,12 @@ public class RouteGraph {
         return path;
     }
 
-    public void createPositionNode(StandardWorldModel world, EntityID areaID) {
-        if(this.nodeMap.containsKey(areaID) || !this.edgeMap.containsKey(areaID)) {
-            return;
+    public boolean createPositionNode(StandardWorldModel world, EntityID areaID) {
+        if(this.nodeMap.containsKey(areaID)) {
+            return true;
+        }
+        if(!this.edgeMap.containsKey(areaID)) {
+            return false;
         }
         RouteEdge edge = this.edgeMap.get(areaID);
         RouteNode node = RouteNode.getInstance(world, areaID);
@@ -108,6 +111,7 @@ public class RouteGraph {
         this.nodeMap.put(areaID, node);
         this.register(world, firstPath);
         this.register(world, secondPath);
+        return true;
     }
 
     private void register(StandardWorldModel world, List<EntityID> path) {
