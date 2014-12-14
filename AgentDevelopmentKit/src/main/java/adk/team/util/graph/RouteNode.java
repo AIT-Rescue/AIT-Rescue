@@ -1,6 +1,5 @@
 package adk.team.util.graph;
 
-import adk.team.util.provider.WorldProvider;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import rescuecore2.misc.Pair;

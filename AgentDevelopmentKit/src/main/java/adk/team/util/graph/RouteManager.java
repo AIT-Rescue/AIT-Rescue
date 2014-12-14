@@ -7,7 +7,6 @@ import rescuecore2.misc.collections.LazyMap;
 import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.EntityID;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.*;
 
 public class RouteManager {

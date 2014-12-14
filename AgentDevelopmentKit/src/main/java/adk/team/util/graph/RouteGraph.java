@@ -5,7 +5,6 @@ import com.google.common.collect.Table;
 import rescuecore2.standard.entities.StandardWorldModel;
 import rescuecore2.worldmodel.EntityID;
 
-import java.awt.geom.Area;
 import java.util.List;
 import java.util.Map;
 
