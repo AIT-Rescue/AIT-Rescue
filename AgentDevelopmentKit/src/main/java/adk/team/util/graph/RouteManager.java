@@ -26,7 +26,7 @@ public class RouteManager {
         this.analysis(world);
     }
 
-    public RouteGraph getPassableGraph(StandardWorldModel world) {
+    public RouteGraph getPassableGraph() {
         return new RouteGraph(new HashMap<>(this.passableNodeMap), new HashMap<>(this.passableEdgeMap), HashBasedTable.create(this.passableEdgeTable));
     }
 
@@ -222,19 +222,19 @@ public class RouteManager {
         int index = original.indexOf(areaID);
         EntityID firstID = original.get(index - 1);
         EntityID secondID = original.get(index + 1);
-        EntityID newFirstNode;
-        EntityID newSecondNode;
+        EntityID newFirst = null;
+        EntityID newSecond = null;
         List<EntityID> newPath = new ArrayList<>();
         boolean remove = true;
         if(this.nodeMap.containsKey(firstID)){
             RouteNode node = this.passableNodeMap.get(firstID);
             if(node != null && node.passable()) {
-                newFirstNode = firstID;
+                newFirst = firstID;
                 newPath.add(firstID);
             }
             else {
                 remove = false;
-                newFirstNode = areaID;
+                newFirst = areaID;
             }
         }
         else { //edge
@@ -243,28 +243,28 @@ public class RouteManager {
                     if (id.getValue() != areaID.getValue()) {
                         RouteEdge edge = this.passableEdgeMap.get(id); // another <-> firstID
                         if(edge != null) {
-                            newFirstNode = edge.getAnotherNodeID(firstID);
-                            newPath.add(newFirstNode);
-                            newPath.addAll(edge.getPath(newFirstNode));
+                            newFirst = edge.getAnotherNodeID(firstID);
+                            newPath.add(newFirst);
+                            newPath.addAll(edge.getPath(newFirst));
                             newPath.add(firstID);
-                            RouteNode node = this.passableNodeMap.get(newFirstNode);
+                            RouteNode node = this.passableNodeMap.get(newFirst);
                             node.removeNode(firstID);
-                            this.passableNodeMap.put(newFirstNode, node);
+                            this.passableNodeMap.put(newFirst, node);
                             this.passableNodeMap.remove(firstID);
                         }
                         else {
                             if(this.passableNodeMap.containsKey(id)) { //if node [id][firstID][areaID]
                                 //List<EntityID> path = Lists.newArrayList(id, firstID, areaID);
-                                newFirstNode = id;
-                                newPath.add(newFirstNode);
+                                newFirst = id;
+                                newPath.add(newFirst);
                                 newPath.add(firstID);
-                                RouteNode node = this.passableNodeMap.get(newFirstNode);
+                                RouteNode node = this.passableNodeMap.get(newFirst);
                                 node.removeNode(firstID);
-                                this.passableNodeMap.put(newFirstNode, node);
+                                this.passableNodeMap.put(newFirst, node);
                                 this.passableNodeMap.remove(firstID);
                             }
                             else {
-                                newFirstNode = firstID;
+                                newFirst = firstID;
                                 newPath.add(firstID);
                             }
                         }
@@ -273,7 +273,7 @@ public class RouteManager {
             }
             else {
                 remove = false;
-                newFirstNode = areaID;
+                newFirst = areaID;
             }
         }
         ///////////////////////////////////////////////////////////////////////////
@@ -282,12 +282,12 @@ public class RouteManager {
         if(this.nodeMap.containsKey(secondID)){
             RouteNode node = this.passableNodeMap.get(secondID);
             if(node != null && node.passable()) {
-                newSecondNode = secondID;
+                newSecond = secondID;
                 newPath.add(secondID);
             }
             else {
                 remove = false;
-                newSecondNode = areaID;
+                newSecond = areaID;
             }
         }
         else { //edge
@@ -296,30 +296,29 @@ public class RouteManager {
                     if (id.getValue() != areaID.getValue()) {
                         RouteEdge edge = this.passableEdgeMap.get(id); // another <-> secondID
                         if(edge != null) {
-                            newSecondNode = edge.getAnotherNodeID(secondID);
+                            newSecond = edge.getAnotherNodeID(secondID);
                             newPath.add(secondID);
                             newPath.addAll(edge.getPath(secondID));
-                            newPath.add(newSecondNode);
-                            RouteNode node = this.passableNodeMap.get(newSecondNode);
+                            newPath.add(newSecond);
+                            RouteNode node = this.passableNodeMap.get(newSecond);
                             node.removeNode(secondID);
-                            this.passableNodeMap.put(newSecondNode, node);
+                            this.passableNodeMap.put(newSecond, node);
                             this.passableNodeMap.remove(secondID);
-                            //OKOKOKOKOK
                         }
                         else {
                             if(this.passableNodeMap.containsKey(id)) { //if node [id][firstID][areaID]
                                 //List<EntityID> path = Lists.newArrayList(id, firstID, areaID);
-                                newFirstNode = id;
-                                newPath.add(newFirstNode);
-                                newPath.add(firstID);
-                                RouteNode node = this.passableNodeMap.get(newFirstNode);
-                                node.removeNode(firstID);
-                                this.passableNodeMap.put(newFirstNode, node);
-                                this.passableNodeMap.remove(firstID);
+                                newSecond = id;
+                                newPath.add(secondID);
+                                newPath.add(newSecond);
+                                RouteNode node = this.passableNodeMap.get(newSecond);
+                                node.removeNode(secondID);
+                                this.passableNodeMap.put(newSecond, node);
+                                this.passableNodeMap.remove(secondID);
                             }
                             else {
-                                newFirstNode = firstID;
-                                newPath.add(firstID);
+                                newSecond = secondID;
+                                newPath.add(secondID);
                             }
                         }
                     }
@@ -327,61 +326,20 @@ public class RouteManager {
             }
             else {
                 remove = false;
-                newFirstNode = areaID;
+                newSecond = areaID;
             }
         }
 
-
+        this.registerPassable(world, newPath);
+        RouteNode newFirstNode = this.passableNodeMap.get(newFirst);
+        RouteNode newSecondNode = this.passableNodeMap.get(newSecond);
+        newFirstNode.addNode(newSecond);
+        newSecondNode.addNode(newFirst);
+        this.passableNodeMap.put(newFirst, newFirstNode);
+        this.passableNodeMap.put(newSecond, newSecondNode);
         if(remove) {
             this.passableNodeMap.remove(areaID);
         }
-        /*RouteEdge edge = this.edgeMap.get(areaID);
-        List<EntityID> path = edge.getAllElement();
-        if(path.size() == 3) {
-            EntityID firstID = path.get(0);
-            EntityID secondID = path.get(2);
-            RouteNode first = this.passableNodeMap.get(firstID);
-            RouteNode second = this.passableNodeMap.get(secondID);
-            if(first != null && second != null) {
-                this.passableEdgeMap.put(areaID, edge);
-                first.addNode(second);
-                second.addNode(first);
-                this.passableNodeMap.put(firstID, first);
-                this.passableNodeMap.put(secondID, second);
-                this.passableEdgeTable.put(firstID, secondID, edge);
-                this.passableEdgeTable.put(secondID, firstID, edge);
-            }
-            else if(first != null) {
-
-            }
-            else if(second != null) {
-
-            }
-            return;
-        }
-        int areaIndex = path.indexOf(areaID);
-        List<EntityID> newPath = new ArrayList<>();
-        if(this.passableNodeMap.containsKey(path.get(areaIndex - 2))) {
-
-        }
-        else {
-            RouteEdge firstEdge = this.passableEdgeMap.get(path.get(areaIndex - 2));
-            boolean reverse = firstEdge.isFirstNode(path.get(areaIndex - 1));
-            newPath.add(reverse ? firstEdge.getSecondNodeID() : firstEdge.getFirstNodeID());
-            newPath.addAll(firstEdge.getPath(firstEdge.getFirstNodeID()));
-            newPath.add(firstEdge.getSecondNodeID());
-        }
-        newPath.add(areaID);
-        RouteEdge secondEdge = this.passableEdgeMap.get(path.get(areaIndex + 2));
-        EntityID next = secondEdge.isFirstNode(path.get(areaIndex + 1)) ? secondEdge.getFirstNodeID() : secondEdge.getSecondNodeID();
-        newPath.add(next);
-        */
-        /*int size = path.size() - 1;
-        for(int i = 1; i < size; i++) {
-            this.edgeMap.put(path.get(i), edge);
-        }
-        this.edgeTable.put(path.get(0), path.get(size), edge);
-        this.edgeTable.put(path.get(size), path.get(0), edge);*/
     }
 
     private void analysis(StandardWorldModel world) {
