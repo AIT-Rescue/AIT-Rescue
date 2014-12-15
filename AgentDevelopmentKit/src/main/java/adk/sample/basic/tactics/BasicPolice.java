@@ -62,7 +62,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
 
     private boolean complete() {
         RouteManager routeManager = new RouteManager(this.getWorld());
-        RouteGraph routeGraph = routeManager.getGraph(this.getWorld(), null);
+        RouteGraph routeGraph = routeManager.getGraph();
         for (StandardEntity entity : this.getWorld().getEntitiesOfType(
                 StandardEntityURN.BUILDING,
                 StandardEntityURN.REFUGE,

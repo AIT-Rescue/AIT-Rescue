@@ -9,7 +9,10 @@ import com.google.common.collect.Lists;
 import rescuecore2.standard.entities.StandardWorldModel;
 import rescuecore2.worldmodel.EntityID;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AStarRouteSearcher implements RouteSearcher {
 
@@ -31,17 +34,22 @@ public class AStarRouteSearcher implements RouteSearcher {
         if(!graph.createPositionNode(world, from) || !graph.createPositionNode(world, to)) {
             return null;
         }
-        RouteNode start = graph.getNode(from);
-        if(start.isSingleNode()) {
+        RouteNode node = graph.getNode(from);
+        if(node.isSingleNode()) {
             return Lists.newArrayList(from);
         }
         RouteNode goal = graph.getNode(to);
         if(goal.isSingleNode()) {
             return null;
         }
-        List<RouteNode> nodePath = Lists.newArrayList(start);
+        //init
+        List<RouteNode> nodePath = Lists.newArrayList(node);
+        RouteNode old = node;
+        EntityID oldID = old.getID();
         ///
-        //コンパレータいるかも(直線距離の比較) distance(goal, start.getNeighbourss()) > sort
+        List<RouteNode> neighbours = node.getNeighbours().stream().filter(id -> oldID.getValue() != id.getValue()).map(graph::getNode).collect(Collectors.toList());
+        neighbours.sort(new DistanceComparator(goal));
+        //for()
         ///
         nodePath.add(goal);
         return graph.getPath(nodePath);
