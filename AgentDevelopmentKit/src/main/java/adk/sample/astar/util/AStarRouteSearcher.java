@@ -10,67 +10,78 @@ import rescuecore2.standard.entities.StandardWorldModel;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AStarRouteSearcher implements RouteSearcher {
 
     private WorldProvider provider;
     private RouteManager routeManager;
 
-    public AStarRouteSearcher(WorldProvider worldProvider) {
+    public AStarRouteSearcher(WorldProvider worldProvider, RouteManager manager) {
         this.provider = worldProvider;
-        this.routeManager = new RouteManager(worldProvider.getWorld());
+        this.routeManager = manager;
     }
 
+    //https://code.google.com/p/a-star-java/source/browse/AStar/src/aStar/AStar.java?r=7
     @Override
-    public List<EntityID> getPath(int time, EntityID from, EntityID to) {
+    public List<EntityID> getPath(int time, EntityID startID, EntityID goalID) {
         StandardWorldModel world = this.provider.getWorld();
         RouteGraph graph = this.routeManager.getPassableGraph();
-        if(from.getValue() == to.getValue()) {
-            return Lists.newArrayList(from);
+        // check
+        if(startID.getValue() == goalID.getValue()) {
+            return Lists.newArrayList(startID);
         }
-        if(!graph.createPositionNode(world, from) || !graph.createPositionNode(world, to)) {
+        if(!graph.createPositionNode(world, startID) || !graph.createPositionNode(world, goalID)) {
             return null;
         }
-        RouteNode node = graph.getNode(from);
-        if(node.isSingleNode()) {
-            return Lists.newArrayList(from);
+        RouteNode start = graph.getNode(startID);
+        if(start.isSingleNode()) {
+            return Lists.newArrayList(startID);
         }
-        RouteNode goal = graph.getNode(to);
+        RouteNode goal = graph.getNode(goalID);
         if(goal.isSingleNode()) {
             return null;
         }
-        //init
-        List<RouteNode> nodePath = Lists.newArrayList(node);//old list
-        RouteNode old = node;
-        EntityID oldID = old.getID();
-        ///
-
-        //List<RouteNode> neighbours = node.getNeighbours().stream().filter(id -> oldID.getValue() != id.getValue()).map(graph::getNode).collect(Collectors.toList());
-        //neighbours.sort(new DistanceComparator(goal));
-        //for()
-        ///
-        nodePath.add(goal);
-        return graph.getPath(nodePath);
-    }
-
-    private boolean searchNext(RouteGraph graph, List<RouteNode> nodePath, RouteNode currentNode, RouteNode target) {
-        RouteNode old = nodePath.get(nodePath.size() - 1);
-        EntityID oldID = old.getID();
-        Set<EntityID> set = new HashSet<>(currentNode.getNeighbours());
-        set.remove(oldID);
-        List<RouteNode> neighbours = set.stream().map(graph::getNode).collect(Collectors.toList());
-        neighbours.sort(new DistanceComparator(graph, currentNode, target));
-        for(int i = 0; i < neighbours.size(); i++) {
-            RouteNode select = neighbours.get(i);
-            if(nodePath.contains(select)) {
-                return false;
+        // init
+        Set<EntityID> closed = new HashSet<>();
+        List<RouteNode> open = Lists.newArrayList(start);
+        Map<EntityID, EntityID> previousNodeMap = new HashMap<>();
+        Map<EntityID, Double> distanceFromStart = new HashMap<>();
+        Map<EntityID, Double> distanceToEnd = new HashMap<>();
+        // process
+        while(open.size() != 0) {
+            RouteNode current = open.get(0); //sort
+            EntityID currentID = current.getID();
+            //目的地に着いた時
+            if(currentID.getValue() == goalID.getValue()) {
+                List<RouteNode> nodePath = Lists.newArrayList(current);
+                EntityID id = currentID;
+                while(previousNodeMap.containsKey(id)) {
+                    id = previousNodeMap.get(id);
+                    nodePath.add(graph.getNode(id));
+                }
+                Collections.reverse(nodePath);
+                return graph.getPath(nodePath); // create path
             }
-
+            // reset
+            open.clear();
+            closed.add(currentID);
+            // search next
+            for(EntityID neighbourID : current.getNeighbours()) {
+                if (closed.contains(neighbourID)) {
+                    continue;
+                }
+                RouteNode neighbour = graph.getNode(neighbourID);
+                double currentDistance = distanceFromStart.containsKey(currentID) ? distanceFromStart.get(currentID) : 0.0D;
+                double neighbourDistance = currentDistance + graph.getEdge(current, neighbour).getDistance();
+                if(!open.contains(neighbour)) {
+                    open.add(neighbour);
+                    previousNodeMap.put(neighbourID, currentID);
+                    distanceFromStart.put(neighbourID, neighbourDistance);
+                }
+            }
+            open.sort(new DistanceComparator(goal, distanceFromStart, distanceToEnd));
         }
-
-
-        return false;
+        return null;
     }
 
     @Override
