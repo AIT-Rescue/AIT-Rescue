@@ -1,27 +1,31 @@
 package adk.sample.astar.util;
 
 import adk.team.util.RouteSearcher;
+import adk.team.util.graph.RouteEdge;
 import adk.team.util.graph.RouteGraph;
 import adk.team.util.graph.RouteManager;
 import adk.team.util.graph.RouteNode;
 import adk.team.util.provider.WorldProvider;
 import com.google.common.collect.Lists;
-import rescuecore2.standard.entities.StandardWorldModel;
+import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.*;
 
+//RouteGraphSample
 public class AStarRouteSearcher implements RouteSearcher {
 
-    private WorldProvider provider;
+    private WorldProvider<? extends Human> provider;
     private RouteManager routeManager;
 
-    public AStarRouteSearcher(WorldProvider worldProvider, RouteManager manager) {
+    private Random random;
+
+    public AStarRouteSearcher(WorldProvider<? extends Human> worldProvider, RouteManager manager) {
         this.provider = worldProvider;
         this.routeManager = manager;
+        this.random = new Random((new Date()).getTime());
     }
 
-    //https://code.google.com/p/a-star-java/source/browse/AStar/src/aStar/AStar.java?r=7
     @Override
     public List<EntityID> getPath(int time, EntityID startID, EntityID goalID) {
         StandardWorldModel world = this.provider.getWorld();
@@ -86,7 +90,42 @@ public class AStarRouteSearcher implements RouteSearcher {
 
     @Override
     public List<EntityID> noTargetMove(int time) {
-        return null;
+        StandardWorldModel world = this.provider.getWorld();
+        RouteGraph graph = this.routeManager.getPassableGraph();
+        EntityID current = this.provider.getOwner().getPosition();
+        if(!graph.createPositionNode(world, current)) {
+            return Lists.newArrayList(current);
+        }
+        int limit = 50;
+        List<EntityID> result = new ArrayList<>();
+        Set<EntityID> seen = new HashSet<>();
+        while(result.size() < limit) {
+            result.add(current);
+            seen.add(current);
+            RouteNode node = graph.getNode(current);
+            if(node == null) {
+                break;
+            }
+            List<EntityID> neighbourNodes = new ArrayList<>(node.getNeighbours());
+            Collections.shuffle(neighbourNodes, this.random);
+            boolean noTarget = true;
+            for (EntityID next : neighbourNodes) {
+                if (seen.contains(next)) {
+                    continue;
+                }
+                RouteEdge edge = graph.getEdge(current, next);
+                if(edge == null) {
+                    continue;
+                }
+                result.addAll(edge.getPath(current));
+                current = next;
+                noTarget = false;
+                break;
+            }
+            if (noTarget) {
+                break;
+            }
+        }
+        return result;
     }
-
 }

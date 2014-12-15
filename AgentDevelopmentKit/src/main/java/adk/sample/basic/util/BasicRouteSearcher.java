@@ -3,19 +3,14 @@ package adk.sample.basic.util;
 import adk.team.util.RouteSearcher;
 import adk.team.util.provider.WorldProvider;
 import rescuecore2.misc.collections.LazyMap;
-import rescuecore2.standard.entities.Area;
-import rescuecore2.standard.entities.Human;
-import rescuecore2.standard.entities.Road;
+import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.Entity;
 import sample.SampleSearch;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class BasicRouteSearcher implements RouteSearcher {
-
-    private static final int RANDOM_WALK_LENGTH = 50;
 
     public WorldProvider<? extends Human> provider;
 
@@ -31,8 +26,7 @@ public class BasicRouteSearcher implements RouteSearcher {
         this.initRandomWalk();
     }
 
-    private void initRandomWalk()
-    {
+    private void initRandomWalk() {
         this.neighbours = new LazyMap<EntityID, Set<EntityID>>() {
             @Override
             public Set<EntityID> createValue() {
@@ -41,20 +35,24 @@ public class BasicRouteSearcher implements RouteSearcher {
         };
         for (Entity next : this.provider.getWorld()) {
             if (next instanceof Area) {
-                List<EntityID> neighbours = ((Area)next).getNeighbours();
-                Set<EntityID> roadNeighbours = neighbours.stream().filter(id -> this.provider.getWorld().getEntity(id) instanceof Road).collect(Collectors.toSet());
-                //Set<EntityID> roadNeighbours = new HashSet<>(neighbours);
-                        this.neighbours.put(next.getID(), roadNeighbours);
+                Set<EntityID> roadNeighbours = new HashSet<>();
+                for(EntityID areaID : ((Area)next).getNeighbours()) {
+                    StandardEntity area = this.provider.getWorld().getEntity(areaID);
+                    if(area instanceof Road || area instanceof Refuge) {
+                        roadNeighbours.add(areaID);
+                    }
+                }
+                this.neighbours.put(next.getID(), roadNeighbours);
             }
         }
     }
 
     @Override
     public List<EntityID> noTargetMove(int time) {
-        List<EntityID> result = new ArrayList<>(RANDOM_WALK_LENGTH);
+        List<EntityID> result = new ArrayList<>(50);
         Set<EntityID> seen = new HashSet<>();
-        EntityID current = this.provider.me().getPosition();
-        for (int i = 0; i < RANDOM_WALK_LENGTH; ++i) {
+        EntityID current = this.provider.getOwner().getPosition();
+        for (int i = 0; i < 50; ++i) {
             result.add(current);
             seen.add(current);
             List<EntityID> possible = new ArrayList<>(this.neighbours.get(current));
