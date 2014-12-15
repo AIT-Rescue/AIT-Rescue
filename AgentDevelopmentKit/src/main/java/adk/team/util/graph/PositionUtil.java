@@ -61,6 +61,12 @@ public class PositionUtil {
         return dx*dx + dy*dy;
     }
 
+    public static double getDistance(Pair<Integer, Integer> position, Pair<Integer, Integer> another) {
+        double dx = (double)(position.first() - another.first());
+        double dy = (double)(position.second() - another.second());
+        return Math.hypot(dx, dy);
+    }
+
     public static StandardEntity getNearTarget(StandardWorldModel world, StandardEntity user, StandardEntity first, StandardEntity second) {
         return getNearTarget(world, user.getLocation(world), first, second);
     }

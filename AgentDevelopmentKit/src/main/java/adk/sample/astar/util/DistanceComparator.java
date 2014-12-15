@@ -1,23 +1,29 @@
 package adk.sample.astar.util;
 
 import adk.team.util.graph.PositionUtil;
+import adk.team.util.graph.RouteGraph;
 import adk.team.util.graph.RouteNode;
 
 import java.util.Comparator;
 
 public class DistanceComparator implements Comparator<RouteNode> {
 
+    private RouteGraph graph;
+
     private RouteNode position;
 
-    public DistanceComparator(RouteNode node) {
-        this.position = node;
+    private RouteNode goal;
+
+    public DistanceComparator(RouteGraph routeGraph, RouteNode currentNode, RouteNode target) {
+        this.graph = routeGraph;
+        this.position = currentNode;
+
     }
 
     @Override
     public int compare(RouteNode o1, RouteNode o2) {
-        //return o1.length() - o2.length();
-        //return 0;
-        long result = PositionUtil.valueOfCompare(this.position.getPosition(), o1.getPosition()) - PositionUtil.valueOfCompare(this.position.getPosition(), o2.getPosition());
-        return result > 0L ? 1 : result == 0L ? 0 : -1;
+        double value1 = this.graph.getEdge(this.position, o1).getDistance() + PositionUtil.getDistance(this.goal.getPosition(), o1.getPosition());
+        double value2 = this.graph.getEdge(this.position, o2).getDistance() + PositionUtil.getDistance(this.position.getPosition(), o2.getPosition());
+        return (int)(value1 - value2);
     }
 }

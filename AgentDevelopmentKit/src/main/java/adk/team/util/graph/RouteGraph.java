@@ -15,6 +15,7 @@ public class RouteGraph {
     private Map<EntityID, RouteEdge> edgeMap;
 
     private Table<EntityID, EntityID, RouteEdge> edgeTable;
+    //private Table<EntityID, EntityID, Set<RouteEdge>> et;
 
     public RouteGraph(Map<EntityID, RouteNode> nodes, Map<EntityID, RouteEdge> edges, Table<EntityID, EntityID, RouteEdge> connectEdges) {
         this.nodeMap = nodes;
