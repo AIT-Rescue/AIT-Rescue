@@ -167,7 +167,7 @@ public class RouteNode {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof RouteNode && this.nodeID.getValue() == ((RouteNode)o).getID().getValue();
+        return o instanceof RouteNode && this.equals((RouteNode)o);
     }
 
     public boolean equals(RouteNode node) {

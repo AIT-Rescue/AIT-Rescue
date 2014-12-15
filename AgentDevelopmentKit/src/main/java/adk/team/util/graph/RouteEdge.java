@@ -243,4 +243,28 @@ public class RouteEdge {
         }
         return result;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof RouteEdge && this.equals((RouteEdge)o);
+    }
+
+    public boolean equals(RouteEdge edge) {
+        if(!this.isNeighbourNode(edge.getFirstNodeID()) || !this.isNeighbourNode(edge.getSecondNodeID())) {
+            return false;
+        }
+        List<EntityID> element = edge.getAllElement();
+        if(element.size() != this.route.size()) {
+            return false;
+        }
+        if(element.get(0).getValue() != this.route.get(0).getValue()) {
+            Collections.reverse(element);
+        }
+        for(int i = 1; i < element.size(); i++) {
+            if(element.get(i).getValue() != this.route.get(i).getValue()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
