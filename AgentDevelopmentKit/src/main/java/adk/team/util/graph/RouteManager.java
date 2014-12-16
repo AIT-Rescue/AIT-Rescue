@@ -8,6 +8,7 @@ import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class RouteManager {
     // All Element
@@ -20,13 +21,13 @@ public class RouteManager {
     private Table<EntityID, EntityID, RouteEdge> passableEdgeTable;
 
     // path cache <startID, targetID, cache>
-    private Cache<List<EntityID>> pathCache;
+    private ConcurrentHashMap<Long, List<EntityID>> pathCache;
 
     public RouteManager(StandardWorldModel world) {
         this.nodeMap = new HashMap<>();
         this.edgeMap = new HashMap<>();
         this.edgeTable = HashBasedTable.create();
-        this.pathCache = new Cache<>();
+        this.pathCache = new ConcurrentHashMap<>();
         this.analysis(world);
     }
 
@@ -179,7 +180,10 @@ public class RouteManager {
             return;
         }
         this.impassableArea.remove(areaID);
-        RouteNode node = new RouteNode(this.nodeMap.get(areaID));
+        RouteNode node = RouteNode.copy(this.nodeMap.get(areaID));
+        if(node == null) {
+            return;
+        }
         for(EntityID nodeID : ((Area)world.getEntity(areaID)).getNeighbours()) {
             if(!this.passableNodeMap.containsKey(nodeID)) {
                 node.removeNeighbour(nodeID);

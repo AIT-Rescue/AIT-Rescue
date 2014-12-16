@@ -21,14 +21,6 @@ public class RouteNode {
 
     private Set<EntityID> neighbours;
 
-    public RouteNode(RouteNode original) {
-        this.nodeID = original.getID();
-        this.position = original.getPosition();
-        this.isRoad = original.isRoad();
-        this.passable = original.passable();
-        this.neighbours = new HashSet<>(original.getNeighbours());
-    }
-
     private RouteNode(StandardWorldModel world, Road road) {
         this.nodeID = road.getID();
         this.position = road.getLocation(world);
@@ -43,6 +35,14 @@ public class RouteNode {
         this.isRoad = Boolean.FALSE;
         this.passable = true;
         this.neighbours = new HashSet<>();
+    }
+
+    private RouteNode(RouteNode original) {
+        this.nodeID = original.getID();
+        this.position = original.getPosition();
+        this.isRoad = original.isRoad();
+        this.passable = original.passable();
+        this.neighbours = new HashSet<>(original.getNeighbours());
     }
 
     public static RouteNode getInstance(StandardWorldModel world, Road road) {
@@ -63,6 +63,10 @@ public class RouteNode {
             }
         }
         return null;
+    }
+
+    public static RouteNode copy(RouteNode original) {
+        return original != null ? new RouteNode(original) : null;
     }
 
     public static RouteNode getInstance(StandardWorldModel world, EntityID areaID) {
@@ -118,16 +122,16 @@ public class RouteNode {
         return true;
     }
 
+    public Set<EntityID> getNeighbours() {
+        return this.neighbours;
+    }
+
     public boolean isNeighbourNode(RouteNode node) {
         return this.isNeighbourNode(node.getID());
     }
 
     public boolean isNeighbourNode(EntityID nodeID) {
         return this.neighbours.contains(nodeID);
-    }
-
-    public Set<EntityID> getNeighbours() {
-        return this.neighbours;
     }
 
     public void addNeighbour(RouteNode node) {

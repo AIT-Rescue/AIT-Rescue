@@ -7,6 +7,7 @@ import rescuecore2.worldmodel.EntityID;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class RouteGraph {
 
@@ -15,10 +16,10 @@ public class RouteGraph {
     private Map<EntityID, RouteEdge> edgeMap;
 
     private Table<EntityID, EntityID, RouteEdge> edgeTable;
-    private Cache<List<EntityID>> cache;
+    private ConcurrentHashMap<Long, List<EntityID>> cache;
     //private Table<EntityID, EntityID, Set<RouteEdge>> et;
 
-    public RouteGraph(Map<EntityID, RouteNode> nodes, Map<EntityID, RouteEdge> edges, Table<EntityID, EntityID, RouteEdge> connectEdges, Cache<List<EntityID>> pathCache) {
+    public RouteGraph(Map<EntityID, RouteNode> nodes, Map<EntityID, RouteEdge> edges, Table<EntityID, EntityID, RouteEdge> connectEdges, ConcurrentHashMap<Long, List<EntityID>> pathCache) {
         this.nodeMap = nodes;
         this.edgeMap = edges;
         this.edgeTable = connectEdges;

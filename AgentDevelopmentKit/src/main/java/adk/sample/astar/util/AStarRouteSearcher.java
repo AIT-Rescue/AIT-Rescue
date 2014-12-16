@@ -92,7 +92,7 @@ public class AStarRouteSearcher implements RouteSearcher {
     public List<EntityID> noTargetMove(int time) {
         StandardWorldModel world = this.provider.getWorld();
         RouteGraph graph = this.routeManager.getPassableGraph();
-        EntityID current = this.provider.getOwner().getPosition();
+        EntityID current = this.provider.getOwnerLocation().getID();
         if(!graph.createPositionNode(world, current)) {
             return Lists.newArrayList(current);
         }

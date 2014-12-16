@@ -31,14 +31,14 @@ public class DistanceComparator implements Comparator<RouteNode> {
             end1 = this.toEnd.get(id1);
         }
         else {
-            end1 = PositionUtil.getDistance(this.goal.getPosition(), node1.getPosition());
+            end1 = PositionUtil.getLinearDistance(this.goal, node1);
             this.toEnd.put(id1, end1);
         }
         if(this.toEnd.containsKey(id2)) {
             end2 = this.toEnd.get(id2);
         }
         else {
-            end2 = PositionUtil.getDistance(this.goal.getPosition(), node2.getPosition());
+            end2 = PositionUtil.getLinearDistance(this.goal, node2);
             this.toEnd.put(id2, end1);
         }
         double value1 = fromStart.get(id1) + end1;

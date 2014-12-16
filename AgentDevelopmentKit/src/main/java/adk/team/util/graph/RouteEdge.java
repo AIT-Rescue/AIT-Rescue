@@ -7,13 +7,12 @@ import rescuecore2.standard.entities.StandardWorldModel;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class RouteEdge {
 
     private List<EntityID> route;
-    // RouteManagerに移動
-    // これいらないんじゃないか
-    private Cache<List<EntityID>> cache;
+    private ConcurrentHashMap<Long, List<EntityID>> cache;
 
     private EntityID firstNodeID;
     private EntityID secondNodeID;
@@ -23,17 +22,7 @@ public class RouteEdge {
     private Table<EntityID, EntityID, Double> routeDistance;
     private Map<EntityID, Double> roadDistance;
 
-    public RouteEdge(RouteEdge original) {
-        this.firstNodeID = original.getFirstNodeID();
-        this.secondNodeID = original.getSecondNodeID();
-        this.route = original.getAllElement();
-        this.impassable = new HashSet<>(original.getImpassable());
-        this.cache = original.getCache();
-        this.routeDistance = HashBasedTable.create(original.getDistanceTable());
-        this.roadDistance = new HashMap<>(original.getDistanceMap());
-    }
-
-    private RouteEdge(StandardWorldModel world, List<EntityID> path, Cache<List<EntityID>> pathCache) {
+    private RouteEdge(StandardWorldModel world, List<EntityID> path, ConcurrentHashMap<Long, List<EntityID>> pathCache) {
         this.firstNodeID = path.get(0);
         this.secondNodeID = path.get(path.size() - 1);
         this.route = path;
@@ -45,11 +34,25 @@ public class RouteEdge {
         this.createCache();
     }
 
-    public static RouteEdge getInstance(StandardWorldModel world, List<EntityID> path, Cache<List<EntityID>> cache) {
+    private RouteEdge(RouteEdge original) {
+        this.firstNodeID = original.getFirstNodeID();
+        this.secondNodeID = original.getSecondNodeID();
+        this.route = original.getAllElement();
+        this.impassable = new HashSet<>(original.getImpassableAreas());
+        this.cache = original.getCache();
+        this.routeDistance = HashBasedTable.create(original.getDistanceTable());
+        this.roadDistance = new HashMap<>(original.getDistanceMap());
+    }
+
+    public static RouteEdge getInstance(StandardWorldModel world, List<EntityID> path, ConcurrentHashMap<Long, List<EntityID>> cache) {
         if(world != null && path != null && path.size() > 1) {
             return new RouteEdge(world, path, cache);
         }
         return null;
+    }
+
+    public static RouteEdge copy(RouteEdge original) {
+        return original != null ? new RouteEdge(original) : null;
     }
 
     private void initDistanceToSecond() {
@@ -68,8 +71,8 @@ public class RouteEdge {
         path.remove(this.secondNodeID);
         List<EntityID> reverse = new ArrayList<>(path);
         Collections.reverse(reverse);
-        this.cache.put(this.firstNodeID, this.secondNodeID, path);
-        this.cache.put(this.secondNodeID, this.firstNodeID, reverse);
+        this.cache.put(getCacheKey(this.firstNodeID, this.secondNodeID), path);
+        this.cache.put(getCacheKey(this.secondNodeID, this.firstNodeID), reverse);
     }
 
     public EntityID getFirstNodeID() {
@@ -122,19 +125,19 @@ public class RouteEdge {
         return this.route;
     }
 
-    public Set<EntityID> getImpassable() {
+    public Set<EntityID> getImpassableAreas() {
         return this.impassable;
     }
 
-    public Cache<List<EntityID>> getCache() {
+    protected ConcurrentHashMap<Long, List<EntityID>> getCache() {
         return this.cache;
     }
 
-    public Table<EntityID, EntityID, Double> getDistanceTable() {
+    protected Table<EntityID, EntityID, Double> getDistanceTable() {
         return  this.routeDistance;
     }
 
-    public Map<EntityID, Double> getDistanceMap() {
+    protected Map<EntityID, Double> getDistanceMap() {
         return this.roadDistance;
     }
 
@@ -181,10 +184,10 @@ public class RouteEdge {
 
     public List<EntityID> getPath(EntityID nodeID) {
         if(this.isFirstNode(nodeID)) {
-            return this.cache.get(this.firstNodeID, this.secondNodeID);
+            return this.cache.get(this.getCacheKey(this.firstNodeID, this.secondNodeID));
         }
         if(this.isSecondNode(nodeID)) {
-            return this.cache.get(this.secondNodeID, this.firstNodeID);
+            return this.cache.get(this.getCacheKey(this.secondNodeID, this.firstNodeID));
         }
         return null;
     }
@@ -194,8 +197,8 @@ public class RouteEdge {
     }
 
     public List<EntityID> getPath(EntityID nodeID, EntityID target) {
-        if(this.cache.contains(nodeID, target)) {
-            return this.cache.get(nodeID, target);
+        if(this.cache.containsKey(this.getCacheKey(nodeID, target))) {
+            return this.cache.get(this.getCacheKey(nodeID, target));
         }
         if(this.isEdgeElement(nodeID) && this.isEdgeElement(target)) {
             List<EntityID> path = new ArrayList<>();
@@ -211,10 +214,10 @@ public class RouteEdge {
                     path.add(this.route.get(i));
                 }
             }
-            this.cache.put(nodeID, target, path);
+            this.cache.put(this.getCacheKey(nodeID, target), path);
             List<EntityID> reversePath = new ArrayList<>(path);
             Collections.reverse(reversePath);
-            this.cache.put(target, nodeID, reversePath);
+            this.cache.put(this.getCacheKey(target, nodeID), reversePath);
             return path;
         }
         return null;
@@ -228,7 +231,7 @@ public class RouteEdge {
         for(int i = 1; i < size; i++) {
             EntityID areaID = path.get(i);
             Area area = (Area)world.getEntity(areaID);
-            double distance = PositionUtil.pointDistance(area.getEdgeTo(path.get(i - 1)), area.getEdgeTo(path.get(i + 1)));
+            double distance = PositionUtil.getDistance(area.getEdgeTo(path.get(i - 1)), area.getEdgeTo(path.get(i + 1)));
             result.put(areaID, distance);
         }
         return result;
@@ -256,5 +259,9 @@ public class RouteEdge {
             }
         }
         return true;
+    }
+
+    public long getCacheKey(EntityID rowKey, EntityID columnKey) {
+        return (((long)rowKey.getValue()) << 32) + ((long)columnKey.getValue());
     }
 }
