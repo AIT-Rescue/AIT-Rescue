@@ -1,11 +1,13 @@
 package adk.sample.dummy.tactics;
 
+import adk.sample.astar.util.AStarRouteSearcher;
 import adk.sample.basic.tactics.BasicFire;
 import adk.sample.basic.event.BasicBuildingEvent;
 import adk.sample.basic.util.BasicBuildingSelector;
 import adk.sample.basic.util.BasicRouteSearcher;
 import adk.team.util.BuildingSelector;
 import adk.team.util.RouteSearcher;
+import adk.team.util.graph.RouteManager;
 import comlib.manager.MessageManager;
 
 public class DummyFire extends BasicFire {
@@ -27,6 +29,6 @@ public class DummyFire extends BasicFire {
 
     @Override
     public RouteSearcher initRouteSearcher() {
-        return new BasicRouteSearcher(this);
+        return new AStarRouteSearcher(this, new RouteManager(this.getWorld()));
     }
 }
