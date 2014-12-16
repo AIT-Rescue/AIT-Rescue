@@ -12,6 +12,7 @@ public class RouteEdge {
 
     private List<EntityID> route;
     // RouteManagerに移動
+    // これいらないんじゃないか
     private Cache<List<EntityID>> cache;
 
     private EntityID firstNodeID;

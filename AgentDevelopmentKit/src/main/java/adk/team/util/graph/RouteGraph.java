@@ -104,12 +104,16 @@ public class RouteGraph {
         }
         RouteEdge edge = this.edgeMap.get(areaID);
         RouteNode node = RouteNode.getInstance(world, areaID);
-        EntityID first = edge.getFirstNodeID();
+        /*EntityID first = edge.getFirstNodeID();
         List<EntityID> firstPath = Lists.newArrayList(first);
         firstPath.addAll(edge.getPath(first, areaID));
         EntityID second = edge.getSecondNodeID();
         List<EntityID> secondPath = edge.getPath(areaID, second);
-        secondPath.add(second);
+        secondPath.add(second);*/
+        List<EntityID> element = edge.getAllElement();
+        int index = element.indexOf(areaID);
+        List<EntityID> firstPath = element.subList(0, index);
+        List<EntityID> secondPath = element.subList(index + 1, element.size());
         this.nodeMap.put(areaID, node);
         this.register(world, firstPath);
         this.register(world, secondPath);
