@@ -15,12 +15,14 @@ public class RouteGraph {
     private Map<EntityID, RouteEdge> edgeMap;
 
     private Table<EntityID, EntityID, RouteEdge> edgeTable;
+    private Cache<List<EntityID>> cache;
     //private Table<EntityID, EntityID, Set<RouteEdge>> et;
 
-    public RouteGraph(Map<EntityID, RouteNode> nodes, Map<EntityID, RouteEdge> edges, Table<EntityID, EntityID, RouteEdge> connectEdges) {
+    public RouteGraph(Map<EntityID, RouteNode> nodes, Map<EntityID, RouteEdge> edges, Table<EntityID, EntityID, RouteEdge> connectEdges, Cache<List<EntityID>> pathCache) {
         this.nodeMap = nodes;
         this.edgeMap = edges;
         this.edgeTable = connectEdges;
+        this.cache = pathCache;
     }
 
     public RouteNode getNode(EntityID nodeID) {
@@ -115,7 +117,7 @@ public class RouteGraph {
     }
 
     private void register(StandardWorldModel world, List<EntityID> path) {
-        RouteEdge edge = RouteEdge.getInstance(world, path);
+        RouteEdge edge = RouteEdge.getInstance(world, path, this.cache);
         int size = path.size() - 1;
         for(int i = 1; i < size; i++) {
             this.edgeMap.put(path.get(i), edge);

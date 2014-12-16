@@ -155,8 +155,8 @@ public class RouteGraph {
                             }
                             RouteNode routeNode = this.nodeMap.get(areaID);
                             RouteNode node = routeNode != null ? routeNode : new RouteNode(world, areaID);
-                            node.addNode(neighbourID, roadID);
-                            roadNode.addNode(roadNeighbourID, areaID);
+                            node.addNeighbour(neighbourID, roadID);
+                            roadNode.addNeighbour(roadNeighbourID, areaID);
                             this.nodeMap.put(areaID, node);
                         }
                     }
@@ -198,8 +198,8 @@ public class RouteGraph {
                                 path.add(areaID);
                                 routeNode = this.nodeMap.get(areaID);
                                 RouteNode node = routeNode != null ? routeNode : new RouteNode(world, areaID);
-                                node.addNode(neighbourID, roadID);
-                                roadNode.addNode(id, areaID);
+                                node.addNeighbour(neighbourID, roadID);
+                                roadNode.addNeighbour(id, areaID);
                                 this.nodeMap.put(areaID, node);
                             }
                         }
@@ -280,10 +280,10 @@ public class RouteGraph {
                     path.addAll(endPath);
                     this.register(world, path);
                     RouteNode startNode = this.nodeMap.containsKey(start) ? this.nodeMap.get(start) : new RouteNode(world, start);
-                    startNode.addNode(path.get(1), end);
+                    startNode.addNeighbour(path.get(1), end);
                     this.nodeMap.put(start, startNode);
                     RouteNode endNode = this.nodeMap.containsKey(end) ? this.nodeMap.get(end) : new RouteNode(world, end);
-                    endNode.addNode(path.get(path.size() - 2), start);
+                    endNode.addNeighbour(path.get(path.size() - 2), start);
                     this.nodeMap.put(end, endNode);
                 }
             }
@@ -328,8 +328,8 @@ public class RouteGraph {
                         edgeFlag = false;
                         routeNode = this.nodeMap.get(areaID);
                         RouteNode node = routeNode != null ? routeNode : new RouteNode(world, areaID);
-                        node.addNode(neighbourID, buildingID);
-                        buildingNode.addNode(id, areaID);
+                        node.addNeighbour(neighbourID, buildingID);
+                        buildingNode.addNeighbour(id, areaID);
                         this.nodeMap.put(areaID, node);
                     }
                     else if(neighbourList.size() == 2) {
@@ -350,8 +350,8 @@ public class RouteGraph {
                             edgeFlag = false;
                             routeNode = this.nodeMap.get(areaID);
                             RouteNode node = routeNode != null ? routeNode : new RouteNode(world, areaID);
-                            node.addNode(neighbourID, buildingID);
-                            buildingNode.addNode(id, areaID);
+                            node.addNeighbour(neighbourID, buildingID);
+                            buildingNode.addNeighbour(id, areaID);
                             this.nodeMap.put(areaID, node);
                         }
                     }

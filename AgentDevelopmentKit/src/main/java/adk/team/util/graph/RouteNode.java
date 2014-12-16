@@ -1,13 +1,11 @@
 package adk.team.util.graph;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.collect.Lists;
 import rescuecore2.misc.Pair;
 import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class RouteNode {
@@ -16,8 +14,6 @@ public class RouteNode {
     private EntityID nodeID;
     // Node Position
     private Pair<Integer, Integer> position;
-    private int posX;
-    private int posY;
     // Node is Road
     private Boolean isRoad;
 
@@ -27,8 +23,6 @@ public class RouteNode {
 
     public RouteNode(RouteNode original) {
         this.nodeID = original.getID();
-        this.posX = original.getX();
-        this.posY = original.getY();
         this.position = original.getPosition();
         this.isRoad = original.isRoad();
         this.passable = original.passable();
@@ -37,8 +31,6 @@ public class RouteNode {
 
     private RouteNode(StandardWorldModel world, Road road) {
         this.nodeID = road.getID();
-        this.posX = road.getX();
-        this.posY = road.getY();
         this.position = road.getLocation(world);
         this.isRoad = Boolean.TRUE;
         this.passable = true;
@@ -47,8 +39,6 @@ public class RouteNode {
 
     private RouteNode(StandardWorldModel world, Building building) {
         this.nodeID = building.getID();
-        this.posX = building.getX();
-        this.posY = building.getY();
         this.position = building.getLocation(world);
         this.isRoad = Boolean.FALSE;
         this.passable = true;
@@ -93,11 +83,11 @@ public class RouteNode {
     }
 
     public int getX() {
-        return this.posX;
+        return this.position.first();
     }
 
     public int getY() {
-        return this.posY;
+        return this.position.second();
     }
 
     public Pair<Integer, Integer> getPosition() {
@@ -116,14 +106,6 @@ public class RouteNode {
         this.passable = flag;
     }
 
-    public boolean isNeighbourNode(RouteNode node) {
-        return this.isNeighbourNode(node.getID());
-    }
-
-    public boolean isNeighbourNode(EntityID nodeID) {
-        return this.neighbours.contains(nodeID);
-    }
-
     public boolean isSingleNode() {
         if(this.neighbours.isEmpty()) {
             return true;
@@ -136,28 +118,32 @@ public class RouteNode {
         return true;
     }
 
+    public boolean isNeighbourNode(RouteNode node) {
+        return this.isNeighbourNode(node.getID());
+    }
+
+    public boolean isNeighbourNode(EntityID nodeID) {
+        return this.neighbours.contains(nodeID);
+    }
+
     public Set<EntityID> getNeighbours() {
         return this.neighbours;
     }
 
-    public void addNode(RouteNode node) {
-        this.addNode(node.getID());
+    public void addNeighbour(RouteNode node) {
+        this.addNeighbour(node.getID());
     }
 
-    public void addNode(EntityID id) {
+    public void addNeighbour(EntityID id) {
         this.neighbours.add(id);
     }
 
-    public void removeNode(RouteNode node) {
-        this.removeNode(node.getID());
+    public void removeNeighbour(RouteNode node) {
+        this.removeNeighbour(node.getID());
     }
 
-    public void removeNode(EntityID id) {
+    public void removeNeighbour(EntityID id) {
         this.neighbours.remove(id);
-    }
-
-    public List<EntityID> getPath() {
-        return Lists.newArrayList(this.nodeID);
     }
 
     @Override
@@ -178,8 +164,8 @@ public class RouteNode {
     public String toString(){
         return MoreObjects.toStringHelper(this)
                 .add("nodeID", this.nodeID)
-                .add("posX", this.posX)
-                .add("posY", this.posY)
+                .add("posX", this.position.first())
+                .add("posY", this.position.second())
                 .add("isRoad", this.isRoad)
                 .add("passable", this.passable)
                 .add("neighbours", this.neighbours)

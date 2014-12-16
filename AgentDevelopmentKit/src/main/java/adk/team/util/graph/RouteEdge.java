@@ -1,7 +1,6 @@
 package adk.team.util.graph;
 
 import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import rescuecore2.standard.entities.Area;
 import rescuecore2.standard.entities.StandardWorldModel;
@@ -12,10 +11,8 @@ import java.util.*;
 public class RouteEdge {
 
     private List<EntityID> route;
-    // path cache <startID, targetID, cache>
-    // いらなくね？？？
     // RouteManagerに移動
-    private Table<EntityID, EntityID, List<EntityID>> pathCache;
+    private Cache<List<EntityID>> cache;
 
     private EntityID firstNodeID;
     private EntityID secondNodeID;
@@ -30,26 +27,26 @@ public class RouteEdge {
         this.secondNodeID = original.getSecondNodeID();
         this.route = original.getAllElement();
         this.impassable = new HashSet<>(original.getImpassable());
-        this.pathCache = HashBasedTable.create(original.getCache());
+        this.cache = original.getCache();
         this.routeDistance = HashBasedTable.create(original.getDistanceTable());
         this.roadDistance = new HashMap<>(original.getDistanceMap());
     }
 
-    private RouteEdge(StandardWorldModel world, List<EntityID> path) {
+    private RouteEdge(StandardWorldModel world, List<EntityID> path, Cache<List<EntityID>> pathCache) {
         this.firstNodeID = path.get(0);
         this.secondNodeID = path.get(path.size() - 1);
         this.route = path;
         this.impassable = new HashSet<>();
-        this.pathCache = HashBasedTable.create();
+        this.cache = pathCache;
         this.routeDistance = HashBasedTable.create();
         this.roadDistance = this.getDistanceMap(world, path);
         this.initDistanceToSecond();
         this.createCache();
     }
 
-    public static RouteEdge getInstance(StandardWorldModel world, List<EntityID> path) {
+    public static RouteEdge getInstance(StandardWorldModel world, List<EntityID> path, Cache<List<EntityID>> cache) {
         if(world != null && path != null && path.size() > 1) {
-            return new RouteEdge(world, path);
+            return new RouteEdge(world, path, cache);
         }
         return null;
     }
@@ -70,8 +67,8 @@ public class RouteEdge {
         path.remove(this.secondNodeID);
         List<EntityID> reverse = new ArrayList<>(path);
         Collections.reverse(reverse);
-        this.pathCache.put(this.firstNodeID, this.secondNodeID, path);
-        this.pathCache.put(this.secondNodeID, this.firstNodeID, reverse);
+        this.cache.put(this.firstNodeID, this.secondNodeID, path);
+        this.cache.put(this.secondNodeID, this.firstNodeID, reverse);
     }
 
     public EntityID getFirstNodeID() {
@@ -128,8 +125,8 @@ public class RouteEdge {
         return this.impassable;
     }
 
-    public Table<EntityID, EntityID, List<EntityID>> getCache() {
-        return this.pathCache;
+    public Cache<List<EntityID>> getCache() {
+        return this.cache;
     }
 
     public Table<EntityID, EntityID, Double> getDistanceTable() {
@@ -138,14 +135,6 @@ public class RouteEdge {
 
     public Map<EntityID, Double> getDistanceMap() {
         return this.roadDistance;
-    }
-
-    public Set<EntityID> getNeighbours() {
-        return Sets.newHashSet(this.firstNodeID, this.secondNodeID);
-    }
-
-    public boolean isLoop() {
-        return this.firstNodeID.getValue() == this.secondNodeID.getValue();
     }
 
     public boolean passable() {
@@ -191,10 +180,10 @@ public class RouteEdge {
 
     public List<EntityID> getPath(EntityID nodeID) {
         if(this.isFirstNode(nodeID)) {
-            return this.pathCache.get(this.firstNodeID, this.secondNodeID);
+            return this.cache.get(this.firstNodeID, this.secondNodeID);
         }
         if(this.isSecondNode(nodeID)) {
-            return this.pathCache.get(this.secondNodeID, this.firstNodeID);
+            return this.cache.get(this.secondNodeID, this.firstNodeID);
         }
         return null;
     }
@@ -204,8 +193,8 @@ public class RouteEdge {
     }
 
     public List<EntityID> getPath(EntityID nodeID, EntityID target) {
-        if(this.pathCache.contains(nodeID, target)) {
-            return this.pathCache.get(nodeID, target);
+        if(this.cache.contains(nodeID, target)) {
+            return this.cache.get(nodeID, target);
         }
         if(this.isEdgeElement(nodeID) && this.isEdgeElement(target)) {
             List<EntityID> path = new ArrayList<>();
@@ -221,10 +210,10 @@ public class RouteEdge {
                     path.add(this.route.get(i));
                 }
             }
-            this.pathCache.put(nodeID, target, path);
+            this.cache.put(nodeID, target, path);
             List<EntityID> reversePath = new ArrayList<>(path);
             Collections.reverse(reversePath);
-            this.pathCache.put(target, nodeID, reversePath);
+            this.cache.put(target, nodeID, reversePath);
             return path;
         }
         return null;
@@ -260,7 +249,7 @@ public class RouteEdge {
         if(element.get(0).getValue() != this.route.get(0).getValue()) {
             Collections.reverse(element);
         }
-        for(int i = 1; i < element.size(); i++) {
+        for(int i = 0; i < element.size(); i++) {
             if(element.get(i).getValue() != this.route.get(i).getValue()) {
                 return false;
             }

@@ -19,19 +19,23 @@ public class RouteManager {
     private Map<EntityID, RouteEdge> passableEdgeMap;
     private Table<EntityID, EntityID, RouteEdge> passableEdgeTable;
 
+    // path cache <startID, targetID, cache>
+    private Cache<List<EntityID>> pathCache;
+
     public RouteManager(StandardWorldModel world) {
         this.nodeMap = new HashMap<>();
         this.edgeMap = new HashMap<>();
         this.edgeTable = HashBasedTable.create();
+        this.pathCache = new Cache<>();
         this.analysis(world);
     }
 
     public RouteGraph getPassableGraph() {
-        return new RouteGraph(new HashMap<>(this.passableNodeMap), new HashMap<>(this.passableEdgeMap), HashBasedTable.create(this.passableEdgeTable));
+        return new RouteGraph(new HashMap<>(this.passableNodeMap), new HashMap<>(this.passableEdgeMap), HashBasedTable.create(this.passableEdgeTable), this.pathCache);
     }
 
     public RouteGraph getGraph() {
-        return new RouteGraph(new HashMap<>(this.nodeMap), new HashMap<>(this.edgeMap), HashBasedTable.create(this.edgeTable));
+        return new RouteGraph(new HashMap<>(this.nodeMap), new HashMap<>(this.edgeMap), HashBasedTable.create(this.edgeTable), this.pathCache);
     }
 
     public void setPassable(StandardWorldModel world, EntityID areaID, boolean flag) {
@@ -49,7 +53,12 @@ public class RouteManager {
         else if(this.edgeMap.containsKey(areaID)) {
             RouteEdge edge = this.edgeMap.get(areaID);
             edge.setPassable(areaID, flag);
-            this.edgeMap.put(areaID, edge);
+            //this.edgeMap.put(areaID, edge);
+            List<EntityID> path = edge.getAllElement();
+            int size = path.size() - 1;
+            for(int i = 1; i < size; i++) {
+                this.edgeMap.put(path.get(i), edge);
+            }
             EntityID first = edge.getFirstNodeID();
             EntityID second = edge.getSecondNodeID();
             this.edgeTable.put(first, second, edge);
@@ -66,8 +75,7 @@ public class RouteManager {
     private Set<EntityID> impassableArea;
 
     private void registerPassable(StandardWorldModel world, List<EntityID> path) {
-
-        RouteEdge edge = RouteEdge.getInstance(world, path);
+        RouteEdge edge = RouteEdge.getInstance(world, path, this.pathCache);
         int size = path.size() - 1;
         for(int i = 1; i < size; i++) {
             this.passableEdgeMap.put(path.get(i), edge);
@@ -90,7 +98,7 @@ public class RouteManager {
         for(EntityID nodeID : ((Area)world.getEntity(areaID)).getNeighbours()) {
             if(this.passableNodeMap.containsKey(nodeID)) {
                 RouteNode node = this.passableNodeMap.get(nodeID);
-                node.removeNode(oldNode);
+                node.removeNeighbour(oldNode);
                 this.passableNodeMap.put(nodeID, node);
                 continue;
             }
@@ -104,9 +112,9 @@ public class RouteManager {
             newPath.add(another);
             this.registerPassable(world, newPath);
             // remove old data
-            newNode.addNode(anotherNode);
-            anotherNode.addNode(newNode);
-            anotherNode.removeNode(oldNode);
+            newNode.addNeighbour(anotherNode);
+            anotherNode.addNeighbour(newNode);
+            anotherNode.removeNeighbour(oldNode);
             this.passableEdgeMap.remove(nodeID);
             this.passableEdgeTable.remove(areaID, another);
             this.passableEdgeTable.remove(another, areaID);
@@ -129,16 +137,16 @@ public class RouteManager {
         EntityID secondNeighbour = path.get(areaIndex + 1);
         if(this.passableNodeMap.containsKey(firstNeighbour)) {
             RouteNode node = this.passableNodeMap.get(firstNeighbour);
-            node.removeNode(edge.getAnotherNodeID(firstNeighbour));
+            node.removeNeighbour(edge.getAnotherNodeID(firstNeighbour));
             this.passableNodeMap.put(firstNeighbour, node);
         }
         else {
             RouteNode node = RouteNode.getInstance(world, firstNeighbour);
             EntityID firstNodeID = edge.getFirstNodeID();
             RouteNode firstNode = this.passableNodeMap.get(firstNodeID);
-            node.addNode(firstNode);
-            firstNode.addNode(node);
-            firstNode.removeNode(edge.getSecondNodeID());
+            node.addNeighbour(firstNode);
+            firstNode.addNeighbour(node);
+            firstNode.removeNeighbour(edge.getSecondNodeID());
             this.registerPassable(world, path.subList(0, areaIndex));
             this.passableEdgeMap.remove(firstNeighbour);
             this.passableNodeMap.put(firstNeighbour, node);
@@ -147,16 +155,16 @@ public class RouteManager {
 
         if(this.passableNodeMap.containsKey(secondNeighbour)) {
             RouteNode node = this.passableNodeMap.get(secondNeighbour);
-            node.removeNode(edge.getAnotherNodeID(secondNeighbour));
+            node.removeNeighbour(edge.getAnotherNodeID(secondNeighbour));
             this.passableNodeMap.put(secondNeighbour, node);
         }
         else {
             RouteNode node = RouteNode.getInstance(world, secondNeighbour);
             EntityID secondNodeID = edge.getSecondNodeID();
             RouteNode secondNode = this.passableNodeMap.get(secondNodeID);
-            node.addNode(secondNode);
-            secondNode.addNode(node);
-            secondNode.removeNode(edge.getFirstNodeID());
+            node.addNeighbour(secondNode);
+            secondNode.addNeighbour(node);
+            secondNode.removeNeighbour(edge.getFirstNodeID());
             this.registerPassable(world, path.subList(areaIndex + 1, path.size()));
             this.passableEdgeMap.remove(secondNeighbour);
             this.passableNodeMap.put(secondNeighbour, node);
@@ -174,12 +182,12 @@ public class RouteManager {
         RouteNode node = new RouteNode(this.nodeMap.get(areaID));
         for(EntityID nodeID : ((Area)world.getEntity(areaID)).getNeighbours()) {
             if(!this.passableNodeMap.containsKey(nodeID)) {
-                node.removeNode(nodeID);
+                node.removeNeighbour(nodeID);
                 continue;
             }
             if(this.nodeMap.containsKey(nodeID)) {
                 RouteNode neighbourNode = this.passableNodeMap.get(nodeID);
-                neighbourNode.addNode(areaID);
+                neighbourNode.addNeighbour(areaID);
                 this.passableNodeMap.put(nodeID, neighbourNode);
                 continue;
             }
@@ -187,9 +195,9 @@ public class RouteManager {
                 if(this.passableNodeMap.containsKey(id)) {
                     this.registerPassable(world, Lists.newArrayList(areaID, nodeID, id));
                     RouteNode anotherNode = this.passableNodeMap.get(id);
-                    anotherNode.removeNode(nodeID);
-                    anotherNode.addNode(areaID);
-                    node.addNode(id);
+                    anotherNode.removeNeighbour(nodeID);
+                    anotherNode.addNeighbour(areaID);
+                    node.addNeighbour(id);
                     this.passableNodeMap.put(id, anotherNode);
                     this.passableNodeMap.remove(nodeID);
                 }
@@ -201,9 +209,9 @@ public class RouteManager {
                     path.add(anotherID);
                     this.registerPassable(world, path);
                     RouteNode anotherNode = this.passableNodeMap.get(anotherID);
-                    anotherNode.removeNode(nodeID);
-                    anotherNode.addNode(areaID);
-                    node.addNode(anotherID);
+                    anotherNode.removeNeighbour(nodeID);
+                    anotherNode.addNeighbour(areaID);
+                    node.addNeighbour(anotherID);
                     this.passableNodeMap.put(anotherID, anotherNode);
                     this.passableNodeMap.remove(nodeID);
                 }
@@ -248,7 +256,7 @@ public class RouteManager {
                             newPath.addAll(edge.getPath(newFirst));
                             newPath.add(firstID);
                             RouteNode node = this.passableNodeMap.get(newFirst);
-                            node.removeNode(firstID);
+                            node.removeNeighbour(firstID);
                             this.passableNodeMap.put(newFirst, node);
                             this.passableNodeMap.remove(firstID);
                         }
@@ -259,7 +267,7 @@ public class RouteManager {
                                 newPath.add(newFirst);
                                 newPath.add(firstID);
                                 RouteNode node = this.passableNodeMap.get(newFirst);
-                                node.removeNode(firstID);
+                                node.removeNeighbour(firstID);
                                 this.passableNodeMap.put(newFirst, node);
                                 this.passableNodeMap.remove(firstID);
                             }
@@ -301,7 +309,7 @@ public class RouteManager {
                             newPath.addAll(edge.getPath(secondID));
                             newPath.add(newSecond);
                             RouteNode node = this.passableNodeMap.get(newSecond);
-                            node.removeNode(secondID);
+                            node.removeNeighbour(secondID);
                             this.passableNodeMap.put(newSecond, node);
                             this.passableNodeMap.remove(secondID);
                         }
@@ -312,7 +320,7 @@ public class RouteManager {
                                 newPath.add(secondID);
                                 newPath.add(newSecond);
                                 RouteNode node = this.passableNodeMap.get(newSecond);
-                                node.removeNode(secondID);
+                                node.removeNeighbour(secondID);
                                 this.passableNodeMap.put(newSecond, node);
                                 this.passableNodeMap.remove(secondID);
                             }
@@ -333,8 +341,8 @@ public class RouteManager {
         this.registerPassable(world, newPath);
         RouteNode newFirstNode = this.passableNodeMap.get(newFirst);
         RouteNode newSecondNode = this.passableNodeMap.get(newSecond);
-        newFirstNode.addNode(newSecond);
-        newSecondNode.addNode(newFirst);
+        newFirstNode.addNeighbour(newSecond);
+        newSecondNode.addNeighbour(newFirst);
         this.passableNodeMap.put(newFirst, newFirstNode);
         this.passableNodeMap.put(newSecond, newSecondNode);
         if(remove) {
@@ -403,11 +411,11 @@ public class RouteManager {
                             }
                             RouteNode routeNode = this.nodeMap.get(areaID);
                             RouteNode node = routeNode != null ? routeNode : RouteNode.getInstance(world, area);
-                            node.addNode(roadNode);
+                            node.addNeighbour(roadNode);
                             Set<EntityID> processed1 = processedNeighbours.get(areaID);
                             processed1.add(neighbourID);
                             processedNeighbours.put(areaID, processed1);
-                            roadNode.addNode(node);
+                            roadNode.addNeighbour(node);
                             processed.add(roadNeighbourID);
                             this.nodeMap.put(areaID, node);
                         }
@@ -452,11 +460,11 @@ public class RouteManager {
                                 path.add(areaID);
                                 routeNode = this.nodeMap.get(areaID);
                                 RouteNode node = routeNode != null ? routeNode : RouteNode.getInstance(world, area);
-                                node.addNode(roadNode);
+                                node.addNeighbour(roadNode);
                                 Set<EntityID> processed1 = processedNeighbours.get(areaID);
                                 processed1.add(neighbourID);
                                 processedNeighbours.put(areaID, processed1);
-                                roadNode.addNode(node);
+                                roadNode.addNeighbour(node);
                                 processed.add(id);
                                 this.nodeMap.put(areaID, node);
                             }
@@ -552,12 +560,12 @@ public class RouteManager {
                     this.register(world, path);
                     RouteNode startNode = this.nodeMap.containsKey(start) ? this.nodeMap.get(start) : RouteNode.getInstance(world, start);
                     RouteNode endNode = this.nodeMap.containsKey(end) ? this.nodeMap.get(end) : RouteNode.getInstance(world, end);
-                    startNode.addNode(endNode);
+                    startNode.addNeighbour(endNode);
                     Set<EntityID> processed = processedNeighbours.get(start);
                     processed.add(path.get(1));
                     processedNeighbours.put(start, processed);
                     this.nodeMap.put(start, startNode);
-                    endNode.addNode(startNode);
+                    endNode.addNeighbour(startNode);
                     Set<EntityID> processed1 = processedNeighbours.get(end);
                     processed1.add(path.get(path.size() - 2));
                     processedNeighbours.put(end, processed1);
@@ -606,11 +614,11 @@ public class RouteManager {
                         edgeFlag = false;
                         routeNode = this.nodeMap.get(areaID);
                         RouteNode node = routeNode != null ? routeNode : RouteNode.getInstance(world, area);
-                        node.addNode(buildingNode);
+                        node.addNeighbour(buildingNode);
                         Set<EntityID> processed1 = processedNeighbours.get(areaID);
                         processed1.add(neighbourID);
                         processedNeighbours.put(areaID, processed1);
-                        buildingNode.addNode(node);
+                        buildingNode.addNeighbour(node);
                         processed.add(id);
                         this.nodeMap.put(areaID, node);
                     }
@@ -632,11 +640,11 @@ public class RouteManager {
                             edgeFlag = false;
                             routeNode = this.nodeMap.get(areaID);
                             RouteNode node = routeNode != null ? routeNode : RouteNode.getInstance(world, area);
-                            node.addNode(buildingNode);
+                            node.addNeighbour(buildingNode);
                             Set<EntityID> processed1 = processedNeighbours.get(areaID);
                             processed1.add(neighbourID);
                             processedNeighbours.put(areaID, processed1);
-                            buildingNode.addNode(node);
+                            buildingNode.addNeighbour(node);
                             processed.add(id);
                             this.nodeMap.put(areaID, node);
                         }
@@ -651,7 +659,7 @@ public class RouteManager {
     }
 
     private void register(StandardWorldModel world, List<EntityID> path) {
-        RouteEdge edge = RouteEdge.getInstance(world, path);
+        RouteEdge edge = RouteEdge.getInstance(world, path, this.pathCache);
         int size = path.size() - 1;
         for(int i = 1; i < size; i++) {
             this.edgeMap.put(path.get(i), edge);
