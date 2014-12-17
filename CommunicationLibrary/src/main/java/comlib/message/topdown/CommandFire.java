@@ -9,13 +9,13 @@ public class CommandFire extends CommunicationMessage
 
 	public CommandFire(int test)
 	{
-		super(MessageID.reportMessage);
+		super(MessageID.fireCommand);
 		dummyTest = test;
 	}
 
 	public CommandFire(int time, int ttl, int test)
 	{
-		super(MessageID.reportMessage, time, ttl);
+		super(MessageID.fireCommand, time, ttl);
 		dummyTest = test;
 	}
 

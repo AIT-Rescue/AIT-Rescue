@@ -9,13 +9,13 @@ public class CommandAmbulance extends CommunicationMessage
 
 	public CommandAmbulance(int test)
 	{
-		super(MessageID.reportMessage);
+		super(MessageID.ambulanceCommand);
 		dummyTest = test;
 	}
 
 	public CommandAmbulance(int time, int ttl, int test)
 	{
-		super(MessageID.reportMessage, time, ttl);
+		super(MessageID.ambulanceCommand, time, ttl);
 		dummyTest = test;
 	}
 

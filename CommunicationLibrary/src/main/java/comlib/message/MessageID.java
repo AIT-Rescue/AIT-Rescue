@@ -14,4 +14,8 @@ public interface MessageID
 	int roadMessage = 5;
 
 	int reportMessage = 6;
+	int policeCommand = 7;
+	int ambulanceCommand = 8;
+	int fireCommand = 9;
+	int scoutCommand = 10;
 }

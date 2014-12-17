@@ -9,13 +9,13 @@ public class CommandPolice extends CommunicationMessage
 
 	public CommandPolice(int test)
 	{
-		super(MessageID.reportMessage);
+		super(MessageID.policeCommand);
 		dummyTest = test;
 	}
 
 	public CommandPolice(int time, int ttl, int test)
 	{
-		super(MessageID.reportMessage, time, ttl);
+		super(MessageID.policeCommand, time, ttl);
 		dummyTest = test;
 	}
 

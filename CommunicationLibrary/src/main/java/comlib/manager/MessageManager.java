@@ -6,6 +6,7 @@ import comlib.event.MessageEvent;
 import comlib.message.CommunicationMessage;
 import comlib.message.MessageID;
 import comlib.provider.information.*;
+import comlib.provider.topdown.*;
 import comlib.util.BitOutputStream;
 import comlib.util.BitStreamReader;
 
@@ -220,6 +221,11 @@ public class MessageManager
 		this.registerStandardProvider(new ProviderMessagePoliceForce(MessageID.policeForceMessage));
 		this.registerStandardProvider(new ProviderMessageAmbulanceTeam(MessageID.ambulanceTeamMessage));
 		this.registerStandardProvider(new ProviderMessageBuilding(MessageID.buildingMessage));
+		this.registerStandardProvider(new ProviderMessageRoad(MessageID.roadMessage));
+		this.registerStandardProvider(new ProviderMessageReport(MessageID.reportMessage));
+		this.registerStandardProvider(new ProviderCommandPolice(MessageID.policeCommand));
+		this.registerStandardProvider(new ProviderCommandAmbulance(MessageID.ambulanceCommand));
+		this.registerStandardProvider(new ProviderCommandFire(MessageID.fireCommand));
 		//this.register(CommunicationMessage.buildingMessageID, new ProviderMessageBuilding(this.event));
 		//this.register(CommunicationMessage.blockadeMessageID, new BlockadeMessageProvider(this.event));
 		//this.register(CommunicationMessage.victimMessageID,   new VictimMessageProvider());

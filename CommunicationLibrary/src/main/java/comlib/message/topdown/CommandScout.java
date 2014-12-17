@@ -9,13 +9,13 @@ public class CommandScout extends CommunicationMessage
 
 	public CommandScout(int test)
 	{
-		super(MessageID.reportMessage);
+		super(MessageID.scoutCommand);
 		dummyTest = test;
 	}
 
 	public CommandScout(int time, int ttl, int test)
 	{
-		super(MessageID.reportMessage, time, ttl);
+		super(MessageID.scoutCommand, time, ttl);
 		dummyTest = test;
 	}
 
