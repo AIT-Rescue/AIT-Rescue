@@ -147,7 +147,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
             return new ActionClear(this, (int) (this.me().getX() + vector.getX()), (int) (this.me().getY() + vector.getY()));
         }
         if(this.beforeMove) {
-            if(this.equalsPoint(this.agentPoint, this.mainTargetPoint, 1.0D)) {
+            if(this.equalsPoint(this.agentPoint, this.mainTargetPoint, 10.0D)) {
                 this.removeTargetPoint(road, this.mainTargetPoint);
                 this.mainTargetPoint = null;
                 List<Point2D> clearPoint = this.clearListMap.get(roadID);
@@ -301,7 +301,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         Point2D end = edge.getEnd();
         double endX = end.getX();
         double endY = end.getY();
-        return Line2D.linesIntersect(point.getX(), point.getY(), targetPoint.getX(), targetPoint.getY(), startX, startY, endX, endY) && !this.equalsPoint(targetPoint, ((startX + endX) / 2.0D), (startY + endX) / 2.0D, 1.0D);
+        return Line2D.linesIntersect(point.getX(), point.getY(), targetPoint.getX(), targetPoint.getY(), startX, startY, endX, endY) && !this.equalsPoint(targetPoint, ((startX + endX) / 2.0D), (startY + endX) / 2.0D, 10.0D);
     }
 
     /*public Point2D getEdgePoint(Edge edge) {

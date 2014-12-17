@@ -190,6 +190,13 @@ public class RouteEdge {
             return this.cache.get(this.getCacheKey(this.secondNodeID, this.firstNodeID));
         }
         return null;
+        /*if(this.isFirstNode(nodeID)) {
+            return this.getPath(this.firstNodeID, this.secondNodeID);
+        }
+        if(this.isSecondNode(nodeID)) {
+            return this.getPath(this.secondNodeID, this.firstNodeID);
+        }
+        return null;*/
     }
 
     public List<EntityID> getPath(RouteNode node, EntityID target) {

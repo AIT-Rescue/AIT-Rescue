@@ -77,12 +77,14 @@ public class RouteManager {
 
     private void registerPassable(StandardWorldModel world, List<EntityID> path) {
         RouteEdge edge = RouteEdge.getInstance(world, path, this.pathCache);
-        int size = path.size() - 1;
-        for(int i = 1; i < size; i++) {
-            this.passableEdgeMap.put(path.get(i), edge);
+        if(edge != null) {
+            int size = path.size() - 1;
+            for (int i = 1; i < size; i++) {
+                this.passableEdgeMap.put(path.get(i), edge);
+            }
+            this.passableEdgeTable.put(path.get(0), path.get(size), edge);
+            this.passableEdgeTable.put(path.get(size), path.get(0), edge);
         }
-        this.passableEdgeTable.put(path.get(0), path.get(size), edge);
-        this.passableEdgeTable.put(path.get(size), path.get(0), edge);
     }
 
     // remove node
@@ -148,7 +150,7 @@ public class RouteManager {
             node.addNeighbour(firstNode);
             firstNode.addNeighbour(node);
             firstNode.removeNeighbour(edge.getSecondNodeID());
-            this.registerPassable(world, path.subList(0, areaIndex));
+            this.registerPassable(world, path.subList(0, areaIndex + 1));
             this.passableEdgeMap.remove(firstNeighbour);
             this.passableNodeMap.put(firstNeighbour, node);
             this.passableNodeMap.put(firstNodeID, firstNode);
@@ -166,7 +168,7 @@ public class RouteManager {
             node.addNeighbour(secondNode);
             secondNode.addNeighbour(node);
             secondNode.removeNeighbour(edge.getFirstNodeID());
-            this.registerPassable(world, path.subList(areaIndex + 1, path.size()));
+            this.registerPassable(world, path.subList(areaIndex, path.size()));
             this.passableEdgeMap.remove(secondNeighbour);
             this.passableNodeMap.put(secondNeighbour, node);
             this.passableNodeMap.put(secondNodeID, secondNode);
@@ -190,13 +192,15 @@ public class RouteManager {
                 continue;
             }
             if(this.nodeMap.containsKey(nodeID)) {
-                RouteNode neighbourNode = this.passableNodeMap.get(nodeID);
-                neighbourNode.addNeighbour(areaID);
-                this.passableNodeMap.put(nodeID, neighbourNode);
+                RouteNode neighbourNode = RouteNode.copy(this.passableNodeMap.get(nodeID));
+                if(neighbourNode != null) {
+                    neighbourNode.addNeighbour(areaID);
+                    this.passableNodeMap.put(nodeID, neighbourNode);
+                }
                 continue;
             }
             this.passableNodeMap.get(nodeID).getNeighbours().stream().filter(id -> id.getValue() != areaID.getValue()).forEach(id -> {
-                if(this.passableNodeMap.containsKey(id)) {
+                if (this.passableNodeMap.containsKey(id)) {
                     this.registerPassable(world, Lists.newArrayList(areaID, nodeID, id));
                     RouteNode anotherNode = this.passableNodeMap.get(id);
                     anotherNode.removeNeighbour(nodeID);
@@ -204,8 +208,7 @@ public class RouteManager {
                     node.addNeighbour(id);
                     this.passableNodeMap.put(id, anotherNode);
                     this.passableNodeMap.remove(nodeID);
-                }
-                else {
+                } else {
                     RouteEdge edge = this.passableEdgeMap.get(id);
                     EntityID anotherID = edge.getAnotherNodeID(nodeID);
                     List<EntityID> path = Lists.newArrayList(areaID, nodeID);
@@ -664,11 +667,13 @@ public class RouteManager {
 
     private void register(StandardWorldModel world, List<EntityID> path) {
         RouteEdge edge = RouteEdge.getInstance(world, path, this.pathCache);
-        int size = path.size() - 1;
-        for(int i = 1; i < size; i++) {
-            this.edgeMap.put(path.get(i), edge);
+        if(edge != null) {
+            int size = path.size() - 1;
+            for (int i = 1; i < size; i++) {
+                this.edgeMap.put(path.get(i), edge);
+            }
+            this.edgeTable.put(path.get(0), path.get(size), edge);
+            this.edgeTable.put(path.get(size), path.get(0), edge);
         }
-        this.edgeTable.put(path.get(0), path.get(size), edge);
-        this.edgeTable.put(path.get(size), path.get(0), edge);
     }
 }
