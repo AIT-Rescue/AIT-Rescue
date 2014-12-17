@@ -3,6 +3,16 @@
 #release directory
 release/
 
+#LaTeX file
+*.log
+*.aux
+*.dvi
+*.toc
+*.bbl
+*.blg
+2014*/
+2015*/
+
 # rescue
 test-results/
 
