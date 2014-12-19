@@ -44,9 +44,9 @@ public class RouteEdge {
         this.roadDistance = new HashMap<>(original.getDistanceMap());
     }
 
-    public static RouteEdge getInstance(StandardWorldModel world, List<EntityID> path, ConcurrentHashMap<Long, List<EntityID>> cache) {
+    public static RouteEdge getInstance(StandardWorldModel world, List<EntityID> path, ConcurrentHashMap<Long, List<EntityID>> pathCache) {
         if(world != null && path != null && path.size() > 1) {
-            return new RouteEdge(world, path, cache);
+            return new RouteEdge(world, path, pathCache);
         }
         return null;
     }
@@ -190,13 +190,6 @@ public class RouteEdge {
             return this.cache.get(this.getCacheKey(this.secondNodeID, this.firstNodeID));
         }
         return null;
-        /*if(this.isFirstNode(nodeID)) {
-            return this.getPath(this.firstNodeID, this.secondNodeID);
-        }
-        if(this.isSecondNode(nodeID)) {
-            return this.getPath(this.secondNodeID, this.firstNodeID);
-        }
-        return null;*/
     }
 
     public List<EntityID> getPath(RouteNode node, EntityID target) {

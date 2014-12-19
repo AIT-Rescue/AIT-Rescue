@@ -1,6 +1,6 @@
 package sample.util;
 
-import adk.team.util.DebrisRemovalSelector;
+import adk.team.util.ImpassableSelector;
 import adk.team.util.graph.PositionUtil;
 import adk.team.util.provider.WorldProvider;
 import rescuecore2.standard.entities.Blockade;
@@ -11,7 +11,7 @@ import rescuecore2.worldmodel.EntityID;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SampleDebrisRemovalSelector implements DebrisRemovalSelector {
+public class SampleDebrisRemovalSelector implements ImpassableSelector {
 
     public Set<Road> impassableRoadList;
     public Set<EntityID> passableRoadList;

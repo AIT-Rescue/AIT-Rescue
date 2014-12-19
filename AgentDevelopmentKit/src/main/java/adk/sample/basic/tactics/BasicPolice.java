@@ -5,12 +5,12 @@ import adk.team.action.ActionClear;
 import adk.team.action.ActionMove;
 import adk.team.action.ActionRest;
 import adk.team.tactics.TacticsPolice;
-import adk.team.util.DebrisRemovalSelector;
+import adk.team.util.ImpassableSelector;
 import adk.team.util.graph.PositionUtil;
 import adk.team.util.RouteSearcher;
 import adk.team.util.graph.RouteGraph;
 import adk.team.util.graph.RouteManager;
-import adk.team.util.provider.DebrisRemovalSelectorProvider;
+import adk.team.util.provider.ImpassableSelectorProvider;
 import adk.team.util.provider.RouteSearcherProvider;
 import com.google.common.collect.Lists;
 import comlib.manager.MessageManager;
@@ -27,9 +27,9 @@ import rescuecore2.worldmodel.EntityID;
 import java.awt.geom.Line2D;
 import java.util.*;
 
-public abstract class BasicPolice extends TacticsPolice implements RouteSearcherProvider, DebrisRemovalSelectorProvider {
+public abstract class BasicPolice extends TacticsPolice implements RouteSearcherProvider, ImpassableSelectorProvider {
 
-    public DebrisRemovalSelector debrisRemovalSelector;
+    public ImpassableSelector impassableSelector;
 
     public RouteSearcher routeSearcher;
 
@@ -44,7 +44,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
     @Override
     public void preparation(Config config) {
         this.routeSearcher = this.initRouteSearcher();
-        this.debrisRemovalSelector = this.initDebrisRemovalSelector();
+        this.impassableSelector = this.initDebrisRemovalSelector();
         this.beforeMove = false;
         this.neighbourEdgesMap = new HashMap<>();
         this.passablePointMap = new HashMap<>();
@@ -80,7 +80,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         return true;
     }
 
-    public abstract DebrisRemovalSelector initDebrisRemovalSelector();
+    public abstract ImpassableSelector initDebrisRemovalSelector();
 
     public abstract RouteSearcher initRouteSearcher();
 
@@ -90,8 +90,8 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
     }
 
     @Override
-    public DebrisRemovalSelector getDebrisRemovalSelector() {
-        return this.debrisRemovalSelector;
+    public ImpassableSelector getImpassableSelector() {
+        return this.impassableSelector;
     }
 
     @Override
@@ -112,7 +112,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
             return new ActionRest(this);
         }
         this.beforeMove = true;
-        this.target = this.debrisRemovalSelector.getNewTarget(currentTime);
+        this.target = this.impassableSelector.getNewTarget(currentTime);
         List<EntityID> path = null;
         if(this.target != null) {
             path = this.getRouteSearcher().getPath(currentTime, this.getID(), this.target);
@@ -122,7 +122,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
 
     public Action thinkDebrisRemoval(int currentTime, EntityID roadID, Road road) {
         if(this.target == null) {
-            this.target = this.debrisRemovalSelector.getNewTarget(currentTime);
+            this.target = this.impassableSelector.getNewTarget(currentTime);
             if(this.target == null) {
                 this.beforeMove = true;
                 return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
@@ -157,7 +157,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
                     return new ActionMove(this, Lists.newArrayList(roadID), (int) this.mainTargetPoint.getX(), (int) this.mainTargetPoint.getY());
                 }
                 else {
-                    this.target = this.debrisRemovalSelector.getNewTarget(currentTime);
+                    this.target = this.impassableSelector.getNewTarget(currentTime);
                     List<EntityID> path = null;
                     if(this.target != null) {
                         path = this.getRouteSearcher().getPath(currentTime, this.getID(), this.target);
@@ -181,7 +181,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         for (EntityID next : updateWorldInfo.getChangedEntities()) {
             StandardEntity entity = this.getWorld().getEntity(next);
             if(entity instanceof Blockade) {
-                this.debrisRemovalSelector.add((Blockade) entity);
+                this.impassableSelector.add((Blockade) entity);
             }
             else if(entity instanceof Civilian) {
                 Civilian civilian = (Civilian)entity;
@@ -238,11 +238,11 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         List<Point2D> clearList;
         if(road.getBlockades().isEmpty()) {
             clearList = new ArrayList<>();
-            this.debrisRemovalSelector.remove(road);
+            this.impassableSelector.remove(road);
         }
         else {
             clearList = new ArrayList<>(passablePoint);
-            this.debrisRemovalSelector.add(road);
+            this.impassableSelector.add(road);
         }
         this.neighbourEdgesMap.put(roadID, neighbourEdges);
         this.passablePointMap.put(roadID, passablePoint);
@@ -267,7 +267,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         clearList.remove(point);
         this.clearListMap.put(roadID, clearList);
         if(clearList.isEmpty()) {
-            this.debrisRemovalSelector.remove(road);
+            this.impassableSelector.remove(road);
         }
     }
 

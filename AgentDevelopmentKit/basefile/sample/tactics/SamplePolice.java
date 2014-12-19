@@ -5,10 +5,10 @@ import adk.team.action.ActionClear;
 import adk.team.action.ActionMove;
 import adk.team.action.ActionRest;
 import adk.team.tactics.TacticsPolice;
-import adk.team.util.DebrisRemovalSelector;
+import adk.team.util.ImpassableSelector;
 import adk.team.util.graph.PositionUtil;
 import adk.team.util.RouteSearcher;
-import adk.team.util.provider.DebrisRemovalSelectorProvider;
+import adk.team.util.provider.ImpassableSelectorProvider;
 import adk.team.util.provider.RouteSearcherProvider;
 import com.google.common.collect.Lists;
 import comlib.manager.MessageManager;
@@ -18,7 +18,6 @@ import comlib.message.information.PoliceForceMessage;
 import rescuecore2.config.Config;
 import rescuecore2.misc.geometry.Point2D;
 import rescuecore2.misc.geometry.Vector2D;
-import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.ChangeSet;
 import rescuecore2.worldmodel.EntityID;
 import sample.event.SampleRoadEvent;
@@ -26,11 +25,10 @@ import sample.util.SampleDebrisRemovalSelector;
 import sample.util.SampleRouteSearcher;
 
 import java.awt.geom.Line2D;
-import java.util.*;
 
-public class SamplePolice extends TacticsPolice implements RouteSearcherProvider, DebrisRemovalSelectorProvider {
+public class SamplePolice extends TacticsPolice implements RouteSearcherProvider, ImpassableSelectorProvider {
 
-    public DebrisRemovalSelector debrisRemovalSelector;
+    public ImpassableSelector impassableSelector;
 
     public RouteSearcher routeSearcher;
 
@@ -45,7 +43,7 @@ public class SamplePolice extends TacticsPolice implements RouteSearcherProvider
     @Override
     public void preparation(Config config) {
         this.routeSearcher = new SampleRouteSearcher(this);
-        this.debrisRemovalSelector = new SampleDebrisRemovalSelector(this);
+        this.impassableSelector = new SampleDebrisRemovalSelector(this);
         this.beforeMove = false;
         this.neighbourEdgesMap = new HashMap<>();
         this.passablePointMap = new HashMap<>();
@@ -70,8 +68,8 @@ public class SamplePolice extends TacticsPolice implements RouteSearcherProvider
     }
 
     @Override
-    public DebrisRemovalSelector getDebrisRemovalSelector() {
-        return this.debrisRemovalSelector;
+    public ImpassableSelector getImpassableSelector() {
+        return this.impassableSelector;
     }
 
     @Override
@@ -92,7 +90,7 @@ public class SamplePolice extends TacticsPolice implements RouteSearcherProvider
             return new ActionRest(this);
         }
         this.beforeMove = true;
-        this.target = this.debrisRemovalSelector.getNewTarget(currentTime);
+        this.target = this.impassableSelector.getNewTarget(currentTime);
         List<EntityID> path = null;
         if(this.target != null) {
             path = this.getRouteSearcher().getPath(currentTime, this.getID(), this.target);
@@ -102,7 +100,7 @@ public class SamplePolice extends TacticsPolice implements RouteSearcherProvider
 
     public Action thinkDebrisRemoval(int currentTime, EntityID roadID, Road road) {
         if(this.target == null) {
-            this.target = this.debrisRemovalSelector.getNewTarget(currentTime);
+            this.target = this.impassableSelector.getNewTarget(currentTime);
             if(this.target == null) {
                 this.beforeMove = true;
                 return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
@@ -137,7 +135,7 @@ public class SamplePolice extends TacticsPolice implements RouteSearcherProvider
                     return new ActionMove(this, Lists.newArrayList(roadID), (int) this.mainTargetPoint.getX(), (int) this.mainTargetPoint.getY());
                 }
                 else {
-                    this.target = this.debrisRemovalSelector.getNewTarget(currentTime);
+                    this.target = this.impassableSelector.getNewTarget(currentTime);
                     List<EntityID> path = null;
                     if(this.target != null) {
                         path = this.getRouteSearcher().getPath(currentTime, this.getID(), this.target);
@@ -161,7 +159,7 @@ public class SamplePolice extends TacticsPolice implements RouteSearcherProvider
         for (EntityID next : updateWorldInfo.getChangedEntities()) {
             StandardEntity entity = this.getWorld().getEntity(next);
             if(entity instanceof Blockade) {
-                this.debrisRemovalSelector.add((Blockade) entity);
+                this.impassableSelector.add((Blockade) entity);
             }
             else if(entity instanceof Civilian) {
                 Civilian civilian = (Civilian)entity;
@@ -216,11 +214,11 @@ public class SamplePolice extends TacticsPolice implements RouteSearcherProvider
         List<Point2D> clearList;
         if(road.getBlockades().isEmpty()) {
             clearList = new ArrayList<>();
-            this.debrisRemovalSelector.remove(road);
+            this.impassableSelector.remove(road);
         }
         else {
             clearList = new ArrayList<>(passablePoint);
-            this.debrisRemovalSelector.add(road);
+            this.impassableSelector.add(road);
         }
         this.neighbourEdgesMap.put(roadID, neighbourEdges);
         this.passablePointMap.put(roadID, passablePoint);
@@ -245,7 +243,7 @@ public class SamplePolice extends TacticsPolice implements RouteSearcherProvider
         clearList.remove(point);
         this.clearListMap.put(roadID, clearList);
         if(clearList.isEmpty()) {
-            this.debrisRemovalSelector.remove(road);
+            this.impassableSelector.remove(road);
         }
     }
 

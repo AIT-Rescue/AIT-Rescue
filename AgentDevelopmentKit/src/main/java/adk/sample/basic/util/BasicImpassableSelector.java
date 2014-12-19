@@ -1,6 +1,6 @@
 package adk.sample.basic.util;
 
-import adk.team.util.DebrisRemovalSelector;
+import adk.team.util.ImpassableSelector;
 import adk.team.util.graph.PositionUtil;
 import adk.team.util.provider.WorldProvider;
 import rescuecore2.standard.entities.Blockade;
@@ -11,14 +11,14 @@ import rescuecore2.worldmodel.EntityID;
 import java.util.HashSet;
 import java.util.Set;
 
-public class BasicDebrisRemovalSelector implements DebrisRemovalSelector {
+public class BasicImpassableSelector implements ImpassableSelector {
 
     public Set<Road> impassableRoadList;
     public Set<EntityID> passableRoadList;
 
     public WorldProvider<? extends StandardEntity> provider;
 
-    public BasicDebrisRemovalSelector(WorldProvider<? extends StandardEntity> user) {
+    public BasicImpassableSelector(WorldProvider<? extends StandardEntity> user) {
         this.provider = user;
         this.impassableRoadList = new HashSet<>();
         this.passableRoadList = new HashSet<>();
