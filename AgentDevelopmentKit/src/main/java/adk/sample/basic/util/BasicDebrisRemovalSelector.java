@@ -76,7 +76,7 @@ public class BasicDebrisRemovalSelector implements DebrisRemovalSelector {
     }
 
     @Override
-    public EntityID getTarget(int time) {
+    public EntityID getNewTarget(int time) {
         StandardEntity result = PositionUtil.getNearTarget(this.provider.getWorld(), this.provider.getOwner(), this.impassableRoadList);
         return result != null ? result.getID() : null;
     }

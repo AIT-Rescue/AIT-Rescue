@@ -8,5 +8,9 @@ public interface TargetSelector {
 
     public void remove(EntityID id);
 
-    public EntityID getTarget(int time);
+    public EntityID getNewTarget(int time);
+
+    default EntityID updateTarget(EntityID target) {
+        return target;
+    }
 }

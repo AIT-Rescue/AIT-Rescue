@@ -77,7 +77,7 @@ public class SampleAmbulance extends TacticsAmbulance implements RouteSearcherPr
             return this.location() instanceof Refuge ? new ActionRest(this) : this.moveRefuge(currentTime);
         }
         if(this.target == null) {
-            this.target = this.victimSelector.getTarget(currentTime);
+            this.target = this.victimSelector.getNewTarget(currentTime);
             if(this.target == null) {
                 return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
             }
@@ -112,7 +112,7 @@ public class SampleAmbulance extends TacticsAmbulance implements RouteSearcherPr
                 manager.addSendMessage(new PoliceForceMessage(policeForce));
                 this.victimSelector.remove(policeForce);
             }
-            this.target = this.victimSelector.getTarget(currentTime);
+            this.target = this.victimSelector.getNewTarget(currentTime);
             return this.moveTarget(currentTime);
         }
     }

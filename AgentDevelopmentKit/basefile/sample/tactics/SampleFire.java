@@ -60,7 +60,7 @@ public class SampleFire extends TacticsFire implements RouteSearcherProvider, Bu
         this.organizeUpdateInfo(updateWorldData, manager);
         if(this.me().getBuriedness() > 0) {
             manager.addSendMessage(new FireBrigadeMessage(this.me()));
-            this.target = this.buildingSelector.getTarget(currentTime);
+            this.target = this.buildingSelector.getNewTarget(currentTime);
             if(this.target != null) {
                 Building building = (Building) this.getWorld().getEntity(this.target);
                 if (building.isOnFire() && (this.getWorld().getDistance(this.getID(), this.target) <= this.maxDistance)) {
@@ -80,7 +80,7 @@ public class SampleFire extends TacticsFire implements RouteSearcherProvider, Bu
             }
             else {
                 this.buildingSelector.remove(this.target);
-                this.target = this.buildingSelector.getTarget(currentTime);
+                this.target = this.buildingSelector.getNewTarget(currentTime);
                 return this.moveTarget(currentTime);
             }
         }
@@ -89,7 +89,7 @@ public class SampleFire extends TacticsFire implements RouteSearcherProvider, Bu
                 return new ActionRest(this);
             }
             else {
-                this.target = this.buildingSelector.getTarget(currentTime);
+                this.target = this.buildingSelector.getNewTarget(currentTime);
                 return this.moveTarget(currentTime);
             }
         }

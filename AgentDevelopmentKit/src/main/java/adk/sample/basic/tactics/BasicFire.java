@@ -51,7 +51,7 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
         this.organizeUpdateInfo(updateWorldData, manager);
         if(this.me().getBuriedness() > 0) {
             manager.addSendMessage(new MessageFireBrigade(this.me()));
-            this.target = this.buildingSelector.getTarget(currentTime);
+            this.target = this.buildingSelector.getNewTarget(currentTime);
             if(this.target != null) {
                 Building building = (Building) this.getWorld().getEntity(this.target);
                 if (building.isOnFire() && (this.getWorld().getDistance(this.getID(), this.target) <= this.maxDistance)) {
@@ -71,7 +71,7 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
             }
             else {
                 this.buildingSelector.remove(this.target);
-                this.target = this.buildingSelector.getTarget(currentTime);
+                this.target = this.buildingSelector.getNewTarget(currentTime);
                 return this.moveTarget(currentTime);
             }
         }
@@ -80,7 +80,7 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
                 return new ActionRest(this);
             }
             else {
-                this.target = this.buildingSelector.getTarget(currentTime);
+                this.target = this.buildingSelector.getNewTarget(currentTime);
                 return this.moveTarget(currentTime);
             }
         }

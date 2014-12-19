@@ -112,7 +112,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
             return new ActionRest(this);
         }
         this.beforeMove = true;
-        this.target = this.debrisRemovalSelector.getTarget(currentTime);
+        this.target = this.debrisRemovalSelector.getNewTarget(currentTime);
         List<EntityID> path = null;
         if(this.target != null) {
             path = this.getRouteSearcher().getPath(currentTime, this.getID(), this.target);
@@ -122,7 +122,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
 
     public Action thinkDebrisRemoval(int currentTime, EntityID roadID, Road road) {
         if(this.target == null) {
-            this.target = this.debrisRemovalSelector.getTarget(currentTime);
+            this.target = this.debrisRemovalSelector.getNewTarget(currentTime);
             if(this.target == null) {
                 this.beforeMove = true;
                 return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
@@ -157,7 +157,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
                     return new ActionMove(this, Lists.newArrayList(roadID), (int) this.mainTargetPoint.getX(), (int) this.mainTargetPoint.getY());
                 }
                 else {
-                    this.target = this.debrisRemovalSelector.getTarget(currentTime);
+                    this.target = this.debrisRemovalSelector.getNewTarget(currentTime);
                     List<EntityID> path = null;
                     if(this.target != null) {
                         path = this.getRouteSearcher().getPath(currentTime, this.getID(), this.target);

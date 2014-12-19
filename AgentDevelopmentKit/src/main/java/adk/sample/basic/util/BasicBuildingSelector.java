@@ -53,7 +53,7 @@ public class BasicBuildingSelector implements BuildingSelector {
     }
 
     @Override
-    public EntityID getTarget(int time) {
+    public EntityID getNewTarget(int time) {
         StandardEntity result = PositionUtil.getNearTarget(this.provider.getWorld(), this.provider.getOwner(), this.buildingList);
         return result != null ? result.getID() : null;
     }
