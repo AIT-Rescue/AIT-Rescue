@@ -85,4 +85,9 @@ public class BasicVictimSelector implements VictimSelector {
         }
         return result != null ? result.getID() : null;
     }
+
+    @Override
+    public EntityID updateTarget(int time, EntityID target) {
+        return target;
+    }
 }

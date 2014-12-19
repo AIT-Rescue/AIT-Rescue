@@ -10,7 +10,5 @@ public interface TargetSelector {
 
     public EntityID getNewTarget(int time);
 
-    default EntityID updateTarget(EntityID target) {
-        return target;
-    }
+    public EntityID updateTarget(int time, EntityID target);
 }

@@ -22,12 +22,21 @@ public abstract class NewBasicAmbulance  extends TacticsAmbulance implements Rou
 
     public RouteSearcher routeSearcher;
 
+    public static final int TYPE_UNKNOWN = 0;
+    public static final int TYPE_CIVILIAN = 1;
+    public static final int TYPE_AGENT_AMBULANCE = 2;
+    public static final int TYPE_AGENT_FIRE = 3;
+    public static final int TYPE_AGENT_POLICE = 4;
+
+    public int targetType;
+
     public EntityID oldTarget;
 
     @Override
     public void preparation(Config config) {
         this.victimSelector = this.initVictimSelector();
         this.routeSearcher = this.initRouteSearcher();
+        this.targetType = TYPE_UNKNOWN;
         this.oldTarget = this.getID();
     }
 
@@ -45,9 +54,12 @@ public abstract class NewBasicAmbulance  extends TacticsAmbulance implements Rou
         return this.routeSearcher;
     }
 
+    public abstract void organizeUpdateInfo(int currentTime, ChangeSet updateWorldInfo, MessageManager manager);
+
     @Override
     public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
-        this.organizeUpdateInfo(updateWorldData, manager);
+        //情報の整理
+        this.organizeUpdateInfo(currentTime, updateWorldData, manager);
         //自分の状態チェック
         if(this.me().getBuriedness() > 0) {
             this.target = null;
@@ -70,7 +82,7 @@ public abstract class NewBasicAmbulance  extends TacticsAmbulance implements Rou
             return this.moveRefuge(currentTime);
         }
         //対象の選択・切り替え
-        this.target = this.target == null ? this.victimSelector.getNewTarget(currentTime) : this.victimSelector.updateTarget(this.target);
+        this.target = this.target == null ? this.victimSelector.getNewTarget(currentTime) : this.victimSelector.updateTarget(currentTime, this.target);
         if(this.target == null) {
             this.oldTarget = this.getID();
             return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
@@ -120,14 +132,6 @@ public abstract class NewBasicAmbulance  extends TacticsAmbulance implements Rou
         return this.moveTarget(currentTime);
     }
 
-    public static final int TYPE_UNKNOWN = 0;
-    public static final int TYPE_CIVILIAN = 1;
-    public static final int TYPE_AGENT_AMBULANCE = 2;
-    public static final int TYPE_AGENT_FIRE = 3;
-    public static final int TYPE_AGENT_POLICE = 4;
-
-    public int targetType = TYPE_UNKNOWN;
-
     public void resetTargetInfo() {
         StandardEntity entity = this.getWorld().getEntity(this.target);
         if(entity == null) {
@@ -147,29 +151,6 @@ public abstract class NewBasicAmbulance  extends TacticsAmbulance implements Rou
         }
         else {
             this.targetType = TYPE_UNKNOWN;
-        }
-    }
-
-    public void organizeUpdateInfo(ChangeSet updateWorldInfo, MessageManager manager) {
-        for (EntityID next : updateWorldInfo.getChangedEntities()) {
-            StandardEntity entity = this.getWorld().getEntity(next);
-            if(entity instanceof Civilian) {
-                this.victimSelector.add((Civilian) entity);
-            }
-            else if(entity instanceof Human) {
-                this.victimSelector.add((Human)entity);
-            }
-            else if(entity instanceof Building) {
-                Building b = (Building)entity;
-                if(b.isOnFire()) {
-                    manager.addSendMessage(new MessageBuilding(b));
-                }
-            }
-            /*
-            else if(entity instanceof Blockade) {
-                //manager.addSendMessage(new RoadMessage(((Blockade)entity)));
-            }
-            */
         }
     }
 

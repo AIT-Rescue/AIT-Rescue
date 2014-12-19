@@ -80,4 +80,9 @@ public class BasicImpassableSelector implements ImpassableSelector {
         StandardEntity result = PositionUtil.getNearTarget(this.provider.getWorld(), this.provider.getOwner(), this.impassableRoadList);
         return result != null ? result.getID() : null;
     }
+
+    @Override
+    public EntityID updateTarget(int time, EntityID target) {
+        return target;
+    }
 }
