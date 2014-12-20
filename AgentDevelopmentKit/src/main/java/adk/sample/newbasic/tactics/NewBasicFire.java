@@ -64,6 +64,7 @@ public abstract class NewBasicFire  extends TacticsFire implements RouteSearcher
             }
             return new ActionRest(this);
         }
+        //本当に0でいいのか
         if (this.me().getWater() == 0) {
             this.target = null;
             return this.moveRefuge(currentTime);
@@ -104,5 +105,4 @@ public abstract class NewBasicFire  extends TacticsFire implements RouteSearcher
         }
         return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
     }
-
 }

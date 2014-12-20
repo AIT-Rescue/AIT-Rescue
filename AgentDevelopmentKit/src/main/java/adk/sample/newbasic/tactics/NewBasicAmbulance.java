@@ -124,6 +124,7 @@ public abstract class NewBasicAmbulance  extends TacticsAmbulance implements Rou
                 }
             }
         }
+        //対象が救助済み．または対象外の場合
         this.target = this.victimSelector.getNewTarget(currentTime);
         if(this.target != null) {
             this.oldTarget = this.target;
