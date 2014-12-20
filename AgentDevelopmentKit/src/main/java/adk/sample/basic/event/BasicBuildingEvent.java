@@ -3,6 +3,7 @@ package adk.sample.basic.event;
 import adk.team.util.provider.BuildingSelectorProvider;
 import adk.team.util.provider.WorldProvider;
 import comlib.event.information.EventMessageBuilding;
+import comlib.manager.UpdateHelper;
 import comlib.message.information.MessageBuilding;
 
 public class BasicBuildingEvent implements EventMessageBuilding{
@@ -17,7 +18,7 @@ public class BasicBuildingEvent implements EventMessageBuilding{
 
     @Override
     public void receivedRadio(MessageBuilding message) {
-        this.bsp.getBuildingSelector().add(this.wp.reflectedMessage(message));
+        this.bsp.getBuildingSelector().add(UpdateHelper.reflectedMessage(this.wp.getWorld(), message));
     }
 
     @Override

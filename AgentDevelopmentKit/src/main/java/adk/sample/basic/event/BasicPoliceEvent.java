@@ -3,6 +3,7 @@ package adk.sample.basic.event;
 import adk.team.util.provider.VictimSelectorProvider;
 import adk.team.util.provider.WorldProvider;
 import comlib.event.information.EventMessagePoliceForce;
+import comlib.manager.UpdateHelper;
 import comlib.message.information.MessagePoliceForce;
 import rescuecore2.standard.entities.PoliceForce;
 
@@ -18,7 +19,7 @@ public class BasicPoliceEvent implements EventMessagePoliceForce{
 
     @Override
     public void receivedRadio(MessagePoliceForce message) {
-        PoliceForce policeForce = this.wp.reflectedMessage(message);
+        PoliceForce policeForce = UpdateHelper.reflectedMessage(this.wp.getWorld(), message);
         this.vsp.getVictimSelector().add(policeForce);
     }
 
