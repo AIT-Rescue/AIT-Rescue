@@ -1,4 +1,4 @@
-package adk.sample.basic.tactics;
+package adk.sample.newbasic.tactics;
 
 import adk.team.action.Action;
 import adk.team.action.ActionClear;
@@ -6,8 +6,8 @@ import adk.team.action.ActionMove;
 import adk.team.action.ActionRest;
 import adk.team.tactics.TacticsPolice;
 import adk.team.util.ImpassableSelector;
-import adk.team.util.graph.PositionUtil;
 import adk.team.util.RouteSearcher;
+import adk.team.util.graph.PositionUtil;
 import adk.team.util.graph.RouteGraph;
 import adk.team.util.graph.RouteManager;
 import adk.team.util.provider.ImpassableSelectorProvider;
@@ -27,7 +27,7 @@ import rescuecore2.worldmodel.EntityID;
 import java.awt.geom.Line2D;
 import java.util.*;
 
-public abstract class BasicPolice extends TacticsPolice implements RouteSearcherProvider, ImpassableSelectorProvider {
+public abstract class NewBasicPolice extends TacticsPolice implements RouteSearcherProvider, ImpassableSelectorProvider {
 
     public ImpassableSelector impassableSelector;
 
@@ -51,38 +51,13 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         this.clearListMap = new HashMap<>();
         this.beforeMove = false;
         this.count = 0;
-        //test
-        if(this.complete()) {
-            System.out.println("Success Analysis!!!");
-        }
-        else {
-            System.out.println("Error Analysis!!!");
-        }
-    }
-
-    private boolean complete() {
-        RouteManager routeManager = new RouteManager(this.getWorld());
-        RouteGraph routeGraph = routeManager.getGraph();
-        for (StandardEntity entity : this.getWorld().getEntitiesOfType(
-                StandardEntityURN.BUILDING,
-                StandardEntityURN.REFUGE,
-                StandardEntityURN.AMBULANCE_CENTRE,
-                StandardEntityURN.FIRE_STATION,
-                StandardEntityURN.POLICE_OFFICE,
-                StandardEntityURN.GAS_STATION,
-                StandardEntityURN.ROAD,
-                StandardEntityURN.HYDRANT
-        )) {
-            if(!routeGraph.contains(entity.getID())) {
-                return false;
-            }
-        }
-        return true;
     }
 
     public abstract ImpassableSelector initDebrisRemovalSelector();
 
     public abstract RouteSearcher initRouteSearcher();
+
+    public abstract void organizeUpdateInfo(int currentTime, ChangeSet updateWorldInfo, MessageManager manager);
 
     @Override
     public RouteSearcher getRouteSearcher() {
@@ -96,106 +71,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
 
     @Override
     public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
-        this.agentPoint = new Point2D(this.me().getX(), this.me().getY());
-        this.organizeUpdateInfo(updateWorldData, manager);
-        StandardEntity area = this.location();
-        EntityID areaID = area.getID();
-        return (area instanceof Road) ? this.thinkDebrisRemoval(currentTime, areaID, (Road)area) : this.thinkMoveRoad(currentTime, manager);
-    }
-
-    public Action thinkMoveRoad(int currentTime, MessageManager manager) {
-        if(this.me().getBuriedness() > 0) {
-            if(!this.beforeMove) {
-                this.beforeMove = true;
-                manager.addSendMessage(new MessagePoliceForce(this.me()));
-            }
-            return new ActionRest(this);
-        }
-        this.beforeMove = true;
-        this.target = this.impassableSelector.getNewTarget(currentTime);
-        List<EntityID> path = null;
-        if(this.target != null) {
-            path = this.getRouteSearcher().getPath(currentTime, this.getID(), this.target);
-        }
-        return new ActionMove(this, path != null ? path : this.getRouteSearcher().noTargetMove(currentTime));
-    }
-
-    public Action thinkDebrisRemoval(int currentTime, EntityID roadID, Road road) {
-        if(this.target == null) {
-            this.target = this.impassableSelector.getNewTarget(currentTime);
-            if(this.target == null) {
-                this.beforeMove = true;
-                return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
-            }
-        }
-        if(roadID.getValue() != this.target.getValue()) {
-            if(this.passable(road)) {
-                this.beforeMove = true;
-                List<EntityID> path = this.getRouteSearcher().getPath(currentTime, this.getID(), this.target);
-                return new ActionMove(this, path != null ? path : this.getRouteSearcher().noTargetMove(currentTime));
-            }
-            this.target = roadID;
-        }
-        if(this.mainTargetPoint == null) {
-            this.count = this.getClearList(road).size();
-        }
-        if(this.count != 0) {
-            this.count--;
-            this.mainTargetPoint = this.getClearList(road).get(this.count);
-            Vector2D vector = this.getVector(this.agentPoint, this.mainTargetPoint, road);
-            this.beforeMove = false;
-            return new ActionClear(this, (int) (this.me().getX() + vector.getX()), (int) (this.me().getY() + vector.getY()));
-        }
-        if(this.beforeMove) {
-            if(this.equalsPoint(this.agentPoint, this.mainTargetPoint, 10.0D)) {
-                this.removeTargetPoint(road, this.mainTargetPoint);
-                this.mainTargetPoint = null;
-                List<Point2D> clearPoint = this.clearListMap.get(roadID);
-                this.beforeMove = true;
-                if(!clearPoint.isEmpty()) {
-                    this.mainTargetPoint = clearPoint.get(0);
-                    return new ActionMove(this, Lists.newArrayList(roadID), (int) this.mainTargetPoint.getX(), (int) this.mainTargetPoint.getY());
-                }
-                else {
-                    this.target = this.impassableSelector.getNewTarget(currentTime);
-                    List<EntityID> path = null;
-                    if(this.target != null) {
-                        path = this.getRouteSearcher().getPath(currentTime, this.getID(), this.target);
-                    }
-                    return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
-                }
-            }
-            else {
-                Vector2D vector = this.getVector(this.agentPoint, this.mainTargetPoint, road);
-                this.beforeMove = false;
-                return new ActionClear(this, (int) (this.me().getX() + vector.getX()), (int) (this.me().getY() + vector.getY()));
-            }
-        }
-        else {
-            this.beforeMove = true;
-            return new ActionMove(this, Lists.newArrayList(roadID), (int) this.mainTargetPoint.getX(), (int) this.mainTargetPoint.getY());
-        }
-    }
-
-    public void organizeUpdateInfo(ChangeSet updateWorldInfo, MessageManager manager) {
-        for (EntityID next : updateWorldInfo.getChangedEntities()) {
-            StandardEntity entity = this.getWorld().getEntity(next);
-            if(entity instanceof Blockade) {
-                this.impassableSelector.add((Blockade) entity);
-            }
-            else if(entity instanceof Civilian) {
-                Civilian civilian = (Civilian)entity;
-                if(civilian.getBuriedness() > 0) {
-                    manager.addSendMessage(new MessageCivilian(civilian));
-                }
-            }
-            else if(entity instanceof Building) {
-                Building b = (Building)entity;
-                if(b.isOnFire()) {
-                    manager.addSendMessage(new MessageBuilding(b));
-                }
-            }
-        }
+       return new ActionRest(this);
     }
 
     public Vector2D getVector(Point2D agentPos, Point2D targetPos, Road road) {
