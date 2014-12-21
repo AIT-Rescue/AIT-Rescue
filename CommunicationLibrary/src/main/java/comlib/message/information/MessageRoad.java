@@ -54,7 +54,7 @@ public class MessageRoad extends MapMessage
 		return blockadeRepairCost;
 	}
 
-	public boolean getPassable()
+	public boolean isPassable()
 	{
 		return roadPassable;
 	}

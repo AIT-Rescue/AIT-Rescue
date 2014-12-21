@@ -7,6 +7,7 @@ import comlib.manager.RadioConfig;
 import comlib.manager.VoiceConfig;
 import comlib.util.BitOutputStream;
 import comlib.util.BitStreamReader;
+import comlib.util.BooleanHelper;
 
 
 public class ProviderMessageReport extends MessageProvider<MessageReport, EventMessageReport>
@@ -18,18 +19,18 @@ public class ProviderMessageReport extends MessageProvider<MessageReport, EventM
 
 	protected void writeMessage(RadioConfig config, BitOutputStream bos, MessageReport msg)
 	{
-		bos.writeBits(msg.getValue(), config.getSizeOfDummyValue());
+		bos.writeBits(BooleanHelper.toInt(msg.isDone()), 1);
 	}
 
 	protected void writeMessage(VoiceConfig config, StringBuilder sb, MessageReport msg)
 	{
-		config.appendData(sb, String.valueOf(msg.getValue()));
+		// config.appendData(sb, String.valueOf(msg.getValue()));
 	}
 
 	protected MessageReport createMessage(RadioConfig config, int time, BitStreamReader bsr)
 	{
 		return new MessageReport(time, -1,
-				bsr.getBits(config.getSizeOfDummyValue())
+				BooleanHelper.valueOf(bsr.getBits(1))
 				);
 	}
 
@@ -37,7 +38,7 @@ public class ProviderMessageReport extends MessageProvider<MessageReport, EventM
 	{
 		return new MessageReport(
 				time, ttl,
-				Integer.parseInt(data[next])
+				BooleanHelper.valueOf(Integer.parseInt(data[next]))
 				);
 	}
 

@@ -5,19 +5,21 @@ import comlib.message.MessageID;
 
 public class MessageReport extends CommunicationMessage
 {
-	private int dummyTest;
+	private boolean reportDone;
 
-	public MessageReport(int test)
+	public MessageReport(boolean isDone)
 	{
 		super(MessageID.reportMessage);
-		dummyTest = test;
+		reportDone = isDone;
 	}
 
-	public MessageReport(int time, int ttl, int test)
+	public MessageReport(int time, int ttl, boolean isDone)
 	{
 		super(MessageID.reportMessage, time, ttl);
-		dummyTest = test;
+		reportDone = isDone;
 	}
 
-	public int getValue() { return this.dummyTest; }
+	public boolean isDone() { return this.reportDone; }
+
+	public boolean isFailed() { return !this.reportDone; }
 }

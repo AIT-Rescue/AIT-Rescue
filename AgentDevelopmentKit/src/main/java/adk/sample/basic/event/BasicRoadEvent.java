@@ -19,7 +19,7 @@ public class BasicRoadEvent implements EventMessageRoad {
 
     @Override
     public void receivedRadio(MessageRoad message) {
-        if(message.getPassable()) {
+        if(message.isPassable()) {
             this.drsp.getImpassableSelector().remove(message.getRoadID());
         }
         else {

@@ -22,7 +22,7 @@ public class ProviderMessageRoad extends MapMessageProvider<MessageRoad, EventMe
 		bos.writeBits(msg.getRoadID().getValue(), 32);
 		bos.writeBits(msg.getBlockadeID().getValue(), 32);
 		bos.writeBits(msg.getRepairCost(), 32);
-		bos.writeBits(BooleanHelper.toInt(msg.getPassable()), 1);
+		bos.writeBits(BooleanHelper.toInt(msg.isPassable()), 1);
 	}
 
 	protected void writeMessage(VoiceConfig config, StringBuilder sb, MessageRoad msg)
