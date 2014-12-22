@@ -101,4 +101,20 @@ public class PositionUtil {
         double dy = position.getY() - another.getY();
         return dx*dx + dy*dy;
     }
+
+    public static boolean equalsPoint(Pair<Integer, Integer> point, Pair<Integer, Integer> targetPoint, double range) {
+        return equalsPoint(point.first(), point.second(), targetPoint.first(), targetPoint.second(), range);
+    }
+
+    public static boolean equalsPoint(Point2D point, Point2D targetPoint, double range) {
+        return equalsPoint(point.getX(), point.getY(), targetPoint.getX(), targetPoint.getY(), range);
+    }
+
+    public static boolean equalsPoint(Point2D point, double targetX, double targetY, double range) {
+        return equalsPoint(point.getX(), point.getY(), targetX, targetY, range);
+    }
+
+    public static boolean equalsPoint(double pointX, double pointY, double targetX, double targetY, double range) {
+        return Double.compare(pointX, targetX + range) <= 0 && Double.compare(pointX, targetX - range) >= 0 && Double.compare(pointY, targetY + range) <= 0 && Double.compare(pointY, targetY - range) >= 0;
+    }
 }
