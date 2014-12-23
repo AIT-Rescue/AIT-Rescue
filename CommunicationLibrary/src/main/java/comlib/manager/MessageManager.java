@@ -1,6 +1,6 @@
 package comlib.manager;
 
-import comlib.provider.ProviderMessageDummy;
+import comlib.provider.MessageDummyProvider;
 import comlib.provider.MessageProvider;
 import comlib.event.MessageEvent;
 import comlib.message.CommunicationMessage;
@@ -215,18 +215,18 @@ public class MessageManager
 	private void initLoadProvider()
 	{
 		// TODO: Load provider
-		this.registerStandardProvider(new ProviderMessageDummy(MessageID.dummyMessage));
-		this.registerStandardProvider(new ProviderMessageCivilian(MessageID.civilianMessage));
-		this.registerStandardProvider(new ProviderMessageFireBrigade(MessageID.fireBrigadeMessage));
-		this.registerStandardProvider(new ProviderMessagePoliceForce(MessageID.policeForceMessage));
-		this.registerStandardProvider(new ProviderMessageAmbulanceTeam(MessageID.ambulanceTeamMessage));
-		this.registerStandardProvider(new ProviderMessageBuilding(MessageID.buildingMessage));
-		this.registerStandardProvider(new ProviderMessageRoad(MessageID.roadMessage));
-		this.registerStandardProvider(new ProviderMessageReport(MessageID.reportMessage));
-		this.registerStandardProvider(new ProviderCommandPolice(MessageID.policeCommand));
-		this.registerStandardProvider(new ProviderCommandAmbulance(MessageID.ambulanceCommand));
-		this.registerStandardProvider(new ProviderCommandFire(MessageID.fireCommand));
-		//this.register(CommunicationMessage.buildingMessageID, new ProviderMessageBuilding(this.event));
+		this.registerStandardProvider(new MessageDummyProvider(MessageID.dummyMessage));
+		this.registerStandardProvider(new MessageCivilianProvider(MessageID.civilianMessage));
+		this.registerStandardProvider(new MessageFireBrigadeProvider(MessageID.fireBrigadeMessage));
+		this.registerStandardProvider(new MessagePoliceForceProvider(MessageID.policeForceMessage));
+		this.registerStandardProvider(new MessageAmbulanceTeamProvider(MessageID.ambulanceTeamMessage));
+		this.registerStandardProvider(new MessageBuildingProvider(MessageID.buildingMessage));
+		this.registerStandardProvider(new MessageRoadProvider(MessageID.roadMessage));
+		this.registerStandardProvider(new MessageReportProvider(MessageID.reportMessage));
+		this.registerStandardProvider(new CommandPoliceProvider(MessageID.policeCommand));
+		this.registerStandardProvider(new CommandAmbulanceProvider(MessageID.ambulanceCommand));
+		this.registerStandardProvider(new CommandFireProvider(MessageID.fireCommand));
+		//this.register(CommunicationMessage.buildingMessageID, new MessageBuildingProvider(this.event));
 		//this.register(CommunicationMessage.blockadeMessageID, new BlockadeMessageProvider(this.event));
 		//this.register(CommunicationMessage.victimMessageID,   new VictimMessageProvider());
 		//this.register(CommunicationMessage.positionMessageID, new PositionMessageProvider(this.event));
