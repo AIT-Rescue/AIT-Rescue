@@ -5,15 +5,9 @@ import adk.team.tactics.TacticsPolice;
 import adk.team.util.ImpassableSelector;
 import adk.team.util.RouteSearcher;
 import adk.team.util.graph.PositionUtil;
-import adk.team.util.graph.RouteGraph;
-import adk.team.util.graph.RouteManager;
 import adk.team.util.provider.ImpassableSelectorProvider;
 import adk.team.util.provider.RouteSearcherProvider;
-import com.google.common.collect.Lists;
 import comlib.manager.MessageManager;
-import comlib.message.information.MessageBuilding;
-import comlib.message.information.MessageCivilian;
-import comlib.message.information.MessageFireBrigade;
 import comlib.message.information.MessagePoliceForce;
 import rescuecore2.config.Config;
 import rescuecore2.misc.geometry.Point2D;
@@ -78,9 +72,9 @@ public abstract class NewBasicPolice extends TacticsPolice implements RouteSearc
                 this.count = roads.size();
             }
             this.count--;
-            EntityID id = roads.get(this.count);
-            
-            return new ActionRest(this);
+            Area area = (Area)this.model.getEntity(roads.get(this.count));
+            Vector2D vector = (new Point2D(area.getX(), area.getY())).minus(this.agentPoint).normalised().scale(1000000);
+            return new ActionClear(this, (int) (this.me().getX() + vector.getX()), (int) (this.me().getY() + vector.getY()));
         }
         return new ActionRest(this);
     }
