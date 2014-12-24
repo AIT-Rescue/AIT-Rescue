@@ -4,7 +4,7 @@ import rescuecore2.standard.entities.Human;
 import rescuecore2.worldmodel.EntityID;
 
 
-public abstract class HumanMessage extends InformationMessage
+public abstract class MessageHuman extends MessageInformation
 {
 
 	protected int rawHumanID;
@@ -15,7 +15,7 @@ public abstract class HumanMessage extends InformationMessage
 	protected int humanDamage;
 	protected EntityID humanPosition;
 
-	public HumanMessage(int messageID, Human human)
+	public MessageHuman(int messageID, Human human)
 	{
 		super(messageID);
 		humanID = human.getID();
@@ -25,7 +25,7 @@ public abstract class HumanMessage extends InformationMessage
 		humanPosition = human.getPosition();
 	}
 
-	public HumanMessage(int messageID, int time, int ttl, int hp, int buriedness, int damage, int position, int id)
+	public MessageHuman(int messageID, int time, int ttl, int hp, int buriedness, int damage, int position, int id)
 	{
 		super(messageID, time, ttl);
 		humanHP = hp;

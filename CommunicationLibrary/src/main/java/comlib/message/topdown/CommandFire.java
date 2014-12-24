@@ -1,23 +1,19 @@
 package comlib.message.topdown;
 
-import comlib.message.CommunicationMessage;
+import rescuecore2.worldmodel.EntityID;
+import comlib.message.MessageCommand;
+import comlib.message.ActionID;
 import comlib.message.MessageID;
 
-public class CommandFire extends CommunicationMessage
+public class CommandFire extends MessageCommand
 {
-	private int dummyTest;
-
-	public CommandFire(int test)
+	public CommandFire(EntityID toID, EntityID targetID, ActionID action)
 	{
-		super(MessageID.fireCommand);
-		dummyTest = test;
+		super(MessageID.fireCommand, toID, targetID, action);
 	}
 
-	public CommandFire(int time, int ttl, int test)
+	public CommandFire(int time, int ttl, int action, int targetID, int toID)
 	{
-		super(MessageID.fireCommand, time, ttl);
-		dummyTest = test;
+		super(MessageID.fireCommand, time, ttl, action, targetID, toID);
 	}
-
-	public int getValue() { return this.dummyTest; }
 }

@@ -1,12 +1,12 @@
 package comlib.message.information;
 
-import comlib.message.HumanMessage;
+import comlib.message.MessageHuman;
 import comlib.message.MessageID;
 import rescuecore2.standard.entities.AmbulanceTeam;
 import rescuecore2.standard.entities.Human;
 
 
-public class MessageAmbulanceTeam extends HumanMessage
+public class MessageAmbulanceTeam extends MessageHuman
 {
 	public MessageAmbulanceTeam(AmbulanceTeam ambulanceTeam)
 	{

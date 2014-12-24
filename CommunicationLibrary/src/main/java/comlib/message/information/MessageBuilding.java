@@ -1,13 +1,13 @@
 package comlib.message.information;
 
-import comlib.message.MapMessage;
+import comlib.message.MessageMap;
 
 import comlib.message.MessageID;
 import rescuecore2.standard.entities.Building;
 import rescuecore2.worldmodel.EntityID;
 
 
-public class MessageBuilding extends MapMessage
+public class MessageBuilding extends MessageMap
 {
 	protected int rawBuildingID;
 	protected EntityID buildingID;

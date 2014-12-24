@@ -1,14 +1,14 @@
 package comlib.provider;
 
 import comlib.event.MessageEvent;
-import comlib.message.HumanMessage;
+import comlib.message.MessageHuman;
 import comlib.manager.RadioConfig;
 import comlib.manager.VoiceConfig;
 import comlib.util.BitOutputStream;
 import comlib.util.BitStreamReader;
 
 
-public abstract class HumanMessageProvider<M extends HumanMessage, E extends MessageEvent> extends InformationMessageProvider<M, E>
+public abstract class HumanMessageProvider<M extends MessageHuman, E extends MessageEvent> extends InformationMessageProvider<M, E>
 {
 	public HumanMessageProvider(int id)
 	{

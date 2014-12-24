@@ -1,12 +1,12 @@
 package comlib.message.information;
 
-import comlib.message.HumanMessage;
+import comlib.message.MessageHuman;
 import comlib.message.MessageID;
 import rescuecore2.standard.entities.FireBrigade;
 import rescuecore2.standard.entities.Human;
 
 
-public class MessageFireBrigade extends HumanMessage
+public class MessageFireBrigade extends MessageHuman
 {
 	private int fireBrigadeWater;
 

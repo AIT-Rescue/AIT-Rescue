@@ -1,6 +1,7 @@
 package comlib.provider.topdown;
 
-import comlib.provider.MessageProvider;
+import comlib.provider.CommandMessageProvider;
+
 import comlib.event.topdown.CommandPoliceEvent;
 import comlib.message.topdown.CommandPolice;
 import comlib.manager.RadioConfig;
@@ -9,7 +10,7 @@ import comlib.util.BitOutputStream;
 import comlib.util.BitStreamReader;
 
 
-public class CommandPoliceProvider extends MessageProvider<CommandPolice, CommandPoliceEvent>
+public class CommandPoliceProvider extends CommandMessageProvider<CommandPolice, CommandPoliceEvent>
 {
 	public CommandPoliceProvider(int id)
 	{
@@ -18,27 +19,30 @@ public class CommandPoliceProvider extends MessageProvider<CommandPolice, Comman
 
 	protected void writeMessage(RadioConfig config, BitOutputStream bos, CommandPolice msg)
 	{
-		bos.writeBits(msg.getValue(), config.getSizeOfDummyValue());
+		super.writeMessage(config, bos, msg);
 	}
 
 	protected void writeMessage(VoiceConfig config, StringBuilder sb, CommandPolice msg)
 	{
-		config.appendData(sb, String.valueOf(msg.getValue()));
+		// config.appendData(sb, String.valueOf(msg.getValue()));
 	}
 
 	protected CommandPolice createMessage(RadioConfig config, int time, BitStreamReader bsr)
 	{
 		return new CommandPolice(time, -1,
-				bsr.getBits(config.getSizeOfDummyValue())
+				bsr.getBits(2),
+				bsr.getBits(32),
+				bsr.getBits(32)
 				);
 	}
 
 	protected CommandPolice createMessage(VoiceConfig config, int time, int ttl, String[] data, int next)
 	{
-		return new CommandPolice(
-				time, ttl,
-				Integer.parseInt(data[next])
-				);
+		return null;
+		// return new CommandPolice(
+		// 		time, ttl,
+		// 		Integer.parseInt(data[next])
+		// 		);
 	}
 
 }

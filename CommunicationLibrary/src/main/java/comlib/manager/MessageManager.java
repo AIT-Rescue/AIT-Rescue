@@ -226,6 +226,7 @@ public class MessageManager
 		this.registerStandardProvider(new CommandPoliceProvider(MessageID.policeCommand));
 		this.registerStandardProvider(new CommandAmbulanceProvider(MessageID.ambulanceCommand));
 		this.registerStandardProvider(new CommandFireProvider(MessageID.fireCommand));
+		this.registerStandardProvider(new CommandScoutProvider(MessageID.scoutCommand));
 		//this.register(CommunicationMessage.buildingMessageID, new MessageBuildingProvider(this.event));
 		//this.register(CommunicationMessage.blockadeMessageID, new BlockadeMessageProvider(this.event));
 		//this.register(CommunicationMessage.victimMessageID,   new VictimMessageProvider());

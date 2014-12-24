@@ -21,10 +21,10 @@ public class ActionID
 		this.id = value;
 	}
 
-	public int get()
+	public int getValue()
 	{ return this.id; }
 
-	public void set(int value)
+	public void setValue(int value)
 	{
 		this.id = value;
 	}

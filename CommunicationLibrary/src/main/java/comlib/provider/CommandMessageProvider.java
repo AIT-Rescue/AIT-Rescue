@@ -1,28 +1,31 @@
 package comlib.provider;
 
+import comlib.message.MessageCommand;
+
 import comlib.event.MessageEvent;
-import comlib.message.MessageMap;
 import comlib.manager.RadioConfig;
 import comlib.manager.VoiceConfig;
 import comlib.util.BitOutputStream;
 import comlib.util.BitStreamReader;
 
 
-public abstract class MapMessageProvider<M extends MessageMap, E extends MessageEvent> extends InformationMessageProvider<M, E>
+public abstract class CommandMessageProvider<M extends MessageCommand, E extends MessageEvent> extends MessageProvider<M, E>
 {
-	public MapMessageProvider(int id)
+	public CommandMessageProvider(int id)
 	{
 		super(id);
 	}
 
 	protected void writeMessage(RadioConfig config, BitOutputStream bos, M msg)
 	{
-		super.writeMessage(config, bos, msg);
+		bos.writeBits(msg.getActionID().getValue(), 2);
+		bos.writeBits(msg.getTargetID().getValue(), 32);
+		bos.writeBits(msg.getToID().getValue(), 32);
 	}
 
 	protected void writeMessage(VoiceConfig config, StringBuilder sb, M msg)
 	{
-		super.writeMessage(config, sb, msg);
+		//config.appendData(sb, String.valueOf(msg.getValue()));
 	}
 
 	protected M createMessage(RadioConfig config, int time, BitStreamReader bsr)

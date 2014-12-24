@@ -1,12 +1,12 @@
 package comlib.message.information;
 
-import comlib.message.MapMessage;
+import comlib.message.MessageMap;
 import comlib.message.MessageID;
 import rescuecore2.standard.entities.Road;
 import rescuecore2.standard.entities.Blockade;
 import rescuecore2.worldmodel.EntityID;
 
-public class MessageRoad extends MapMessage
+public class MessageRoad extends MessageMap
 {
 	protected int rawRoadID;
 	protected int rawBlockadeID;
