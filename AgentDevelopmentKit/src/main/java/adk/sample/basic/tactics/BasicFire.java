@@ -6,15 +6,15 @@ import adk.team.action.ActionMove;
 import adk.team.action.ActionRest;
 import adk.team.tactics.TacticsFire;
 import adk.team.util.BuildingSelector;
-import adk.team.util.graph.PositionUtil;
 import adk.team.util.RouteSearcher;
+import adk.team.util.graph.PositionUtil;
 import adk.team.util.provider.BuildingSelectorProvider;
 import adk.team.util.provider.RouteSearcherProvider;
 import comlib.manager.MessageManager;
-import comlib.message.information.MessageCivilian;
 import comlib.message.information.MessageFireBrigade;
 import rescuecore2.config.Config;
-import rescuecore2.standard.entities.*;
+import rescuecore2.standard.entities.Building;
+import rescuecore2.standard.entities.Refuge;
 import rescuecore2.worldmodel.ChangeSet;
 import rescuecore2.worldmodel.EntityID;
 
@@ -46,75 +46,57 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
         return this.routeSearcher;
     }
 
+    public abstract void organizeUpdateInfo(int currentTime, ChangeSet updateWorldInfo, MessageManager manager);
+
     @Override
     public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
-        this.organizeUpdateInfo(updateWorldData, manager);
-        if(this.me().getBuriedness() > 0) {
-            manager.addSendMessage(new MessageFireBrigade(this.me()));
+        //情報の整理
+        this.organizeUpdateInfo(currentTime, updateWorldData, manager);
+        //状態の確認
+        if(this.me.getBuriedness() > 0) {
+            manager.addSendMessage(new MessageFireBrigade(this.me));
             this.target = this.buildingSelector.getNewTarget(currentTime);
             if(this.target != null) {
-                Building building = (Building) this.getWorld().getEntity(this.target);
-                if (building.isOnFire() && (this.getWorld().getDistance(this.getID(), this.target) <= this.maxDistance)) {
+                Building building = (Building) this.world.getEntity(this.target);
+                if (building.isOnFire() && (this.world.getDistance(this.agentID, this.target) <= this.maxDistance)) {
                     return new ActionExtinguish(this, this.target, this.maxPower);
                 }
             }
             return new ActionRest(this);
         }
-        if (this.me().getWater() == 0) {
+        //本当に0でいいのか
+        if (this.me.getWater() == 0) {
             this.target = null;
             return this.moveRefuge(currentTime);
         }
-        if(this.target != null) {
-            Building building = (Building)this.getWorld().getEntity(this.target);
-            if(building.isOnFire()) {
-                return this.getWorld().getDistance(this.getID(), this.target) <= this.maxDistance ? new ActionExtinguish(this, this.target, this.maxPower) : this.moveTarget(currentTime);
-            }
-            else {
-                this.buildingSelector.remove(this.target);
-                this.target = this.buildingSelector.getNewTarget(currentTime);
-                return this.moveTarget(currentTime);
-            }
+        if(this.location instanceof Refuge && (this.me.getWater() < this.maxWater)) {
+            this.target = null;
+            return new ActionRest(this);
+        }
+        this.target = this.target == null ? this.buildingSelector.getNewTarget(currentTime) : this.buildingSelector.updateTarget(currentTime, this.target);
+        if(this.target == null) {
+            return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
+        }
+        Building building = (Building)this.world.getEntity(this.target);
+        if(building.isOnFire()) {
+            return this.world.getDistance(this.agentID, this.target) <= this.maxDistance ? new ActionExtinguish(this, this.target, this.maxPower) : this.moveTarget(currentTime);
         }
         else {
-            if(this.location instanceof Refuge && (this.me().getWater() < this.maxWater)) {
-                return new ActionRest(this);
-            }
-            else {
-                this.target = this.buildingSelector.getNewTarget(currentTime);
-                return this.moveTarget(currentTime);
-            }
+            this.buildingSelector.remove(this.target);
         }
-    }
-
-    public void organizeUpdateInfo(ChangeSet updateWorldInfo, MessageManager manager) {
-        for (EntityID next : updateWorldInfo.getChangedEntities()) {
-            StandardEntity entity = this.getWorld().getEntity(next);
-            if(entity instanceof Building) {
-                this.buildingSelector.add((Building) entity);
-            }
-            else if(entity instanceof Civilian) {
-                Civilian civilian = (Civilian)entity;
-                if(civilian.getBuriedness() > 0) {
-                    manager.addSendMessage(new MessageCivilian(civilian));
-                }
-            }
-            /*
-            else if(entity instanceof Blockade) {
-                manager.addSendMessage(new RoadMessage((Blockade) entity));
-            }
-            */
-        }
+        this.target = this.buildingSelector.getNewTarget(currentTime);
+        return this.moveTarget(currentTime);
     }
 
     public Action moveRefuge(int currentTime) {
-        Refuge result = PositionUtil.getNearTarget(this.getWorld(), this.me(), this.getRefuges());
+        Refuge result = PositionUtil.getNearTarget(this.world, this.me, this.getRefuges());
         List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, result);
         return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
     }
 
     public Action moveTarget(int currentTime) {
         if(this.target != null) {
-            List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me(), this.target);
+            List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
             if(path != null) {
                 path.remove(this.target);
                 return new ActionMove(this, path);
@@ -123,5 +105,4 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
         }
         return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
     }
-
 }

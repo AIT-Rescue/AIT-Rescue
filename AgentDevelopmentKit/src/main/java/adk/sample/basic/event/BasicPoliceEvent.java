@@ -2,12 +2,12 @@ package adk.sample.basic.event;
 
 import adk.team.util.provider.VictimSelectorProvider;
 import adk.team.util.provider.WorldProvider;
-import comlib.event.information.EventMessagePoliceForce;
+import comlib.event.information.MessagePoliceForceEvent;
 import comlib.manager.UpdateHelper;
 import comlib.message.information.MessagePoliceForce;
 import rescuecore2.standard.entities.PoliceForce;
 
-public class BasicPoliceEvent implements EventMessagePoliceForce{
+public class BasicPoliceEvent implements MessagePoliceForceEvent {
 
     private WorldProvider wp;
     private VictimSelectorProvider vsp;

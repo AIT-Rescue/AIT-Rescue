@@ -2,12 +2,12 @@ package adk.sample.basic.event;
 
 import adk.team.util.provider.ImpassableSelectorProvider;
 import adk.team.util.provider.WorldProvider;
-import comlib.event.information.EventMessageRoad;
+import comlib.event.information.MessageRoadEvent;
 import comlib.manager.UpdateHelper;
 import comlib.message.information.MessageRoad;
 import rescuecore2.standard.entities.Blockade;
 
-public class BasicRoadEvent implements EventMessageRoad {
+public class BasicRoadEvent implements MessageRoadEvent {
 
     private WorldProvider wp;
     private ImpassableSelectorProvider drsp;

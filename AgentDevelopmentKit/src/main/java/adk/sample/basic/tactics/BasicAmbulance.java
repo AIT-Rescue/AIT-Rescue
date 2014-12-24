@@ -1,10 +1,10 @@
 package adk.sample.basic.tactics;
 
 import adk.team.action.*;
-import adk.team.util.graph.PositionUtil;
-import adk.team.util.RouteSearcher;
 import adk.team.tactics.TacticsAmbulance;
+import adk.team.util.RouteSearcher;
 import adk.team.util.VictimSelector;
+import adk.team.util.graph.PositionUtil;
 import adk.team.util.provider.RouteSearcherProvider;
 import adk.team.util.provider.VictimSelectorProvider;
 import comlib.manager.MessageManager;
@@ -22,10 +22,22 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
 
     public RouteSearcher routeSearcher;
 
+    public static final int TYPE_UNKNOWN = 0;
+    public static final int TYPE_CIVILIAN = 1;
+    public static final int TYPE_AGENT_AMBULANCE = 2;
+    public static final int TYPE_AGENT_FIRE = 3;
+    public static final int TYPE_AGENT_POLICE = 4;
+
+    public int targetType;
+
+    public EntityID oldTarget;
+
     @Override
     public void preparation(Config config) {
         this.victimSelector = this.initVictimSelector();
         this.routeSearcher = this.initRouteSearcher();
+        this.targetType = TYPE_UNKNOWN;
+        this.oldTarget = this.getID();
     }
 
     public abstract VictimSelector initVictimSelector();
@@ -42,87 +54,104 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
         return this.routeSearcher;
     }
 
+    public abstract void organizeUpdateInfo(int currentTime, ChangeSet updateWorldInfo, MessageManager manager);
+
     @Override
     public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
-        this.organizeUpdateInfo(updateWorldData, manager);
-        if(this.someoneOnBoard()) {
-            if (this.location() instanceof Refuge) {
-                this.target = null;
-                return new ActionUnload(this);
-            }
-            return this.moveRefuge(currentTime);
-        }
-        if(this.me().getBuriedness() > 0) {
+        //情報の整理
+        this.organizeUpdateInfo(currentTime, updateWorldData, manager);
+        //自分の状態チェック
+        if(this.me.getBuriedness() > 0) {
+            this.target = null;
             //自分自身をRescueできるのか？？
             //return new ActionRest(this);
-            return new ActionRescue(this, this.getID());
+            return new ActionRescue(this, this.agentID);
         }
-        //HP -> 10000
-        if(this.me().getHP() < 1000) {
+        //人を載せているか or 回復中
+        if(this.location instanceof Refuge) {
             this.target = null;
-            return this.location() instanceof Refuge ? new ActionRest(this) : this.moveRefuge(currentTime);
+            if(this.someoneOnBoard()) {
+                return new ActionUnload(this);
+            }
+            if(this.me.getHP() < 5000) {
+                return new ActionRest(this);
+            }
         }
+        //避難所への移動条件
+        if(this.someoneOnBoard() || this.me.getHP() < 1000) {
+            return this.moveRefuge(currentTime);
+        }
+        //対象の選択・切り替え
+        this.target = this.target == null ? this.victimSelector.getNewTarget(currentTime) : this.victimSelector.updateTarget(currentTime, this.target);
         if(this.target == null) {
-            this.target = this.victimSelector.getNewTarget(currentTime);
-            if(this.target == null) {
-                return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
-            }
+            this.oldTarget = this.agentID;
+            return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
         }
-        Human victim = (Human)this.getWorld().getEntity(this.target);
-        if(victim.getPosition().getValue() != this.location().getID().getValue()) {
-            List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me(), this.target);
-            return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
+        if(this.target.getValue() != this.oldTarget.getValue()) {
+            this.oldTarget = this.target;
+            this.resetTargetInfo();
         }
-        else {
-            if ((victim instanceof Civilian) && victim.getBuriedness() == 0) {
-                Civilian civilian = (Civilian)victim;
-                manager.addSendMessage(new MessageCivilian(civilian));
-                this.victimSelector.remove(civilian);
-                return new ActionLoad(this, this.target);
-            }
-            else if (victim.getBuriedness() > 0) {
-                return new ActionRescue(this, this.target);
-            }
-            if(victim instanceof AmbulanceTeam) {
-                AmbulanceTeam ambulanceTeam = (AmbulanceTeam)victim;
-                manager.addSendMessage(new MessageAmbulanceTeam(ambulanceTeam));
-                this.victimSelector.remove(ambulanceTeam);
-            }
-            else if(victim instanceof FireBrigade) {
-                FireBrigade fireBrigade = (FireBrigade)victim;
-                manager.addSendMessage(new MessageFireBrigade(fireBrigade));
-                this.victimSelector.remove(fireBrigade);
-            }
-            else if(victim instanceof PoliceForce) {
-                PoliceForce policeForce = (PoliceForce)victim;
-                manager.addSendMessage(new MessagePoliceForce(policeForce));
-                this.victimSelector.remove(policeForce);
-            }
-            this.target = this.victimSelector.getNewTarget(currentTime);
+        //救助開始
+        Human victim = (Human)this.world.getEntity(this.target);
+        if(victim.getPosition().getValue() != this.location.getID().getValue()) {
             return this.moveTarget(currentTime);
         }
-    }
-
-    public void organizeUpdateInfo(ChangeSet updateWorldInfo, MessageManager manager) {
-        for (EntityID next : updateWorldInfo.getChangedEntities()) {
-            StandardEntity entity = this.getWorld().getEntity(next);
-            if(entity instanceof Civilian) {
-                this.victimSelector.add((Civilian) entity);
+        if(this.targetType != TYPE_UNKNOWN) {
+            if(victim.getBuriedness() > 0) {
+                return new ActionRescue(this, this.target);
             }
-            else if(entity instanceof Human) {
-                this.victimSelector.add((Human)entity);
-            }
-            else if(entity instanceof Building) {
-                Building b = (Building)entity;
-                if(b.isOnFire()) {
-                    manager.addSendMessage(new MessageBuilding(b));
+            else {
+                if(this.targetType == TYPE_CIVILIAN) {
+                    Civilian civilian = (Civilian)victim;
+                    manager.addSendMessage(new MessageCivilian(civilian));
+                    this.victimSelector.remove(civilian);
+                    return new ActionLoad(this, this.target);
+                }
+                if(this.targetType == TYPE_AGENT_AMBULANCE) {
+                    AmbulanceTeam ambulanceTeam = (AmbulanceTeam)victim;
+                    manager.addSendMessage(new MessageAmbulanceTeam(ambulanceTeam));
+                    this.victimSelector.remove(ambulanceTeam);
+                }
+                else if(this.targetType == TYPE_AGENT_FIRE) {
+                    FireBrigade fireBrigade = (FireBrigade)victim;
+                    manager.addSendMessage(new MessageFireBrigade(fireBrigade));
+                    this.victimSelector.remove(fireBrigade);
+                }
+                else if(this.targetType == TYPE_AGENT_POLICE) {
+                    PoliceForce policeForce = (PoliceForce)victim;
+                    manager.addSendMessage(new MessagePoliceForce(policeForce));
+                    this.victimSelector.remove(policeForce);
                 }
             }
-            /*
-            else if(entity instanceof Blockade) {
-                //manager.addSendMessage(new RoadMessage(((Blockade)entity)));
-            }
-            */
+        }
+        //対象が救助済み．または対象外の場合
+        this.target = this.victimSelector.getNewTarget(currentTime);
+        if(this.target != null) {
+            this.oldTarget = this.target;
+            this.resetTargetInfo();
+        }
+        return this.moveTarget(currentTime);
+    }
+
+    public void resetTargetInfo() {
+        StandardEntity entity = this.getWorld().getEntity(this.target);
+        if(entity == null) {
+            this.targetType = TYPE_UNKNOWN;
+        }
+        else if(entity instanceof Civilian) {
+            this.targetType = TYPE_CIVILIAN;
+        }
+        else if(entity instanceof AmbulanceTeam) {
+            this.targetType = TYPE_AGENT_AMBULANCE;
+        }
+        else if(entity instanceof FireBrigade) {
+            this.targetType = TYPE_AGENT_FIRE;
+        }
+        else if(entity instanceof PoliceForce) {
+            this.targetType = TYPE_AGENT_POLICE;
+        }
+        else {
+            this.targetType = TYPE_UNKNOWN;
         }
     }
 
@@ -131,15 +160,15 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
     }
 
     public Action moveRefuge(int currentTime) {
-        Refuge result = PositionUtil.getNearTarget(this.getWorld(), this.me(), this.getRefuges());
-        List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me(), result);
+        Refuge result = PositionUtil.getNearTarget(this.world, this.me, this.getRefuges());
+        List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, result);
         return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
     }
 
     public Action moveTarget(int currentTime) {
         List<EntityID> path = null;
         if(this.target != null) {
-            path = this.routeSearcher.getPath(currentTime, this.me(), this.target);
+            path = this.routeSearcher.getPath(currentTime, this.me, this.target);
         }
         return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
     }

@@ -3,7 +3,7 @@ package adk.sample.dummy.tactics;
 import adk.sample.astar.util.AStarRouteSearcher;
 import adk.sample.basic.event.BasicRoadEvent;
 import adk.sample.basic.util.BasicImpassableSelector;
-import adk.sample.newbasic.tactics.NewBasicPolice;
+import adk.sample.basic.tactics.BasicPolice;
 import adk.team.util.ImpassableSelector;
 import adk.team.util.RouteSearcher;
 import adk.team.util.graph.RouteManager;
@@ -17,7 +17,7 @@ import rescuecore2.standard.entities.StandardEntity;
 import rescuecore2.worldmodel.ChangeSet;
 import rescuecore2.worldmodel.EntityID;
 
-public class DummyPolice extends NewBasicPolice {
+public class DummyPolice extends BasicPolice {
 
     @Override
     public String getTacticsName() {

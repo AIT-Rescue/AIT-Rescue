@@ -3,7 +3,7 @@ package adk.sample.dummy.tactics;
 import adk.sample.astar.util.AStarRouteSearcher;
 import adk.sample.basic.event.BasicBuildingEvent;
 import adk.sample.basic.util.BasicBuildingSelector;
-import adk.sample.newbasic.tactics.NewBasicFire;
+import adk.sample.basic.tactics.BasicFire;
 import adk.team.util.BuildingSelector;
 import adk.team.util.RouteSearcher;
 import adk.team.util.graph.RouteManager;
@@ -15,7 +15,7 @@ import rescuecore2.standard.entities.StandardEntity;
 import rescuecore2.worldmodel.ChangeSet;
 import rescuecore2.worldmodel.EntityID;
 
-public class DummyFire extends NewBasicFire {
+public class DummyFire extends BasicFire {
 
     @Override
     public String getTacticsName() {

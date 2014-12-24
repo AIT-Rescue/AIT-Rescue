@@ -2,12 +2,12 @@ package adk.sample.basic.event;
 
 import adk.team.util.provider.VictimSelectorProvider;
 import adk.team.util.provider.WorldProvider;
-import comlib.event.information.EventMessageCivilian;
+import comlib.event.information.MessageCivilianEvent;
 import comlib.manager.UpdateHelper;
 import comlib.message.information.MessageCivilian;
 import rescuecore2.standard.entities.Civilian;
 
-public class BasicCivilianEvent implements EventMessageCivilian{
+public class BasicCivilianEvent implements MessageCivilianEvent {
 
     private WorldProvider wp;
     private VictimSelectorProvider vsp;

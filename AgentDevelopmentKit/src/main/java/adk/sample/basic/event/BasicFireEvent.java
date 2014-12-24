@@ -2,12 +2,12 @@ package adk.sample.basic.event;
 
 import adk.team.util.provider.VictimSelectorProvider;
 import adk.team.util.provider.WorldProvider;
-import comlib.event.information.EventMessageFireBrigade;
+import comlib.event.information.MessageFireBrigadeEvent;
 import comlib.manager.UpdateHelper;
 import comlib.message.information.MessageFireBrigade;
 import rescuecore2.standard.entities.FireBrigade;
 
-public class BasicFireEvent implements EventMessageFireBrigade{
+public class BasicFireEvent implements MessageFireBrigadeEvent {
 
     private WorldProvider wp;
     private VictimSelectorProvider vsp;
