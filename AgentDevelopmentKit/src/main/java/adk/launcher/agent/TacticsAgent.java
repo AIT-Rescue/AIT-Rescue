@@ -29,7 +29,8 @@ public abstract class TacticsAgent<E extends StandardEntity> extends Communicati
     public void postConnect() {
         super.postConnect();
         this.ignoreTime = this.config.getIntValue(kernel.KernelConstants.IGNORE_AGENT_COMMANDS_KEY);
-        this.tactics.model = this.getWorld();
+        this.tactics.world = this.getWorld();
+        this.tactics.model = this.tactics.world;//this.getWorld();
         this.tactics.agentID = this.getID();
         this.tactics.refugeList = this.getRefuges();
         //this.tactics.setWorldInfo(this);
@@ -69,7 +70,7 @@ public abstract class TacticsAgent<E extends StandardEntity> extends Communicati
     public void receiveBeforeEvent(int time, ChangeSet changed) {
         this.tactics.time = time;
         this.tactics.changed = changed;
-        //this.tactics.model = this.getWorld();
+        //this.tactics.world = this.getWorld();
         this.setAgentEntity();
     }
 

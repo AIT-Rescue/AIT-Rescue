@@ -53,23 +53,23 @@ public abstract class NewBasicFire  extends TacticsFire implements RouteSearcher
         //情報の整理
         this.organizeUpdateInfo(currentTime, updateWorldData, manager);
         //状態の確認
-        if(this.me().getBuriedness() > 0) {
-            manager.addSendMessage(new MessageFireBrigade(this.me()));
+        if(this.me.getBuriedness() > 0) {
+            manager.addSendMessage(new MessageFireBrigade(this.me));
             this.target = this.buildingSelector.getNewTarget(currentTime);
             if(this.target != null) {
-                Building building = (Building) this.getWorld().getEntity(this.target);
-                if (building.isOnFire() && (this.getWorld().getDistance(this.getID(), this.target) <= this.maxDistance)) {
+                Building building = (Building) this.world.getEntity(this.target);
+                if (building.isOnFire() && (this.world.getDistance(this.agentID, this.target) <= this.maxDistance)) {
                     return new ActionExtinguish(this, this.target, this.maxPower);
                 }
             }
             return new ActionRest(this);
         }
         //本当に0でいいのか
-        if (this.me().getWater() == 0) {
+        if (this.me.getWater() == 0) {
             this.target = null;
             return this.moveRefuge(currentTime);
         }
-        if(this.location() instanceof Refuge && (this.me().getWater() < this.maxWater)) {
+        if(this.location instanceof Refuge && (this.me.getWater() < this.maxWater)) {
             this.target = null;
             return new ActionRest(this);
         }
@@ -77,9 +77,9 @@ public abstract class NewBasicFire  extends TacticsFire implements RouteSearcher
         if(this.target == null) {
             return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
         }
-        Building building = (Building)this.getWorld().getEntity(this.target);
+        Building building = (Building)this.world.getEntity(this.target);
         if(building.isOnFire()) {
-            return this.getWorld().getDistance(this.getID(), this.target) <= this.maxDistance ? new ActionExtinguish(this, this.target, this.maxPower) : this.moveTarget(currentTime);
+            return this.world.getDistance(this.agentID, this.target) <= this.maxDistance ? new ActionExtinguish(this, this.target, this.maxPower) : this.moveTarget(currentTime);
         }
         else {
             this.buildingSelector.remove(this.target);
@@ -89,14 +89,14 @@ public abstract class NewBasicFire  extends TacticsFire implements RouteSearcher
     }
 
     public Action moveRefuge(int currentTime) {
-        Refuge result = PositionUtil.getNearTarget(this.getWorld(), this.me(), this.getRefuges());
+        Refuge result = PositionUtil.getNearTarget(this.world, this.me, this.getRefuges());
         List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, result);
         return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
     }
 
     public Action moveTarget(int currentTime) {
         if(this.target != null) {
-            List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me(), this.target);
+            List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
             if(path != null) {
                 path.remove(this.target);
                 return new ActionMove(this, path);

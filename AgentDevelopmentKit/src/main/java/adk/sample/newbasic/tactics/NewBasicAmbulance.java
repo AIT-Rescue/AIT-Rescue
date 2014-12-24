@@ -61,30 +61,30 @@ public abstract class NewBasicAmbulance  extends TacticsAmbulance implements Rou
         //情報の整理
         this.organizeUpdateInfo(currentTime, updateWorldData, manager);
         //自分の状態チェック
-        if(this.me().getBuriedness() > 0) {
+        if(this.me.getBuriedness() > 0) {
             this.target = null;
             //自分自身をRescueできるのか？？
             //return new ActionRest(this);
-            return new ActionRescue(this, this.getID());
+            return new ActionRescue(this, this.agentID);
         }
         //人を載せているか or 回復中
-        if(this.location() instanceof Refuge) {
+        if(this.location instanceof Refuge) {
             this.target = null;
             if(this.someoneOnBoard()) {
                 return new ActionUnload(this);
             }
-            if(this.me().getHP() < 5000) {
+            if(this.me.getHP() < 5000) {
                 return new ActionRest(this);
             }
         }
         //避難所への移動条件
-        if(this.someoneOnBoard() || this.me().getHP() < 1000) {
+        if(this.someoneOnBoard() || this.me.getHP() < 1000) {
             return this.moveRefuge(currentTime);
         }
         //対象の選択・切り替え
         this.target = this.target == null ? this.victimSelector.getNewTarget(currentTime) : this.victimSelector.updateTarget(currentTime, this.target);
         if(this.target == null) {
-            this.oldTarget = this.getID();
+            this.oldTarget = this.agentID;
             return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
         }
         if(this.target.getValue() != this.oldTarget.getValue()) {
@@ -92,8 +92,8 @@ public abstract class NewBasicAmbulance  extends TacticsAmbulance implements Rou
             this.resetTargetInfo();
         }
         //救助開始
-        Human victim = (Human)this.getWorld().getEntity(this.target);
-        if(victim.getPosition().getValue() != this.location().getID().getValue()) {
+        Human victim = (Human)this.world.getEntity(this.target);
+        if(victim.getPosition().getValue() != this.location.getID().getValue()) {
             return this.moveTarget(currentTime);
         }
         if(this.targetType != TYPE_UNKNOWN) {
@@ -160,15 +160,15 @@ public abstract class NewBasicAmbulance  extends TacticsAmbulance implements Rou
     }
 
     public Action moveRefuge(int currentTime) {
-        Refuge result = PositionUtil.getNearTarget(this.getWorld(), this.me(), this.getRefuges());
-        List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me(), result);
+        Refuge result = PositionUtil.getNearTarget(this.world, this.me, this.getRefuges());
+        List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, result);
         return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
     }
 
     public Action moveTarget(int currentTime) {
         List<EntityID> path = null;
         if(this.target != null) {
-            path = this.routeSearcher.getPath(currentTime, this.me(), this.target);
+            path = this.routeSearcher.getPath(currentTime, this.me, this.target);
         }
         return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
     }

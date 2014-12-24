@@ -7,6 +7,7 @@ import adk.team.util.RouteSearcher;
 import adk.team.util.graph.PositionUtil;
 import adk.team.util.provider.ImpassableSelectorProvider;
 import adk.team.util.provider.RouteSearcherProvider;
+import com.google.common.collect.Lists;
 import comlib.manager.MessageManager;
 import comlib.message.information.MessagePoliceForce;
 import rescuecore2.config.Config;
@@ -64,19 +65,79 @@ public abstract class NewBasicPolice extends TacticsPolice implements RouteSearc
     @Override
     public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
         this.organizeUpdateInfo(currentTime, updateWorldData, manager);
-        this.agentPoint = new Point2D(this.me().getX(), this.me().getY());
+        this.agentPoint = new Point2D(this.me.getX(), this.me.getY());
+        //状態の確認
         if(this.me().getBuriedness() > 0) {
-            manager.addSendMessage(new MessagePoliceForce(this.me()));
-            List<EntityID> roads = ((Area)this.location()).getNeighbours();
+            this.beforeMove = false;
+            manager.addSendMessage(new MessagePoliceForce(this.me));
+            List<EntityID> roads = ((Area)this.location).getNeighbours();
+            if(roads.isEmpty()) {
+                return new ActionRest(this);
+            }
             if(this.count <= 0) {
                 this.count = roads.size();
             }
             this.count--;
-            Area area = (Area)this.model.getEntity(roads.get(this.count));
+            Area area = (Area)this.world.getEntity(roads.get(this.count));
             Vector2D vector = (new Point2D(area.getX(), area.getY())).minus(this.agentPoint).normalised().scale(1000000);
-            return new ActionClear(this, (int) (this.me().getX() + vector.getX()), (int) (this.me().getY() + vector.getY()));
+            return new ActionClear(this, (int) (this.me.getX() + vector.getX()), (int) (this.me.getY() + vector.getY()));
         }
-        return new ActionRest(this);
+        //対象の選択
+        int oldTarget = this.target.getValue();
+        this.target = this.target != null ? this.impassableSelector.updateTarget(currentTime, this.target) : this.impassableSelector.getNewTarget(currentTime);
+        if(this.target == null) {
+            this.beforeMove = true;
+            return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
+        }
+        //対象まで移動
+        if(this.location.getID().getValue() != this.target.getValue()) {
+            if(this.location instanceof Building || this.passable((Road)this.location)) {
+                this.beforeMove = true;
+                List<EntityID> path = this.getRouteSearcher().getPath(currentTime, this.me, this.target);
+                return new ActionMove(this, path != null ? path : this.getRouteSearcher().noTargetMove(currentTime));
+            }
+            //通れない道なら，Targetに設定
+            this.target = this.location.getID();
+        }
+        //対象の確定
+        Road road = (Road)this.world.getEntity(this.target);
+        //道の点の選択
+        if(oldTarget != this.target.getValue()) {
+            this.mainTargetPoint = this.getClearList(road).get(0);
+        }
+        else if(this.mainTargetPoint == null) {
+            this.mainTargetPoint = this.getClearList(road).get(0);
+        }
+        //移動した直後か，Clear後の移動を行った場合
+        if(this.beforeMove) {
+            if(PositionUtil.equalsPoint(this.agentPoint, this.mainTargetPoint, 10.0D)) {
+                this.removeTargetPoint(road, this.mainTargetPoint);
+                this.mainTargetPoint = null;
+                List<Point2D> clearPoint = this.clearListMap.get(target);
+                this.beforeMove = true;
+                if(!clearPoint.isEmpty()) {
+                    this.mainTargetPoint = clearPoint.get(0);
+                    return new ActionMove(this, Lists.newArrayList(target), (int) this.mainTargetPoint.getX(), (int) this.mainTargetPoint.getY());
+                }
+                else {
+                    this.target = this.impassableSelector.getNewTarget(currentTime);
+                    List<EntityID> path = null;
+                    if(this.target != null) {
+                        path = this.getRouteSearcher().getPath(currentTime, this.getID(), this.target);
+                    }
+                    return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
+                }
+            }
+            else {
+                Vector2D vector = this.getVector(this.agentPoint, this.mainTargetPoint, road);
+                this.beforeMove = false;
+                return new ActionClear(this, (int) (this.me.getX() + vector.getX()), (int) (this.me.getY() + vector.getY()));
+            }
+        }
+        else {
+            this.beforeMove = true;
+            return new ActionMove(this, Lists.newArrayList(target), (int) this.mainTargetPoint.getX(), (int) this.mainTargetPoint.getY());
+        }
     }
 
     public Vector2D getVector(Point2D agentPos, Point2D targetPos, Road road) {

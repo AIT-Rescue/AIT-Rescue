@@ -14,6 +14,8 @@ import java.util.List;
 
 public abstract class Tactics<E extends StandardEntity> implements WorldProvider<E> {
 
+
+    public StandardWorldModel world;
     public StandardWorldModel model;
     public int time;
     public ChangeSet changed;
@@ -50,7 +52,7 @@ public abstract class Tactics<E extends StandardEntity> implements WorldProvider
 
     @Override
     public StandardWorldModel getWorld() {
-        return this.model;
+        return this.world;
     }
 
     @Override

@@ -3,9 +3,7 @@ package adk.sample.basic.util;
 import adk.team.util.ImpassableSelector;
 import adk.team.util.graph.PositionUtil;
 import adk.team.util.provider.WorldProvider;
-import rescuecore2.standard.entities.Blockade;
-import rescuecore2.standard.entities.Road;
-import rescuecore2.standard.entities.StandardEntity;
+import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.HashSet;
@@ -83,6 +81,14 @@ public class BasicImpassableSelector implements ImpassableSelector {
 
     @Override
     public EntityID updateTarget(int time, EntityID target) {
+        for(StandardEntity police : this.provider.getWorld().getEntitiesOfType(StandardEntityURN.POLICE_FORCE)) {
+            if(target.getValue() == ((PoliceForce)police).getPosition().getValue()) {
+                if(this.provider.getID().getValue() < police.getID().getValue()) {
+                    this.remove(target);
+                    return this.getNewTarget(time);
+                }
+            }
+        }
         return target;
     }
 }
