@@ -1,68 +1,122 @@
 package sample.util;
 
 import adk.team.util.RouteSearcher;
+import adk.team.util.graph.RouteEdge;
+import adk.team.util.graph.RouteGraph;
+import adk.team.util.graph.RouteManager;
+import adk.team.util.graph.RouteNode;
 import adk.team.util.provider.WorldProvider;
-import rescuecore2.misc.collections.LazyMap;
-import rescuecore2.standard.entities.Area;
-import rescuecore2.standard.entities.Human;
-import rescuecore2.standard.entities.Road;
-import rescuecore2.worldmodel.Entity;
-import sample.SampleSearch;
+import com.google.common.collect.Lists;
+import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
+//RouteGraphSample
 public class SampleRouteSearcher implements RouteSearcher {
 
-    private static final int RANDOM_WALK_LENGTH = 50;
+    private WorldProvider<? extends Human> provider;
+    private RouteManager routeManager;
 
-    public WorldProvider<? extends Human> provider;
-
-    private Map<EntityID, Set<EntityID>> neighbours;
     private Random random;
 
-    private SampleSearch search;
-
-    public SampleRouteSearcher(WorldProvider<? extends Human> user) {
-        this.provider = user;
-        this.search = new SampleSearch(user.getWorld());
+    public SampleRouteSearcher(WorldProvider<? extends Human> worldProvider, RouteManager manager) {
+        this.provider = worldProvider;
+        this.routeManager = manager;
         this.random = new Random((new Date()).getTime());
-        this.initRandomWalk();
     }
 
-    private void initRandomWalk()
-    {
-        this.neighbours = new LazyMap<EntityID, Set<EntityID>>() {
-            @Override
-            public Set<EntityID> createValue() {
-                return new HashSet<>();
-            }
-        };
-        for (Entity next : this.provider.getWorld()) {
-            if (next instanceof Area) {
-                List<EntityID> neighbours = ((Area)next).getNeighbours();
-                Set<EntityID> roadNeighbours = neighbours.stream().filter(id -> this.provider.getWorld().getEntity(id) instanceof Road).collect(Collectors.toSet());
-                this.neighbours.put(next.getID(), roadNeighbours);
-            }
+    @Override
+    public List<EntityID> getPath(int time, EntityID startID, EntityID goalID) {
+        StandardWorldModel world = this.provider.getWorld();
+        RouteGraph graph = this.routeManager.getPassableGraph();
+        // check
+        if(startID.getValue() == goalID.getValue()) {
+            return Lists.newArrayList(startID);
         }
+        if(!graph.createPositionNode(world, startID) || !graph.createPositionNode(world, goalID)) {
+            return null;
+        }
+        RouteNode start = graph.getNode(startID);
+        if(start.isSingleNode()) {
+            return Lists.newArrayList(startID);
+        }
+        RouteNode goal = graph.getNode(goalID);
+        if(goal.isSingleNode()) {
+            return null;
+        }
+        // init
+        Set<EntityID> closed = new HashSet<>();
+        List<RouteNode> open = Lists.newArrayList(start);
+        Map<EntityID, EntityID> previousNodeMap = new HashMap<>();
+        Map<EntityID, Double> distanceFromStart = new HashMap<>();
+        // process
+        while(open.size() != 0) {
+            RouteNode current = open.get(0); //sort
+            EntityID currentID = current.getID();
+            //目的地に着いた時
+            if(currentID.getValue() == goalID.getValue()) {
+                List<RouteNode> nodePath = Lists.newArrayList(current);
+                EntityID id = currentID;
+                while(previousNodeMap.containsKey(id)) {
+                    id = previousNodeMap.get(id);
+                    nodePath.add(graph.getNode(id));
+                }
+                Collections.reverse(nodePath);
+                return graph.getPath(nodePath); // create path
+            }
+            // reset
+            open.clear();
+            closed.add(currentID);
+            // search next
+            for(EntityID neighbourID : current.getNeighbours()) {
+                if (closed.contains(neighbourID)) {
+                    continue;
+                }
+                RouteNode neighbour = graph.getNode(neighbourID);
+                double currentDistance = distanceFromStart.containsKey(currentID) ? distanceFromStart.get(currentID) : 0.0D;
+                double neighbourDistance = currentDistance + graph.getEdge(current, neighbour).getDistance();
+                if(!open.contains(neighbour)) {
+                    open.add(neighbour);
+                    previousNodeMap.put(neighbourID, currentID);
+                    distanceFromStart.put(neighbourID, neighbourDistance);
+                }
+            }
+            open.sort(new SampleComparator(goal, distanceFromStart));
+        }
+        return null;
     }
 
     @Override
     public List<EntityID> noTargetMove(int time) {
-        List<EntityID> result = new ArrayList<>(RANDOM_WALK_LENGTH);
+        StandardWorldModel world = this.provider.getWorld();
+        RouteGraph graph = this.routeManager.getPassableGraph();
+        EntityID current = this.provider.getOwnerLocation().getID();
+        if(!graph.createPositionNode(world, current)) {
+            return Lists.newArrayList(current);
+        }
+        int limit = 50;
+        List<EntityID> result = new ArrayList<>();
         Set<EntityID> seen = new HashSet<>();
-        EntityID current = this.provider.me().getPosition();
-        for (int i = 0; i < RANDOM_WALK_LENGTH; ++i) {
+        while(result.size() < limit) {
             result.add(current);
             seen.add(current);
-            List<EntityID> possible = new ArrayList<>(this.neighbours.get(current));
-            Collections.shuffle(possible, this.random);
+            RouteNode node = graph.getNode(current);
+            if(node == null) {
+                break;
+            }
+            List<EntityID> neighbourNodes = new ArrayList<>(node.getNeighbours());
+            Collections.shuffle(neighbourNodes, this.random);
             boolean noTarget = true;
-            for (EntityID next : possible) {
+            for (EntityID next : neighbourNodes) {
                 if (seen.contains(next)) {
                     continue;
                 }
+                RouteEdge edge = graph.getEdge(current, next);
+                if(edge == null) {
+                    continue;
+                }
+                result.addAll(edge.getPath(current));
                 current = next;
                 noTarget = false;
                 break;
@@ -72,10 +126,5 @@ public class SampleRouteSearcher implements RouteSearcher {
             }
         }
         return result;
-    }
-
-    @Override
-    public List<EntityID> getPath(int time, EntityID from, EntityID to) {
-        return this.search.breadthFirstSearch(from, to);
     }
 }

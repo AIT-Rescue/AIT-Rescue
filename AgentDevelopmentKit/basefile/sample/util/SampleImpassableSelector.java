@@ -3,22 +3,20 @@ package sample.util;
 import adk.team.util.ImpassableSelector;
 import adk.team.util.graph.PositionUtil;
 import adk.team.util.provider.WorldProvider;
-import rescuecore2.standard.entities.Blockade;
-import rescuecore2.standard.entities.Road;
-import rescuecore2.standard.entities.StandardEntity;
+import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class SampleDebrisRemovalSelector implements ImpassableSelector {
+public class SampleImpassableSelector implements ImpassableSelector {
 
     public Set<Road> impassableRoadList;
     public Set<EntityID> passableRoadList;
 
     public WorldProvider<? extends StandardEntity> provider;
 
-    public SampleDebrisRemovalSelector(WorldProvider<? extends StandardEntity> user) {
+    public SampleImpassableSelector(WorldProvider<? extends StandardEntity> user) {
         this.provider = user;
         this.impassableRoadList = new HashSet<>();
         this.passableRoadList = new HashSet<>();
@@ -76,8 +74,21 @@ public class SampleDebrisRemovalSelector implements ImpassableSelector {
     }
 
     @Override
-    public EntityID getTarget(int time) {
+    public EntityID getNewTarget(int time) {
         StandardEntity result = PositionUtil.getNearTarget(this.provider.getWorld(), this.provider.getOwner(), this.impassableRoadList);
         return result != null ? result.getID() : null;
+    }
+
+    @Override
+    public EntityID updateTarget(int time, EntityID target) {
+        for(StandardEntity police : this.provider.getWorld().getEntitiesOfType(StandardEntityURN.POLICE_FORCE)) {
+            if(target.getValue() == ((PoliceForce)police).getPosition().getValue()) {
+                if(this.provider.getID().getValue() < police.getID().getValue()) {
+                    this.remove(target);
+                    return this.getNewTarget(time);
+                }
+            }
+        }
+        return target;
     }
 }

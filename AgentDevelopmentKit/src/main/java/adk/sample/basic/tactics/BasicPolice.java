@@ -168,14 +168,12 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         }
         List<List<Edge>> neighbourEdges = new ArrayList<>();
         List<Point2D> passablePoint = new ArrayList<>();
-        for (Edge edge : road.getEdges()) {
-            if (edge.isPassable()) {
-                List<Edge> edges = new ArrayList<>(((Area) this.getWorld().getEntity(edge.getNeighbour())).getEdges());
-                edges.remove(edge);
-                neighbourEdges.add(edges);
-                passablePoint.add(PositionUtil.getEdgePoint(edge));
-            }
-        }
+        road.getEdges().stream().filter(edge -> edge.isPassable()).forEach(edge -> {
+            List<Edge> edges = new ArrayList<>(((Area) this.getWorld().getEntity(edge.getNeighbour())).getEdges());
+            edges.remove(edge);
+            neighbourEdges.add(edges);
+            passablePoint.add(PositionUtil.getEdgePoint(edge));
+        });
         List<Point2D> clearList;
         if (road.getBlockades().isEmpty()) {
             clearList = new ArrayList<>();
@@ -210,8 +208,6 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
             this.impassableSelector.remove(road);
         }
     }
-
-    //move tool ???
 
     public boolean canStraightForward(Point2D point, Point2D targetPoint, EntityID roadID, Collection<Edge> edges) {
         for (Edge edge : edges) {
