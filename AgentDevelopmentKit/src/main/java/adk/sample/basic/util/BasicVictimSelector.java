@@ -89,9 +89,10 @@ public class BasicVictimSelector implements VictimSelector {
     @Override
     public EntityID updateTarget(int time, EntityID target) {
         Human victim = (Human)this.provider.getWorld().getEntity(target);
+        EntityID victimPositionID = victim.getPosition();
         if(victim.getBuriedness() == 0) {
             for(StandardEntity ambulance : this.provider.getWorld().getEntitiesOfType(StandardEntityURN.AMBULANCE_TEAM)) {
-                if(target.getValue() == ((PoliceForce)ambulance).getPosition().getValue()) {
+                if(victimPositionID.getValue() == ((AmbulanceTeam)ambulance).getPosition().getValue()) {
                     if(this.provider.getID().getValue() < ambulance.getID().getValue()) {
                         this.remove(target);
                         return this.getNewTarget(time);

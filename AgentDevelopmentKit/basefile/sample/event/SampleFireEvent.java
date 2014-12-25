@@ -1,13 +1,13 @@
-package sample.event;
+package adk.sample.basic.event;
 
 import adk.team.util.provider.VictimSelectorProvider;
 import adk.team.util.provider.WorldProvider;
-import comlib.event.information.FireBrigadeMessageEvent;
-import comlib.message.information.FireBrigadeMessage;
+import comlib.event.information.MessageFireBrigadeEvent;
+import comlib.manager.UpdateHelper;
+import comlib.message.information.MessageFireBrigade;
 import rescuecore2.standard.entities.FireBrigade;
-import rescuecore2.standard.entities.StandardWorldModel;
 
-public class SampleFireEvent implements FireBrigadeMessageEvent{
+public class SampleFireEvent implements MessageFireBrigadeEvent {
 
     private WorldProvider wp;
     private VictimSelectorProvider vsp;
@@ -18,13 +18,13 @@ public class SampleFireEvent implements FireBrigadeMessageEvent{
     }
 
     @Override
-    public void receivedRadio(FireBrigadeMessage message) {
-        FireBrigade fireBrigade = this.wp.reflectedMessage(message);
+    public void receivedRadio(MessageFireBrigade message) {
+        FireBrigade fireBrigade = UpdateHelper.reflectedMessage(this.wp.getWorld(), message);
         this.vsp.getVictimSelector().add(fireBrigade);
     }
 
     @Override
-    public void receivedVoice(FireBrigadeMessage message) {
+    public void receivedVoice(MessageFireBrigade message) {
         this.receivedRadio(message);
     }
 }

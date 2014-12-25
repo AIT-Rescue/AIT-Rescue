@@ -15,6 +15,7 @@ import comlib.message.information.MessageFireBrigade;
 import rescuecore2.config.Config;
 import rescuecore2.standard.entities.Building;
 import rescuecore2.standard.entities.Refuge;
+import rescuecore2.standard.entities.StandardEntity;
 import rescuecore2.worldmodel.ChangeSet;
 import rescuecore2.worldmodel.EntityID;
 
@@ -55,17 +56,19 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
         //状態の確認
         if(this.me.getBuriedness() > 0) {
             manager.addSendMessage(new MessageFireBrigade(this.me));
-            this.target = this.buildingSelector.getNewTarget(currentTime);
-            if(this.target != null) {
-                Building building = (Building) this.world.getEntity(this.target);
-                if (building.isOnFire() && (this.world.getDistance(this.agentID, this.target) <= this.maxDistance)) {
-                    return new ActionExtinguish(this, this.target, this.maxPower);
+            for(StandardEntity entity : this.world.getObjectsInRange(this.me, this.maxDistance)) {
+                if(entity instanceof Building) {
+                    Building building = (Building)entity;
+                    this.target = building.getID();
+                    if (building.isOnFire() && (this.world.getDistance(this.agentID, this.target) <= this.maxDistance)) {
+                        return new ActionExtinguish(this, this.target, this.maxPower);
+                    }
                 }
             }
             return new ActionRest(this);
         }
-        //本当に0でいいのか
-        if (this.me.getWater() == 0) {
+        int waterLimit = 2;
+        if (this.me.getWater() <= ((this.maxWater / 10 * waterLimit))) {
             this.target = null;
             return this.moveRefuge(currentTime);
         }
@@ -77,15 +80,16 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
         if(this.target == null) {
             return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
         }
-        Building building = (Building)this.world.getEntity(this.target);
-        if(building.isOnFire()) {
-            return this.world.getDistance(this.agentID, this.target) <= this.maxDistance ? new ActionExtinguish(this, this.target, this.maxPower) : this.moveTarget(currentTime);
-        }
-        else {
-            this.buildingSelector.remove(this.target);
-        }
-        this.target = this.buildingSelector.getNewTarget(currentTime);
-        return this.moveTarget(currentTime);
+        do {
+            Building building = (Building) this.world.getEntity(this.target);
+            if (building.isOnFire()) {
+                return this.world.getDistance(this.agentID, this.target) <= this.maxDistance ? new ActionExtinguish(this, this.target, this.maxPower) : this.moveTarget(currentTime);
+            } else {
+                this.buildingSelector.remove(this.target);
+            }
+            this.target = this.buildingSelector.getNewTarget(currentTime);
+        }while(this.target != null);
+        return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
     }
 
     public Action moveRefuge(int currentTime) {

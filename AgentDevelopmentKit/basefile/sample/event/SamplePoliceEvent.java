@@ -1,13 +1,13 @@
-package sample.event;
+package adk.sample.basic.event;
 
 import adk.team.util.provider.VictimSelectorProvider;
 import adk.team.util.provider.WorldProvider;
-import comlib.event.information.PoliceForceMessageEvent;
-import comlib.message.information.PoliceForceMessage;
+import comlib.event.information.MessagePoliceForceEvent;
+import comlib.manager.UpdateHelper;
+import comlib.message.information.MessagePoliceForce;
 import rescuecore2.standard.entities.PoliceForce;
-import rescuecore2.standard.entities.StandardWorldModel;
 
-public class SamplePoliceEvent implements PoliceForceMessageEvent{
+public class SamplePoliceEvent implements MessagePoliceForceEvent {
 
     private WorldProvider wp;
     private VictimSelectorProvider vsp;
@@ -18,13 +18,13 @@ public class SamplePoliceEvent implements PoliceForceMessageEvent{
     }
 
     @Override
-    public void receivedRadio(PoliceForceMessage message) {
-        PoliceForce policeForce = this.wp.reflectedMessage(message);
+    public void receivedRadio(MessagePoliceForce message) {
+        PoliceForce policeForce = UpdateHelper.reflectedMessage(this.wp.getWorld(), message);
         this.vsp.getVictimSelector().add(policeForce);
     }
 
     @Override
-    public void receivedVoice(PoliceForceMessage message) {
+    public void receivedVoice(MessagePoliceForce message) {
         this.receivedRadio(message);
     }
 }

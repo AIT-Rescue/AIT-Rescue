@@ -1,13 +1,13 @@
-package sample.event;
+package adk.sample.basic.event;
 
 import adk.team.util.provider.VictimSelectorProvider;
 import adk.team.util.provider.WorldProvider;
-import comlib.event.information.CivilianMessageEvent;
-import comlib.message.information.CivilianMessage;
+import comlib.event.information.MessageCivilianEvent;
+import comlib.manager.UpdateHelper;
+import comlib.message.information.MessageCivilian;
 import rescuecore2.standard.entities.Civilian;
-import rescuecore2.standard.entities.StandardWorldModel;
 
-public class SampleCivilianEvent implements CivilianMessageEvent{
+public class SampleCivilianEvent implements MessageCivilianEvent {
 
     private WorldProvider wp;
     private VictimSelectorProvider vsp;
@@ -18,13 +18,13 @@ public class SampleCivilianEvent implements CivilianMessageEvent{
     }
 
     @Override
-    public void receivedRadio(CivilianMessage message) {
-        Civilian civilian = this.wp.reflectedMessage(message);
+    public void receivedRadio(MessageCivilian message) {
+        Civilian civilian = UpdateHelper.reflectedMessage(this.wp.getWorld(), message);
         this.vsp.getVictimSelector().add(civilian);
     }
 
     @Override
-    public void receivedVoice(CivilianMessage message) {
+    public void receivedVoice(MessageCivilian message) {
         this.receivedRadio(message);
     }
 }

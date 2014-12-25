@@ -8,6 +8,7 @@ import adk.team.tactics.TacticsFire;
 import adk.team.util.BuildingSelector;
 import adk.team.util.graph.PositionUtil;
 import adk.team.util.RouteSearcher;
+import adk.team.util.graph.RouteManager;
 import adk.team.util.provider.BuildingSelectorProvider;
 import adk.team.util.provider.RouteSearcherProvider;
 import comlib.manager.MessageManager;
@@ -32,17 +33,7 @@ public class SampleFire extends TacticsFire implements RouteSearcherProvider, Bu
     @Override
     public void preparation(Config config) {
         this.buildingSelector = new SampleBuildingSelector(this);
-        this.routeSearcher = new SampleRouteSearcher(this);
-    }
-
-    @Override
-    public String getTacticsName() {
-        return "sample";
-    }
-
-    @Override
-    public void registerEvent(MessageManager manager) {
-        manager.registerEvent(new SampleBuildingEvent(this, this));
+        this.routeSearcher = new SampleRouteSearcher(this, new RouteManager(this.world));
     }
 
     @Override
@@ -56,46 +47,16 @@ public class SampleFire extends TacticsFire implements RouteSearcherProvider, Bu
     }
 
     @Override
-    public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
-        this.organizeUpdateInfo(updateWorldData, manager);
-        if(this.me().getBuriedness() > 0) {
-            manager.addSendMessage(new FireBrigadeMessage(this.me()));
-            this.target = this.buildingSelector.getNewTarget(currentTime);
-            if(this.target != null) {
-                Building building = (Building) this.getWorld().getEntity(this.target);
-                if (building.isOnFire() && (this.getWorld().getDistance(this.getID(), this.target) <= this.maxDistance)) {
-                    return new ActionExtinguish(this, this.target, this.maxPower);
-                }
-            }
-            return new ActionRest(this);
-        }
-        if (this.me().getWater() == 0) {
-            this.target = null;
-            return this.moveRefuge(currentTime);
-        }
-        if(this.target != null) {
-            Building building = (Building)this.getWorld().getEntity(this.target);
-            if(building.isOnFire()) {
-                return this.getWorld().getDistance(this.getID(), this.target) <= this.maxDistance ? new ActionExtinguish(this, this.target, this.maxPower) : this.moveTarget(currentTime);
-            }
-            else {
-                this.buildingSelector.remove(this.target);
-                this.target = this.buildingSelector.getNewTarget(currentTime);
-                return this.moveTarget(currentTime);
-            }
-        }
-        else {
-            if(this.location instanceof Refuge && (this.me().getWater() < this.maxWater)) {
-                return new ActionRest(this);
-            }
-            else {
-                this.target = this.buildingSelector.getNewTarget(currentTime);
-                return this.moveTarget(currentTime);
-            }
-        }
+    public String getTacticsName() {
+        return "Sample";
     }
 
-    public void organizeUpdateInfo(ChangeSet updateWorldInfo, MessageManager manager) {
+    @Override
+    public void registerEvent(MessageManager manager) {
+        manager.registerEvent(new SampleBuildingEvent(this, this));
+    }
+
+    public void organizeUpdateInfo(int currentTime, ChangeSet updateWorldInfo, MessageManager manager) {
         for (EntityID next : updateWorldInfo.getChangedEntities()) {
             StandardEntity entity = this.getWorld().getEntity(next);
             if(entity instanceof Building) {
@@ -104,21 +65,68 @@ public class SampleFire extends TacticsFire implements RouteSearcherProvider, Bu
             else if(entity instanceof Civilian) {
                 Civilian civilian = (Civilian)entity;
                 if(civilian.getBuriedness() > 0) {
-                    manager.addSendMessage(new CivilianMessage(civilian));
+                    manager.addSendMessage(new MessageCivilian(civilian));
                 }
+            }
+            else if(entity instanceof Blockade) {
+                Blockade blockade = (Blockade) entity;
+                manager.addSendMessage(new MessageRoad((Road)this.world.getEntity(blockade.getPosition()), blockade, false));
             }
         }
     }
 
+    @Override
+    public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
+        //情報の整理
+        this.organizeUpdateInfo(currentTime, updateWorldData, manager);
+        //状態の確認
+        if(this.me.getBuriedness() > 0) {
+            manager.addSendMessage(new MessageFireBrigade(this.me));
+            for(StandardEntity entity : this.world.getObjectsInRange(this.me, this.maxDistance)) {
+                if(entity instanceof Building) {
+                    Building building = (Building)entity;
+                    this.target = building.getID();
+                    if (building.isOnFire() && (this.world.getDistance(this.agentID, this.target) <= this.maxDistance)) {
+                        return new ActionExtinguish(this, this.target, this.maxPower);
+                    }
+                }
+            }
+            return new ActionRest(this);
+        }
+        int waterLimit = 2;
+        if (this.me.getWater() <= ((this.maxWater / 10 * waterLimit))) {
+            this.target = null;
+            return this.moveRefuge(currentTime);
+        }
+        if(this.location instanceof Refuge && (this.me.getWater() < this.maxWater)) {
+            this.target = null;
+            return new ActionRest(this);
+        }
+        this.target = this.target == null ? this.buildingSelector.getNewTarget(currentTime) : this.buildingSelector.updateTarget(currentTime, this.target);
+        if(this.target == null) {
+            return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
+        }
+        do {
+            Building building = (Building) this.world.getEntity(this.target);
+            if (building.isOnFire()) {
+                return this.world.getDistance(this.agentID, this.target) <= this.maxDistance ? new ActionExtinguish(this, this.target, this.maxPower) : this.moveTarget(currentTime);
+            } else {
+                this.buildingSelector.remove(this.target);
+            }
+            this.target = this.buildingSelector.getNewTarget(currentTime);
+        }while(this.target != null);
+        return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
+    }
+
     public Action moveRefuge(int currentTime) {
-        Refuge result = PositionUtil.getNearTarget(this.getWorld(), this.me(), this.getRefuges());
+        Refuge result = PositionUtil.getNearTarget(this.world, this.me, this.getRefuges());
         List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, result);
         return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
     }
 
     public Action moveTarget(int currentTime) {
         if(this.target != null) {
-            List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me(), this.target);
+            List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
             if(path != null) {
                 path.remove(this.target);
                 return new ActionMove(this, path);
@@ -127,5 +135,5 @@ public class SampleFire extends TacticsFire implements RouteSearcherProvider, Bu
         }
         return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
     }
-
 }
+

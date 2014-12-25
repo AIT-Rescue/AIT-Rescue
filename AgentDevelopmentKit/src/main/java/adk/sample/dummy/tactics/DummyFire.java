@@ -1,17 +1,15 @@
 package adk.sample.dummy.tactics;
 
-import adk.sample.astar.util.AStarRouteSearcher;
 import adk.sample.basic.event.BasicBuildingEvent;
 import adk.sample.basic.util.BasicBuildingSelector;
 import adk.sample.basic.tactics.BasicFire;
+import adk.sample.basic.util.BasicRouteSearcher;
 import adk.team.util.BuildingSelector;
 import adk.team.util.RouteSearcher;
-import adk.team.util.graph.RouteManager;
 import comlib.manager.MessageManager;
 import comlib.message.information.MessageCivilian;
-import rescuecore2.standard.entities.Building;
-import rescuecore2.standard.entities.Civilian;
-import rescuecore2.standard.entities.StandardEntity;
+import comlib.message.information.MessageRoad;
+import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.ChangeSet;
 import rescuecore2.worldmodel.EntityID;
 
@@ -29,7 +27,7 @@ public class DummyFire extends BasicFire {
 
     @Override
     public RouteSearcher initRouteSearcher() {
-        return new AStarRouteSearcher(this, new RouteManager(this.getWorld()));
+        return new BasicRouteSearcher(this);
     }
 
 
@@ -51,11 +49,10 @@ public class DummyFire extends BasicFire {
                     manager.addSendMessage(new MessageCivilian(civilian));
                 }
             }
-            /*
             else if(entity instanceof Blockade) {
-                manager.addSendMessage(new RoadMessage((Blockade) entity));
+                Blockade blockade = (Blockade) entity;
+                manager.addSendMessage(new MessageRoad((Road)this.world.getEntity(blockade.getPosition()), blockade, false));
             }
-            */
         }
     }
 }

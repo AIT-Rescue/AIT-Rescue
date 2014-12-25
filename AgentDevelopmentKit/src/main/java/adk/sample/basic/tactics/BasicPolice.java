@@ -67,7 +67,8 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         this.organizeUpdateInfo(currentTime, updateWorldData, manager);
         this.agentPoint = new Point2D(this.me.getX(), this.me.getY());
         //状態の確認
-        if(this.me().getBuriedness() > 0) {
+        //埋まっている場合，周辺の道路の瓦礫の除去
+        if(this.me.getBuriedness() > 0) {
             this.beforeMove = false;
             manager.addSendMessage(new MessagePoliceForce(this.me));
             List<EntityID> roads = ((Area)this.location).getNeighbours();
@@ -138,6 +139,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
             this.beforeMove = true;
             return new ActionMove(this, Lists.newArrayList(target), (int) this.mainTargetPoint.getX(), (int) this.mainTargetPoint.getY());
         }
+        //道に他のPoliceがいる→次に選んだ点が隣→その点に向かって移動しながら除去
     }
 
     public Vector2D getVector(Point2D agentPos, Point2D targetPos, Road road) {
@@ -168,7 +170,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         }
         List<List<Edge>> neighbourEdges = new ArrayList<>();
         List<Point2D> passablePoint = new ArrayList<>();
-        road.getEdges().stream().filter(edge -> edge.isPassable()).forEach(edge -> {
+        road.getEdges().stream().filter(Edge::isPassable).forEach(edge -> {
             List<Edge> edges = new ArrayList<>(((Area) this.getWorld().getEntity(edge.getNeighbour())).getEdges());
             edges.remove(edge);
             neighbourEdges.add(edges);
