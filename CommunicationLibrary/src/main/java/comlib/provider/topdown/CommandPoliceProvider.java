@@ -20,6 +20,7 @@ public class CommandPoliceProvider extends CommandMessageProvider<CommandPolice,
 	protected void writeMessage(RadioConfig config, BitOutputStream bos, CommandPolice msg)
 	{
 		super.writeMessage(config, bos, msg);
+		bos.writeBits(msg.getAction(), 2);
 	}
 
 	protected void writeMessage(VoiceConfig config, StringBuilder sb, CommandPolice msg)
@@ -30,9 +31,9 @@ public class CommandPoliceProvider extends CommandMessageProvider<CommandPolice,
 	protected CommandPolice createMessage(RadioConfig config, int time, BitStreamReader bsr)
 	{
 		return new CommandPolice(time, -1,
-				bsr.getBits(2),
 				bsr.getBits(32),
-				bsr.getBits(32)
+				bsr.getBits(32),
+				bsr.getBits(2)
 				);
 	}
 

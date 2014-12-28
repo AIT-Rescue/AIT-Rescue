@@ -4,6 +4,7 @@ import comlib.provider.CommandMessageProvider;
 
 import comlib.event.topdown.CommandFireEvent;
 import comlib.message.topdown.CommandFire;
+import comlib.message.MessageCommand;
 import comlib.manager.RadioConfig;
 import comlib.manager.VoiceConfig;
 import comlib.util.BitOutputStream;
@@ -20,6 +21,7 @@ public class CommandFireProvider extends CommandMessageProvider<CommandFire, Com
 	protected void writeMessage(RadioConfig config, BitOutputStream bos, CommandFire msg)
 	{
 		super.writeMessage(config, bos, msg);
+		bos.writeBits(msg.getAction(), 2);
 	}
 
 	protected void writeMessage(VoiceConfig config, StringBuilder sb, CommandFire msg)
@@ -29,10 +31,11 @@ public class CommandFireProvider extends CommandMessageProvider<CommandFire, Com
 
 	protected CommandFire createMessage(RadioConfig config, int time, BitStreamReader bsr)
 	{
+		// MessageCommand parent = super.createMessage(config, time, bsr);
 		return new CommandFire(time, -1,
-				bsr.getBits(2),
 				bsr.getBits(32),
-				bsr.getBits(32)
+				bsr.getBits(32),
+				bsr.getBits(2)
 				);
 	}
 

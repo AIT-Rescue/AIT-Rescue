@@ -2,18 +2,24 @@ package comlib.message.topdown;
 
 import rescuecore2.worldmodel.EntityID;
 import comlib.message.MessageCommand;
-import comlib.message.ActionID;
 import comlib.message.MessageID;
 
 public class CommandScout extends MessageCommand
 {
-	public CommandScout(EntityID toID, EntityID targetID, ActionID action)
+	private int scoutRange;
+
+	public CommandScout(EntityID toID, EntityID targetID, int range)
 	{
-		super(MessageID.scoutCommand, toID, targetID, action);
+		super(MessageID.scoutCommand, toID, targetID);
+		scoutRange = range;
 	}
 
-	public CommandScout(int time, int ttl, int action, int targetID, int toID)
+	public CommandScout(int time, int ttl, int targetID, int toID, int range)
 	{
-		super(MessageID.scoutCommand, time, ttl, action, targetID, toID);
+		super(MessageID.scoutCommand, time, ttl, targetID, toID);
+		scoutRange = range;
 	}
+
+	public int getRange()
+	{ return scoutRange; }
 }

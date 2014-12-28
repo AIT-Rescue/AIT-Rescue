@@ -19,7 +19,9 @@ public class MessageReport extends CommunicationMessage
 		reportDone = isDone;
 	}
 
-	public boolean isDone() { return this.reportDone; }
+	public boolean isDone()
+	{ return this.reportDone; }
 
-	public boolean isFailed() { return !this.reportDone; }
+	public boolean isFailed()
+	{ return !this.reportDone; }
 }

@@ -18,7 +18,6 @@ public abstract class CommandMessageProvider<M extends MessageCommand, E extends
 
 	protected void writeMessage(RadioConfig config, BitOutputStream bos, M msg)
 	{
-		bos.writeBits(msg.getActionID().getValue(), 2);
 		bos.writeBits(msg.getTargetID().getValue(), 32);
 		bos.writeBits(msg.getToID().getValue(), 32);
 	}
@@ -31,6 +30,11 @@ public abstract class CommandMessageProvider<M extends MessageCommand, E extends
 	protected M createMessage(RadioConfig config, int time, BitStreamReader bsr)
 	{
 		return null;
+		// return new MessageCommand(time, -1,
+		// 		bsr.getBits(32),
+		// 		bsr.getBits(32),
+		// 		bsr.getBits(2)
+		// 		);
 	}
 
 	protected M createMessage(VoiceConfig config, int time, int ttl, String[] data, int next)

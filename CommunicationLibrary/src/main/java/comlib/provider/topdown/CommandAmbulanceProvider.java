@@ -20,6 +20,7 @@ public class CommandAmbulanceProvider extends CommandMessageProvider<CommandAmbu
 	protected void writeMessage(RadioConfig config, BitOutputStream bos, CommandAmbulance msg)
 	{
 		super.writeMessage(config, bos, msg);
+		bos.writeBits(msg.getAction(), 2);
 	}
 
 	protected void writeMessage(VoiceConfig config, StringBuilder sb, CommandAmbulance msg)
@@ -30,9 +31,9 @@ public class CommandAmbulanceProvider extends CommandMessageProvider<CommandAmbu
 	protected CommandAmbulance createMessage(RadioConfig config, int time, BitStreamReader bsr)
 	{
 		return new CommandAmbulance(time, -1,
-				bsr.getBits(2),
 				bsr.getBits(32),
-				bsr.getBits(32)
+				bsr.getBits(32),
+				bsr.getBits(2)
 				);
 	}
 

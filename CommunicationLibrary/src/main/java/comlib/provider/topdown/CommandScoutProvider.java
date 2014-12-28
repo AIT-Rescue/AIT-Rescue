@@ -20,6 +20,7 @@ public class CommandScoutProvider extends CommandMessageProvider<CommandScout, C
 	protected void writeMessage(RadioConfig config, BitOutputStream bos, CommandScout msg)
 	{
 		super.writeMessage(config, bos, msg);
+		bos.writeBits(msg.getRange(), 32);
 	}
 
 	protected void writeMessage(VoiceConfig config, StringBuilder sb, CommandScout msg)
@@ -30,7 +31,7 @@ public class CommandScoutProvider extends CommandMessageProvider<CommandScout, C
 	protected CommandScout createMessage(RadioConfig config, int time, BitStreamReader bsr)
 	{
 		return new CommandScout(time, -1,
-				bsr.getBits(2),
+				bsr.getBits(32),
 				bsr.getBits(32),
 				bsr.getBits(32)
 				);
