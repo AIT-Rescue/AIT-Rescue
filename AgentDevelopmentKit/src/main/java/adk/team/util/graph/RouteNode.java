@@ -11,7 +11,6 @@ import java.util.Set;
 public class RouteNode {
 
     public final EntityID nodeID;
-    public final int rawNodeID;
 
     public final Pair<Integer, Integer> position;
 
@@ -21,39 +20,28 @@ public class RouteNode {
 
     private Set<EntityID> neighbours;
 
-    private RouteNode(StandardWorldModel world, Road road) {
+    public RouteNode(StandardWorldModel world, Road road) {
         this.nodeID = road.getID();
-        this.rawNodeID = nodeID.getValue();
         this.position = road.getLocation(world);
         this.isRoad = Boolean.TRUE;
         this.passable = true;
         this.neighbours = new HashSet<>();
     }
 
-    private RouteNode(StandardWorldModel world, Building building) {
+    public RouteNode(StandardWorldModel world, Building building) {
         this.nodeID = building.getID();
-        this.rawNodeID = nodeID.getValue();
         this.position = building.getLocation(world);
         this.isRoad = Boolean.FALSE;
         this.passable = true;
         this.neighbours = new HashSet<>();
     }
 
-    private RouteNode(RouteNode original) {
+    public RouteNode(RouteNode original) {
         this.nodeID = original.nodeID;
-        this.rawNodeID = original.rawNodeID;
         this.position = original.position;
         this.isRoad = original.isRoad;
         this.passable = original.passable;
         this.neighbours = new HashSet<>(original.getNeighbours());
-    }
-
-    public static RouteNode getInstance(StandardWorldModel world, Road road) {
-        return world != null && road != null ? new RouteNode(world, road) : null;
-    }
-
-    public static RouteNode getInstance(StandardWorldModel world, Building building) {
-        return world != null && building != null ? new RouteNode(world, building) : null;
     }
 
     public static RouteNode getInstance(StandardWorldModel world, Area area) {
@@ -68,10 +56,6 @@ public class RouteNode {
         return null;
     }
 
-    public static RouteNode copy(RouteNode original) {
-        return original != null ? new RouteNode(original) : null;
-    }
-
     public static RouteNode getInstance(StandardWorldModel world, EntityID areaID) {
         if(world != null && areaID != null) {
             StandardEntity area = world.getEntity(areaID);
@@ -83,6 +67,36 @@ public class RouteNode {
             }
         }
         return null;
+    }
+
+    public Set<EntityID> getNeighbours() {
+        return this.neighbours;
+    }
+
+    public boolean isNeighbourNode(RouteNode node) {
+        return this.isNeighbourNode(node.nodeID);
+    }
+
+    public boolean isNeighbourNode(EntityID nodeID) {
+        return this.neighbours.contains(nodeID);
+    }
+
+    public RouteNode addNeighbour(RouteNode node) {
+        return this.addNeighbour(node.nodeID);
+    }
+
+    public RouteNode addNeighbour(EntityID id) {
+        this.neighbours.add(id);
+        return this;
+    }
+
+    public RouteNode removeNeighbour(RouteNode node) {
+        return this.removeNeighbour(node.nodeID);
+    }
+
+    public RouteNode removeNeighbour(EntityID id) {
+        this.neighbours.remove(id);
+        return this;
     }
 
     public int getX() {
@@ -105,41 +119,13 @@ public class RouteNode {
         return true;
     }
 
-    public Set<EntityID> getNeighbours() {
-        return this.neighbours;
-    }
-
-    public boolean isNeighbourNode(RouteNode node) {
-        return this.isNeighbourNode(node.nodeID);
-    }
-
-    public boolean isNeighbourNode(EntityID nodeID) {
-        return this.neighbours.contains(nodeID);
-    }
-
-    public RouteNode addNeighbour(RouteNode node) {
-        this.addNeighbour(node.nodeID);
-        return this;
-    }
-
-    public RouteNode addNeighbour(EntityID nodeID) {
-        this.neighbours.add(nodeID);
-        return this;
-    }
-
-    public RouteNode removeNeighbour(RouteNode node) {
-        this.removeNeighbour(node.nodeID);
-        return this;
-    }
-
-    public RouteNode removeNeighbour(EntityID nodeID) {
-        this.neighbours.remove(nodeID);
-        return this;
+    public boolean passable() {
+        return this.passable;
     }
 
     @Override
     public int hashCode() {
-        return this.rawNodeID;
+        return this.nodeID.getValue();
     }
 
     @Override
@@ -148,13 +134,13 @@ public class RouteNode {
     }
 
     public boolean equals(RouteNode node) {
-        return this.rawNodeID == node.rawNodeID;
+        return this.nodeID.getValue() == node.nodeID.getValue();
     }
 
     @Override
     public String toString(){
         return MoreObjects.toStringHelper(this)
-                .add("nodeID", this.rawNodeID)
+                .add("nodeID", this.nodeID.getValue())
                 .add("posX", this.position.first())
                 .add("posY", this.position.second())
                 .add("isRoad", this.isRoad)
@@ -162,4 +148,16 @@ public class RouteNode {
                 .add("neighbours", this.neighbours)
                 .toString();
     }
+
+    /*public static RouteNode getInstance(StandardWorldModel world, Road road) {
+        return world != null && road != null ? new RouteNode(world, road) : null;
+    }
+
+    public static RouteNode getInstance(StandardWorldModel world, Building building) {
+        return world != null && building != null ? new RouteNode(world, building) : null;
+    }*/
+
+    /*public static RouteNode copy(RouteNode original) {
+        return original != null ? new RouteNode(original) : null;
+    }*/
 }

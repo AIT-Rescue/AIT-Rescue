@@ -16,14 +16,11 @@ public class RouteGraph {
     private Map<EntityID, RouteEdge> edgeMap;
 
     private Table<EntityID, EntityID, RouteEdge> edgeTable;
-    private ConcurrentHashMap<Long, List<EntityID>> cache;
-    //private Table<EntityID, EntityID, Set<RouteEdge>> et;
 
-    public RouteGraph(Map<EntityID, RouteNode> nodes, Map<EntityID, RouteEdge> edges, Table<EntityID, EntityID, RouteEdge> connectEdges, ConcurrentHashMap<Long, List<EntityID>> pathCache) {
+    public RouteGraph(Map<EntityID, RouteNode> nodes, Map<EntityID, RouteEdge> edges, Table<EntityID, EntityID, RouteEdge> connectEdges) {
         this.nodeMap = nodes;
         this.edgeMap = edges;
         this.edgeTable = connectEdges;
-        this.cache = pathCache;
     }
 
     public RouteNode getNode(EntityID nodeID) {
@@ -111,7 +108,7 @@ public class RouteGraph {
         EntityID second = edge.getSecondNodeID();
         List<EntityID> secondPath = edge.getPath(nodeID, second);
         secondPath.add(second);*/
-            List<EntityID> element = edge.getAllElement();
+            List<EntityID> element = edge.element;
 
             int index = element.indexOf(areaID);
             List<EntityID> firstPath = element.subList(0, index + 1);
@@ -125,7 +122,7 @@ public class RouteGraph {
     }
 
     private boolean register(StandardWorldModel world, List<EntityID> path) {
-        RouteEdge edge = RouteEdge.getInstance(world, path, this.cache);
+        RouteEdge edge = new RouteEdge(world, path);
         if(edge != null) {
             int size = path.size() - 1;
             for (int i = 1; i < size; i++) {
