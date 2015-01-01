@@ -42,7 +42,7 @@ public class RouteManager {
     public void setPassable(StandardWorldModel world, EntityID areaID, boolean flag) {
         if(this.nodeMap.containsKey(areaID)) {
             RouteNode node = this.nodeMap.get(areaID);
-            node.setPassable(flag);
+            node.passable = flag;
             this.nodeMap.put(areaID, node);
             if(flag) {
                 this.addNode(world, areaID);
@@ -54,7 +54,7 @@ public class RouteManager {
         else if(this.edgeMap.containsKey(areaID)) {
             RouteEdge edge = this.edgeMap.get(areaID);
             edge.setPassable(areaID, flag);
-            //this.edgeMap.put(areaID, edge);
+            //this.edgeMap.put(nodeID, edge);
             List<EntityID> path = edge.getAllElement();
             int size = path.size() - 1;
             for(int i = 1; i < size; i++) {
@@ -243,7 +243,7 @@ public class RouteManager {
         boolean remove = true;
         if(this.nodeMap.containsKey(firstID)){
             RouteNode node = this.passableNodeMap.get(firstID);
-            if(node != null && node.passable()) {
+            if(node != null && node.passable) {
                 newFirst = firstID;
                 newPath.add(firstID);
             }
@@ -268,8 +268,8 @@ public class RouteManager {
                             this.passableNodeMap.remove(firstID);
                         }
                         else {
-                            if(this.passableNodeMap.containsKey(id)) { //if node [id][firstID][areaID]
-                                //List<EntityID> path = Lists.newArrayList(id, firstID, areaID);
+                            if(this.passableNodeMap.containsKey(id)) { //if node [rawNodeID][firstID][nodeID]
+                                //List<EntityID> path = Lists.newArrayList(rawNodeID, firstID, nodeID);
                                 newFirst = id;
                                 newPath.add(newFirst);
                                 newPath.add(firstID);
@@ -296,7 +296,7 @@ public class RouteManager {
         ////////////////////////////////////////////////////////////////////////////
         if(this.nodeMap.containsKey(secondID)){
             RouteNode node = this.passableNodeMap.get(secondID);
-            if(node != null && node.passable()) {
+            if(node != null && node.passable) {
                 newSecond = secondID;
                 newPath.add(secondID);
             }
@@ -321,8 +321,8 @@ public class RouteManager {
                             this.passableNodeMap.remove(secondID);
                         }
                         else {
-                            if(this.passableNodeMap.containsKey(id)) { //if node [id][firstID][areaID]
-                                //List<EntityID> path = Lists.newArrayList(id, firstID, areaID);
+                            if(this.passableNodeMap.containsKey(id)) { //if node [rawNodeID][firstID][nodeID]
+                                //List<EntityID> path = Lists.newArrayList(rawNodeID, firstID, nodeID);
                                 newSecond = id;
                                 newPath.add(secondID);
                                 newPath.add(newSecond);

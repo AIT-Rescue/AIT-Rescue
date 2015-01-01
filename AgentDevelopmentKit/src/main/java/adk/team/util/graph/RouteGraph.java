@@ -43,7 +43,7 @@ public class RouteGraph {
     }
 
     public RouteEdge getEdge(RouteNode start, RouteNode end) {
-        return this.getEdge(start.getID(), end.getID());
+        return this.getEdge(start.nodeID, end.nodeID);
     }
 
     public RouteEdge getEdge(EntityID start, EntityID end) {
@@ -51,7 +51,7 @@ public class RouteGraph {
     }
 
     public boolean containsEdge(RouteNode start, RouteNode end) {
-        return this.containsEdge(start.getID(), end.getID());
+        return this.containsEdge(start.nodeID, end.nodeID);
     }
 
     public boolean containsEdge(EntityID start, EntityID end) {
@@ -63,7 +63,7 @@ public class RouteGraph {
     }
 
     public List<EntityID> getPath(List<RouteNode> nodes) {
-        List<EntityID> path = Lists.newArrayList(nodes.get(0).getID());
+        List<EntityID> path = Lists.newArrayList(nodes.get(0).nodeID);
         int size = nodes.size() - 1;
         for(int i = 0; i < size; i++) {
             RouteNode node = nodes.get(i);
@@ -75,13 +75,13 @@ public class RouteGraph {
             if(edgePath != null && !edgePath.isEmpty()) {
                 path.addAll(edgePath);
             }
-            path.add(next.getID());
+            path.add(next.nodeID);
         }
         return path;
     }
 
     public List<EntityID> getPath(RouteNode... nodes) {
-        List<EntityID> path = Lists.newArrayList(nodes[0].getID());
+        List<EntityID> path = Lists.newArrayList(nodes[0].nodeID);
         int size = nodes.length - 1;
         for(int i = 0; i < size; i++) {
             RouteNode node = nodes[i];
@@ -93,7 +93,7 @@ public class RouteGraph {
             if(edgePath != null && !edgePath.isEmpty()) {
                 path.addAll(edgePath);
             }
-            path.add(next.getID());
+            path.add(next.nodeID);
         }
         return path;
     }
@@ -107,9 +107,9 @@ public class RouteGraph {
             RouteNode node = RouteNode.getInstance(world, areaID);
         /*EntityID first = edge.getFirstNodeID();
         List<EntityID> firstPath = Lists.newArrayList(first);
-        firstPath.addAll(edge.getPath(first, areaID));
+        firstPath.addAll(edge.getPath(first, nodeID));
         EntityID second = edge.getSecondNodeID();
-        List<EntityID> secondPath = edge.getPath(areaID, second);
+        List<EntityID> secondPath = edge.getPath(nodeID, second);
         secondPath.add(second);*/
             List<EntityID> element = edge.getAllElement();
 

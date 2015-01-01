@@ -10,19 +10,20 @@ import java.util.Set;
 
 public class RouteNode {
 
-    // Node ID (Road or Building)
-    private EntityID nodeID;
-    // Node Position
-    private Pair<Integer, Integer> position;
-    // Node is Road
-    private Boolean isRoad;
+    public final EntityID nodeID;
+    public final int rawNodeID;
 
-    private boolean passable;
+    public final Pair<Integer, Integer> position;
+
+    public final Boolean isRoad;
+
+    public boolean passable;
 
     private Set<EntityID> neighbours;
 
     private RouteNode(StandardWorldModel world, Road road) {
         this.nodeID = road.getID();
+        this.rawNodeID = nodeID.getValue();
         this.position = road.getLocation(world);
         this.isRoad = Boolean.TRUE;
         this.passable = true;
@@ -31,6 +32,7 @@ public class RouteNode {
 
     private RouteNode(StandardWorldModel world, Building building) {
         this.nodeID = building.getID();
+        this.rawNodeID = nodeID.getValue();
         this.position = building.getLocation(world);
         this.isRoad = Boolean.FALSE;
         this.passable = true;
@@ -38,10 +40,11 @@ public class RouteNode {
     }
 
     private RouteNode(RouteNode original) {
-        this.nodeID = original.getID();
-        this.position = original.getPosition();
-        this.isRoad = original.isRoad();
-        this.passable = original.passable();
+        this.nodeID = original.nodeID;
+        this.rawNodeID = original.rawNodeID;
+        this.position = original.position;
+        this.isRoad = original.isRoad;
+        this.passable = original.passable;
         this.neighbours = new HashSet<>(original.getNeighbours());
     }
 
@@ -82,32 +85,12 @@ public class RouteNode {
         return null;
     }
 
-    public EntityID getID() {
-        return this.nodeID;
-    }
-
     public int getX() {
         return this.position.first();
     }
 
     public int getY() {
         return this.position.second();
-    }
-
-    public Pair<Integer, Integer> getPosition() {
-        return this.position;
-    }
-
-    public boolean isRoad() {
-        return this.isRoad;
-    }
-
-    public boolean passable() {
-        return this.passable;
-    }
-
-    public void setPassable(boolean flag) {
-        this.passable = flag;
     }
 
     public boolean isSingleNode() {
@@ -127,32 +110,36 @@ public class RouteNode {
     }
 
     public boolean isNeighbourNode(RouteNode node) {
-        return this.isNeighbourNode(node.getID());
+        return this.isNeighbourNode(node.nodeID);
     }
 
     public boolean isNeighbourNode(EntityID nodeID) {
         return this.neighbours.contains(nodeID);
     }
 
-    public void addNeighbour(RouteNode node) {
-        this.addNeighbour(node.getID());
+    public RouteNode addNeighbour(RouteNode node) {
+        this.addNeighbour(node.nodeID);
+        return this;
     }
 
-    public void addNeighbour(EntityID id) {
-        this.neighbours.add(id);
+    public RouteNode addNeighbour(EntityID nodeID) {
+        this.neighbours.add(nodeID);
+        return this;
     }
 
-    public void removeNeighbour(RouteNode node) {
-        this.removeNeighbour(node.getID());
+    public RouteNode removeNeighbour(RouteNode node) {
+        this.removeNeighbour(node.nodeID);
+        return this;
     }
 
-    public void removeNeighbour(EntityID id) {
-        this.neighbours.remove(id);
+    public RouteNode removeNeighbour(EntityID nodeID) {
+        this.neighbours.remove(nodeID);
+        return this;
     }
 
     @Override
     public int hashCode() {
-        return this.getID().hashCode();
+        return this.rawNodeID;
     }
 
     @Override
@@ -161,13 +148,13 @@ public class RouteNode {
     }
 
     public boolean equals(RouteNode node) {
-        return this.nodeID.getValue() == node.getID().getValue();
+        return this.rawNodeID == node.rawNodeID;
     }
 
     @Override
     public String toString(){
         return MoreObjects.toStringHelper(this)
-                .add("nodeID", this.nodeID)
+                .add("nodeID", this.rawNodeID)
                 .add("posX", this.position.first())
                 .add("posY", this.position.second())
                 .add("isRoad", this.isRoad)
