@@ -20,7 +20,7 @@ public class RouteNode {
 
     private Set<EntityID> neighbours;
 
-    public RouteNode(StandardWorldModel world, Road road) {
+    private RouteNode(StandardWorldModel world, Road road) {
         this.nodeID = road.getID();
         this.position = road.getLocation(world);
         this.isRoad = Boolean.TRUE;
@@ -28,7 +28,7 @@ public class RouteNode {
         this.neighbours = new HashSet<>();
     }
 
-    public RouteNode(StandardWorldModel world, Building building) {
+    private RouteNode(StandardWorldModel world, Building building) {
         this.nodeID = building.getID();
         this.position = building.getLocation(world);
         this.isRoad = Boolean.FALSE;
@@ -36,12 +36,20 @@ public class RouteNode {
         this.neighbours = new HashSet<>();
     }
 
-    public RouteNode(RouteNode original) {
+    private RouteNode(RouteNode original) {
         this.nodeID = original.nodeID;
         this.position = original.position;
         this.isRoad = original.isRoad;
         this.passable = original.passable;
         this.neighbours = new HashSet<>(original.getNeighbours());
+    }
+
+    public static RouteNode getInstance(StandardWorldModel world, Road road) {
+        return world != null && road != null ? new RouteNode(world, road) : null;
+    }
+
+    public static RouteNode getInstance(StandardWorldModel world, Building building) {
+        return world != null && building != null ? new RouteNode(world, building) : null;
     }
 
     public static RouteNode getInstance(StandardWorldModel world, Area area) {
@@ -67,6 +75,10 @@ public class RouteNode {
             }
         }
         return null;
+    }
+
+    public static RouteNode copy(RouteNode original) {
+        return original != null ? new RouteNode(original) : null;
     }
 
     public Set<EntityID> getNeighbours() {

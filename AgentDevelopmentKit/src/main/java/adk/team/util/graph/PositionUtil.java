@@ -84,6 +84,16 @@ public class PositionUtil {
         return getDistance(getEdgePoint(from), getEdgePoint(to));
     }
 
+    public static double getDistance(Pair<Integer, Integer> from, Edge to) {
+        return getDistance(from, getEdgePoint(to));
+    }
+
+    public static double getDistance(Pair<Integer, Integer> from, Point2D to) {
+        double dx = from.first() - to.getX();
+        double dy = from.second() - to.getY();
+        return Math.hypot(dx, dy);
+    }
+
     public static double getDistance(Point2D from, Point2D to) {
         double dx = from.getX() - to.getX();
         double dy = from.getY() - to.getY();

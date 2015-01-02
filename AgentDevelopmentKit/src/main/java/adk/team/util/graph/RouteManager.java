@@ -8,7 +8,6 @@ import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class RouteManager {
     // All Element
@@ -20,14 +19,10 @@ public class RouteManager {
     private Map<EntityID, RouteEdge> passableEdgeMap;
     private Table<EntityID, EntityID, RouteEdge> passableEdgeTable;
 
-    // path cache <startID, targetID, cache>
-    private ConcurrentHashMap<Long, List<EntityID>> pathCache;
-
     public RouteManager(StandardWorldModel world) {
         this.nodeMap = new HashMap<>();
         this.edgeMap = new HashMap<>();
         this.edgeTable = HashBasedTable.create();
-        this.pathCache = new ConcurrentHashMap<>();
         this.analysis(world);
     }
 
@@ -76,7 +71,7 @@ public class RouteManager {
     private Set<EntityID> impassableArea;
 
     private void registerPassable(StandardWorldModel world, List<EntityID> path) {
-        RouteEdge edge = new RouteEdge(world, path);
+        RouteEdge edge = RouteEdge.getInstance(world, path);
         if(edge != null) {
             int size = path.size() - 1;
             for (int i = 1; i < size; i++) {
@@ -182,7 +177,7 @@ public class RouteManager {
             return;
         }
         this.impassableArea.remove(areaID);
-        RouteNode node = new RouteNode(this.nodeMap.get(areaID));
+        RouteNode node = RouteNode.copy(this.nodeMap.get(areaID));
         if(node == null) {
             return;
         }
@@ -192,7 +187,7 @@ public class RouteManager {
                 continue;
             }
             if(this.nodeMap.containsKey(nodeID)) {
-                RouteNode neighbourNode = new RouteNode(this.passableNodeMap.get(nodeID));
+                RouteNode neighbourNode = RouteNode.copy(this.passableNodeMap.get(nodeID));
                 if(neighbourNode != null) {
                     neighbourNode.addNeighbour(areaID);
                     this.passableNodeMap.put(nodeID, neighbourNode);
@@ -666,7 +661,7 @@ public class RouteManager {
     }
 
     private void register(StandardWorldModel world, List<EntityID> path) {
-        RouteEdge edge = new RouteEdge(world, path);
+        RouteEdge edge = RouteEdge.getInstance(world, path);
         if(edge != null) {
             int size = path.size() - 1;
             for (int i = 1; i < size; i++) {

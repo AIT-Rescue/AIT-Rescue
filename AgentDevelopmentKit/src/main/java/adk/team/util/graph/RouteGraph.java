@@ -7,7 +7,6 @@ import rescuecore2.worldmodel.EntityID;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class RouteGraph {
 
@@ -122,7 +121,7 @@ public class RouteGraph {
     }
 
     private boolean register(StandardWorldModel world, List<EntityID> path) {
-        RouteEdge edge = new RouteEdge(world, path);
+        RouteEdge edge = RouteEdge.getInstance(world, path);
         if(edge != null) {
             int size = path.size() - 1;
             for (int i = 1; i < size; i++) {
