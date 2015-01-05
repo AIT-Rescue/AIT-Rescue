@@ -113,6 +113,7 @@ public class RouteGraph {
             List<EntityID> element = edge.element;
             int index = element.indexOf(areaID);
             List<EntityID> firstPath = Arrays.asList(Arrays.copyOfRange(element.toArray(new EntityID[element.size()]), 0, index + 1));
+            //List<EntityID> firstPath = subList(element, 0, index + 1);
             List<EntityID> secondPath = Arrays.asList(Arrays.copyOfRange(element.toArray(new EntityID[element.size()]), index, element.size()));
             this.nodeMap.put(areaID, node);
             if (this.register(world, firstPath) && this.register(world, secondPath)) {
@@ -121,6 +122,10 @@ public class RouteGraph {
         }
         return false;
     }
+
+    /*public static <T> List<T> subList(List<T> list, int fromIndex, int toIndex) {
+        return Arrays.asList(Arrays.copyOfRange((T[])list.toArray(), fromIndex, toIndex));
+    }*/
 
     private boolean register(StandardWorldModel world, List<EntityID> path) {
         RouteEdge edge = RouteEdge.getInstance(world, path);
