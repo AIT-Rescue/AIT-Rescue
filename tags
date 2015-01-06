@@ -9,25 +9,47 @@
 4NT_args	./gradlew.bat	/^:4NT_args$/;"	l
 ABSOLUTE_KEY	../roborescue-roborescue/modules/standard/src/rescuecore2/standard/score/BuildingDamageScoreFunction.java	/^    private static final String ABSOLUTE_KEY = "score.standard.building-fire.absolute";$/;"	f	class:BuildingDamageScoreFunction	file:
 ABSOLUTE_KEY	../roborescue-roborescue/modules/standard/src/rescuecore2/standard/score/HealthScoreFunction.java	/^    private static final String ABSOLUTE_KEY = "score.standard.health.absolute";$/;"	f	class:HealthScoreFunction	file:
+ACTION_CLEAR	./,ComlibWS/message/information/MessagePoliceForce.java	/^	public static final int ACTION_CLEAR = 2;$/;"	f	class:MessagePoliceForce
 ACTION_CLEAR	./,ComlibWS/message/topdown/CommandPolice.java	/^	public static final int ACTION_CLEAR = 2;$/;"	f	class:CommandPolice
+ACTION_CLEAR	./CommunicationLibrary/src/main/java/comlib/message/information/MessagePoliceForce.java	/^	public static final int ACTION_CLEAR = 2;$/;"	f	class:MessagePoliceForce
 ACTION_CLEAR	./CommunicationLibrary/src/main/java/comlib/message/topdown/CommandPolice.java	/^	public static final int ACTION_CLEAR = 2;$/;"	f	class:CommandPolice
+ACTION_EXTINGUISH	./,ComlibWS/message/information/MessageFireBrigade.java	/^	public static final int ACTION_EXTINGUISH = 2;$/;"	f	class:MessageFireBrigade
 ACTION_EXTINGUISH	./,ComlibWS/message/topdown/CommandFire.java	/^	public static final int ACTION_EXTINGUISH = 2;$/;"	f	class:CommandFire
+ACTION_EXTINGUISH	./CommunicationLibrary/src/main/java/comlib/message/information/MessageFireBrigade.java	/^	public static final int ACTION_EXTINGUISH = 2;$/;"	f	class:MessageFireBrigade
 ACTION_EXTINGUISH	./CommunicationLibrary/src/main/java/comlib/message/topdown/CommandFire.java	/^	public static final int ACTION_EXTINGUISH = 2;$/;"	f	class:CommandFire
+ACTION_LOAD	./,ComlibWS/message/information/MessageAmbulanceTeam.java	/^	public static final int ACTION_LOAD = 3;$/;"	f	class:MessageAmbulanceTeam
 ACTION_LOAD	./,ComlibWS/message/topdown/CommandAmbulance.java	/^	public static final int ACTION_LOAD = 3;$/;"	f	class:CommandAmbulance
+ACTION_LOAD	./CommunicationLibrary/src/main/java/comlib/message/information/MessageAmbulanceTeam.java	/^	public static final int ACTION_LOAD = 3;$/;"	f	class:MessageAmbulanceTeam
 ACTION_LOAD	./CommunicationLibrary/src/main/java/comlib/message/topdown/CommandAmbulance.java	/^	public static final int ACTION_LOAD = 3;$/;"	f	class:CommandAmbulance
+ACTION_MOVE	./,ComlibWS/message/information/MessageAmbulanceTeam.java	/^	public static final int ACTION_MOVE = 1;$/;"	f	class:MessageAmbulanceTeam
+ACTION_MOVE	./,ComlibWS/message/information/MessageFireBrigade.java	/^	public static final int ACTION_MOVE = 1;$/;"	f	class:MessageFireBrigade
+ACTION_MOVE	./,ComlibWS/message/information/MessagePoliceForce.java	/^	public static final int ACTION_MOVE = 1;$/;"	f	class:MessagePoliceForce
 ACTION_MOVE	./,ComlibWS/message/topdown/CommandAmbulance.java	/^	public static final int ACTION_MOVE = 1;$/;"	f	class:CommandAmbulance
 ACTION_MOVE	./,ComlibWS/message/topdown/CommandFire.java	/^	public static final int ACTION_MOVE = 1;$/;"	f	class:CommandFire
 ACTION_MOVE	./,ComlibWS/message/topdown/CommandPolice.java	/^	public static final int ACTION_MOVE = 1;$/;"	f	class:CommandPolice
+ACTION_MOVE	./CommunicationLibrary/src/main/java/comlib/message/information/MessageAmbulanceTeam.java	/^	public static final int ACTION_MOVE = 1;$/;"	f	class:MessageAmbulanceTeam
+ACTION_MOVE	./CommunicationLibrary/src/main/java/comlib/message/information/MessageFireBrigade.java	/^	public static final int ACTION_MOVE = 1;$/;"	f	class:MessageFireBrigade
+ACTION_MOVE	./CommunicationLibrary/src/main/java/comlib/message/information/MessagePoliceForce.java	/^	public static final int ACTION_MOVE = 1;$/;"	f	class:MessagePoliceForce
 ACTION_MOVE	./CommunicationLibrary/src/main/java/comlib/message/topdown/CommandAmbulance.java	/^	public static final int ACTION_MOVE = 1;$/;"	f	class:CommandAmbulance
 ACTION_MOVE	./CommunicationLibrary/src/main/java/comlib/message/topdown/CommandFire.java	/^	public static final int ACTION_MOVE = 1;$/;"	f	class:CommandFire
 ACTION_MOVE	./CommunicationLibrary/src/main/java/comlib/message/topdown/CommandPolice.java	/^	public static final int ACTION_MOVE = 1;$/;"	f	class:CommandPolice
+ACTION_REFILL	./,ComlibWS/message/information/MessageFireBrigade.java	/^	public static final int ACTION_REFILL = 3;$/;"	f	class:MessageFireBrigade
 ACTION_REFILL	./,ComlibWS/message/topdown/CommandFire.java	/^	public static final int ACTION_REFILL = 3;$/;"	f	class:CommandFire
+ACTION_REFILL	./CommunicationLibrary/src/main/java/comlib/message/information/MessageFireBrigade.java	/^	public static final int ACTION_REFILL = 3;$/;"	f	class:MessageFireBrigade
 ACTION_REFILL	./CommunicationLibrary/src/main/java/comlib/message/topdown/CommandFire.java	/^	public static final int ACTION_REFILL = 3;$/;"	f	class:CommandFire
+ACTION_RESCUE	./,ComlibWS/message/information/MessageAmbulanceTeam.java	/^	public static final int ACTION_RESCUE = 2;$/;"	f	class:MessageAmbulanceTeam
 ACTION_RESCUE	./,ComlibWS/message/topdown/CommandAmbulance.java	/^	public static final int ACTION_RESCUE = 2;$/;"	f	class:CommandAmbulance
+ACTION_RESCUE	./CommunicationLibrary/src/main/java/comlib/message/information/MessageAmbulanceTeam.java	/^	public static final int ACTION_RESCUE = 2;$/;"	f	class:MessageAmbulanceTeam
 ACTION_RESCUE	./CommunicationLibrary/src/main/java/comlib/message/topdown/CommandAmbulance.java	/^	public static final int ACTION_RESCUE = 2;$/;"	f	class:CommandAmbulance
+ACTION_REST	./,ComlibWS/message/information/MessageAmbulanceTeam.java	/^	public static final int ACTION_REST = 0;$/;"	f	class:MessageAmbulanceTeam
+ACTION_REST	./,ComlibWS/message/information/MessageFireBrigade.java	/^	public static final int ACTION_REST = 0;$/;"	f	class:MessageFireBrigade
+ACTION_REST	./,ComlibWS/message/information/MessagePoliceForce.java	/^	public static final int ACTION_REST = 0;$/;"	f	class:MessagePoliceForce
 ACTION_REST	./,ComlibWS/message/topdown/CommandAmbulance.java	/^	public static final int ACTION_REST = 0;$/;"	f	class:CommandAmbulance
 ACTION_REST	./,ComlibWS/message/topdown/CommandFire.java	/^	public static final int ACTION_REST = 0;$/;"	f	class:CommandFire
 ACTION_REST	./,ComlibWS/message/topdown/CommandPolice.java	/^	public static final int ACTION_REST = 0;$/;"	f	class:CommandPolice
+ACTION_REST	./CommunicationLibrary/src/main/java/comlib/message/information/MessageAmbulanceTeam.java	/^	public static final int ACTION_REST = 0;$/;"	f	class:MessageAmbulanceTeam
+ACTION_REST	./CommunicationLibrary/src/main/java/comlib/message/information/MessageFireBrigade.java	/^	public static final int ACTION_REST = 0;$/;"	f	class:MessageFireBrigade
+ACTION_REST	./CommunicationLibrary/src/main/java/comlib/message/information/MessagePoliceForce.java	/^	public static final int ACTION_REST = 0;$/;"	f	class:MessagePoliceForce
 ACTION_REST	./CommunicationLibrary/src/main/java/comlib/message/topdown/CommandAmbulance.java	/^	public static final int ACTION_REST = 0;$/;"	f	class:CommandAmbulance
 ACTION_REST	./CommunicationLibrary/src/main/java/comlib/message/topdown/CommandFire.java	/^	public static final int ACTION_REST = 0;$/;"	f	class:CommandFire
 ACTION_REST	./CommunicationLibrary/src/main/java/comlib/message/topdown/CommandPolice.java	/^	public static final int ACTION_REST = 0;$/;"	f	class:CommandPolice
@@ -223,6 +245,8 @@ ActionClear	./AgentDevelopmentKit/src/main/java/adk/team/action/ActionClear.java
 ActionExtinguish	./AgentDevelopmentKit/src/main/java/adk/team/action/ActionExtinguish.java	/^    public ActionExtinguish(TacticsFire tactics, Building building, int maxPower) {$/;"	m	class:ActionExtinguish
 ActionExtinguish	./AgentDevelopmentKit/src/main/java/adk/team/action/ActionExtinguish.java	/^    public ActionExtinguish(TacticsFire tactics, EntityID targetID, int maxPower) {$/;"	m	class:ActionExtinguish
 ActionExtinguish	./AgentDevelopmentKit/src/main/java/adk/team/action/ActionExtinguish.java	/^public class ActionExtinguish extends ActionTarget {$/;"	c
+ActionID	./,ComlibWS/message/ActionID.java	/^public enum ActionID$/;"	g
+ActionID	./CommunicationLibrary/src/main/java/comlib/message/ActionID.java	/^public enum ActionID$/;"	g
 ActionLoad	./AgentDevelopmentKit/src/main/java/adk/team/action/ActionLoad.java	/^    public ActionLoad(TacticsAmbulance tactics, Civilian civilian) {$/;"	m	class:ActionLoad
 ActionLoad	./AgentDevelopmentKit/src/main/java/adk/team/action/ActionLoad.java	/^    public ActionLoad(TacticsAmbulance tactics, EntityID targetID) {$/;"	m	class:ActionLoad
 ActionLoad	./AgentDevelopmentKit/src/main/java/adk/team/action/ActionLoad.java	/^public class ActionLoad extends ActionTarget {$/;"	c
@@ -1925,14 +1949,22 @@ MergeShapesStep	../roborescue-roborescue/modules/maps/src/maps/convert/osm2gml/M
 MergeShapesStep	../roborescue-roborescue/modules/maps/src/maps/convert/osm2gml/MergeShapesStep.java	/^public class MergeShapesStep extends ConvertStep {$/;"	c
 Message	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/messages/Message.java	/^public interface Message {$/;"	i
 MessageAmbulanceTeam	./,ComlibWS/message/information/MessageAmbulanceTeam.java	/^	public MessageAmbulanceTeam(AmbulanceTeam ambulanceTeam)$/;"	m	class:MessageAmbulanceTeam
+MessageAmbulanceTeam	./,ComlibWS/message/information/MessageAmbulanceTeam.java	/^	public MessageAmbulanceTeam(AmbulanceTeam ambulanceTeam, EntityID target, int action)$/;"	m	class:MessageAmbulanceTeam
+MessageAmbulanceTeam	./,ComlibWS/message/information/MessageAmbulanceTeam.java	/^	public MessageAmbulanceTeam(AmbulanceTeam ambulanceTeam, int action)$/;"	m	class:MessageAmbulanceTeam
 MessageAmbulanceTeam	./,ComlibWS/message/information/MessageAmbulanceTeam.java	/^	public MessageAmbulanceTeam(int time, int ttl, int hp, int buriedness, int damage, int position, int id)$/;"	m	class:MessageAmbulanceTeam
+MessageAmbulanceTeam	./,ComlibWS/message/information/MessageAmbulanceTeam.java	/^	public MessageAmbulanceTeam(int time, int ttl, int hp, int buriedness, int damage, int position, int id, int action)$/;"	m	class:MessageAmbulanceTeam
+MessageAmbulanceTeam	./,ComlibWS/message/information/MessageAmbulanceTeam.java	/^	public MessageAmbulanceTeam(int time, int ttl, int hp, int buriedness, int damage, int position, int id, int target, int action)$/;"	m	class:MessageAmbulanceTeam
 MessageAmbulanceTeam	./,ComlibWS/message/information/MessageAmbulanceTeam.java	/^public class MessageAmbulanceTeam extends HumanMessage$/;"	c
 MessageAmbulanceTeam	./,ComlibWS/message/information/MessageAmbulanceTeam.java	/^public class MessageAmbulanceTeam extends MessageHuman$/;"	c
 MessageAmbulanceTeam	./,comlibWS/message/information/MessageAmbulanceTeam.java	/^	public MessageAmbulanceTeam(AmbulanceTeam ambulanceTeam)$/;"	m	class:MessageAmbulanceTeam
 MessageAmbulanceTeam	./,comlibWS/message/information/MessageAmbulanceTeam.java	/^	public MessageAmbulanceTeam(int time, int ttl, int hp, int buriedness, int damage, int position, int id)$/;"	m	class:MessageAmbulanceTeam
 MessageAmbulanceTeam	./,comlibWS/message/information/MessageAmbulanceTeam.java	/^public class MessageAmbulanceTeam extends HumanMessage$/;"	c
 MessageAmbulanceTeam	./CommunicationLibrary/src/main/java/comlib/message/information/MessageAmbulanceTeam.java	/^	public MessageAmbulanceTeam(AmbulanceTeam ambulanceTeam)$/;"	m	class:MessageAmbulanceTeam
+MessageAmbulanceTeam	./CommunicationLibrary/src/main/java/comlib/message/information/MessageAmbulanceTeam.java	/^	public MessageAmbulanceTeam(AmbulanceTeam ambulanceTeam, EntityID target, int action)$/;"	m	class:MessageAmbulanceTeam
+MessageAmbulanceTeam	./CommunicationLibrary/src/main/java/comlib/message/information/MessageAmbulanceTeam.java	/^	public MessageAmbulanceTeam(AmbulanceTeam ambulanceTeam, int action)$/;"	m	class:MessageAmbulanceTeam
 MessageAmbulanceTeam	./CommunicationLibrary/src/main/java/comlib/message/information/MessageAmbulanceTeam.java	/^	public MessageAmbulanceTeam(int time, int ttl, int hp, int buriedness, int damage, int position, int id)$/;"	m	class:MessageAmbulanceTeam
+MessageAmbulanceTeam	./CommunicationLibrary/src/main/java/comlib/message/information/MessageAmbulanceTeam.java	/^	public MessageAmbulanceTeam(int time, int ttl, int hp, int buriedness, int damage, int position, int id, int action)$/;"	m	class:MessageAmbulanceTeam
+MessageAmbulanceTeam	./CommunicationLibrary/src/main/java/comlib/message/information/MessageAmbulanceTeam.java	/^	public MessageAmbulanceTeam(int time, int ttl, int hp, int buriedness, int damage, int position, int id, int target, int action)$/;"	m	class:MessageAmbulanceTeam
 MessageAmbulanceTeam	./CommunicationLibrary/src/main/java/comlib/message/information/MessageAmbulanceTeam.java	/^public class MessageAmbulanceTeam extends HumanMessage$/;"	c
 MessageAmbulanceTeam	./CommunicationLibrary/src/main/java/comlib/message/information/MessageAmbulanceTeam.java	/^public class MessageAmbulanceTeam extends MessageHuman$/;"	c
 MessageAmbulanceTeamEvent	./,ComlibWS/event/information/MessageAmbulanceTeamEvent.java	/^public interface MessageAmbulanceTeamEvent extends MessageEvent<MessageAmbulanceTeam> {$/;"	i
@@ -2008,14 +2040,22 @@ MessageFactory	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/regi
 MessageFactoryRegisterCallback	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/misc/java/LoadableTypeProcessor.java	/^        private MessageFactoryRegisterCallback(Registry registry) {$/;"	m	class:LoadableTypeProcessor.MessageFactoryRegisterCallback	file:
 MessageFactoryRegisterCallback	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/misc/java/LoadableTypeProcessor.java	/^    public static final class MessageFactoryRegisterCallback implements LoadableTypeCallback {$/;"	c	class:LoadableTypeProcessor
 MessageFireBrigade	./,ComlibWS/message/information/MessageFireBrigade.java	/^	public MessageFireBrigade(FireBrigade fireBrigade)$/;"	m	class:MessageFireBrigade
+MessageFireBrigade	./,ComlibWS/message/information/MessageFireBrigade.java	/^	public MessageFireBrigade(FireBrigade fireBrigade, EntityID target, int action)$/;"	m	class:MessageFireBrigade
+MessageFireBrigade	./,ComlibWS/message/information/MessageFireBrigade.java	/^	public MessageFireBrigade(FireBrigade fireBrigade, int action)$/;"	m	class:MessageFireBrigade
 MessageFireBrigade	./,ComlibWS/message/information/MessageFireBrigade.java	/^	public MessageFireBrigade(int time, int ttl, int hp, int buriedness, int damage, int position, int id, int water)$/;"	m	class:MessageFireBrigade
+MessageFireBrigade	./,ComlibWS/message/information/MessageFireBrigade.java	/^	public MessageFireBrigade(int time, int ttl, int hp, int buriedness, int damage, int position, int id, int water, int action)$/;"	m	class:MessageFireBrigade
+MessageFireBrigade	./,ComlibWS/message/information/MessageFireBrigade.java	/^	public MessageFireBrigade(int time, int ttl, int hp, int buriedness, int damage, int position, int id, int water, int target, int action)$/;"	m	class:MessageFireBrigade
 MessageFireBrigade	./,ComlibWS/message/information/MessageFireBrigade.java	/^public class MessageFireBrigade extends HumanMessage$/;"	c
 MessageFireBrigade	./,ComlibWS/message/information/MessageFireBrigade.java	/^public class MessageFireBrigade extends MessageHuman$/;"	c
 MessageFireBrigade	./,comlibWS/message/information/MessageFireBrigade.java	/^	public MessageFireBrigade(FireBrigade fireBrigade)$/;"	m	class:MessageFireBrigade
 MessageFireBrigade	./,comlibWS/message/information/MessageFireBrigade.java	/^	public MessageFireBrigade(int time, int ttl, int hp, int buriedness, int damage, int position, int id, int water)$/;"	m	class:MessageFireBrigade
 MessageFireBrigade	./,comlibWS/message/information/MessageFireBrigade.java	/^public class MessageFireBrigade extends HumanMessage$/;"	c
 MessageFireBrigade	./CommunicationLibrary/src/main/java/comlib/message/information/MessageFireBrigade.java	/^	public MessageFireBrigade(FireBrigade fireBrigade)$/;"	m	class:MessageFireBrigade
+MessageFireBrigade	./CommunicationLibrary/src/main/java/comlib/message/information/MessageFireBrigade.java	/^	public MessageFireBrigade(FireBrigade fireBrigade, EntityID target, int action)$/;"	m	class:MessageFireBrigade
+MessageFireBrigade	./CommunicationLibrary/src/main/java/comlib/message/information/MessageFireBrigade.java	/^	public MessageFireBrigade(FireBrigade fireBrigade, int action)$/;"	m	class:MessageFireBrigade
 MessageFireBrigade	./CommunicationLibrary/src/main/java/comlib/message/information/MessageFireBrigade.java	/^	public MessageFireBrigade(int time, int ttl, int hp, int buriedness, int damage, int position, int id, int water)$/;"	m	class:MessageFireBrigade
+MessageFireBrigade	./CommunicationLibrary/src/main/java/comlib/message/information/MessageFireBrigade.java	/^	public MessageFireBrigade(int time, int ttl, int hp, int buriedness, int damage, int position, int id, int water, int action)$/;"	m	class:MessageFireBrigade
+MessageFireBrigade	./CommunicationLibrary/src/main/java/comlib/message/information/MessageFireBrigade.java	/^	public MessageFireBrigade(int time, int ttl, int hp, int buriedness, int damage, int position, int id, int water, int target, int action)$/;"	m	class:MessageFireBrigade
 MessageFireBrigade	./CommunicationLibrary/src/main/java/comlib/message/information/MessageFireBrigade.java	/^public class MessageFireBrigade extends HumanMessage$/;"	c
 MessageFireBrigade	./CommunicationLibrary/src/main/java/comlib/message/information/MessageFireBrigade.java	/^public class MessageFireBrigade extends MessageHuman$/;"	c
 MessageFireBrigadeEvent	./,ComlibWS/event/information/MessageFireBrigadeEvent.java	/^public interface MessageFireBrigadeEvent extends MessageEvent<MessageFireBrigade> {$/;"	i
@@ -2055,14 +2095,22 @@ MessageMap	./CommunicationLibrary/src/main/java/comlib/message/MessageMap.java	/
 MessageMap	./CommunicationLibrary/src/main/java/comlib/message/MessageMap.java	/^	public MessageMap(int messageID, int time, int ttl) {$/;"	m	class:MessageMap
 MessageMap	./CommunicationLibrary/src/main/java/comlib/message/MessageMap.java	/^abstract public class MessageMap extends MessageInformation {$/;"	c
 MessagePoliceForce	./,ComlibWS/message/information/MessagePoliceForce.java	/^	public MessagePoliceForce(PoliceForce policeForce)$/;"	m	class:MessagePoliceForce
+MessagePoliceForce	./,ComlibWS/message/information/MessagePoliceForce.java	/^	public MessagePoliceForce(PoliceForce policeForce, EntityID target, int action)$/;"	m	class:MessagePoliceForce
+MessagePoliceForce	./,ComlibWS/message/information/MessagePoliceForce.java	/^	public MessagePoliceForce(PoliceForce policeForce, int action)$/;"	m	class:MessagePoliceForce
 MessagePoliceForce	./,ComlibWS/message/information/MessagePoliceForce.java	/^	public MessagePoliceForce(int time, int ttl, int hp, int buriedness, int damage, int position, int id)$/;"	m	class:MessagePoliceForce
+MessagePoliceForce	./,ComlibWS/message/information/MessagePoliceForce.java	/^	public MessagePoliceForce(int time, int ttl, int hp, int buriedness, int damage, int position, int id, int action)$/;"	m	class:MessagePoliceForce
+MessagePoliceForce	./,ComlibWS/message/information/MessagePoliceForce.java	/^	public MessagePoliceForce(int time, int ttl, int hp, int buriedness, int damage, int position, int id, int target, int action)$/;"	m	class:MessagePoliceForce
 MessagePoliceForce	./,ComlibWS/message/information/MessagePoliceForce.java	/^public class MessagePoliceForce extends HumanMessage$/;"	c
 MessagePoliceForce	./,ComlibWS/message/information/MessagePoliceForce.java	/^public class MessagePoliceForce extends MessageHuman$/;"	c
 MessagePoliceForce	./,comlibWS/message/information/MessagePoliceForce.java	/^	public MessagePoliceForce(PoliceForce policeForce)$/;"	m	class:MessagePoliceForce
 MessagePoliceForce	./,comlibWS/message/information/MessagePoliceForce.java	/^	public MessagePoliceForce(int time, int ttl, int hp, int buriedness, int damage, int position, int id)$/;"	m	class:MessagePoliceForce
 MessagePoliceForce	./,comlibWS/message/information/MessagePoliceForce.java	/^public class MessagePoliceForce extends HumanMessage$/;"	c
 MessagePoliceForce	./CommunicationLibrary/src/main/java/comlib/message/information/MessagePoliceForce.java	/^	public MessagePoliceForce(PoliceForce policeForce)$/;"	m	class:MessagePoliceForce
+MessagePoliceForce	./CommunicationLibrary/src/main/java/comlib/message/information/MessagePoliceForce.java	/^	public MessagePoliceForce(PoliceForce policeForce, EntityID target, int action)$/;"	m	class:MessagePoliceForce
+MessagePoliceForce	./CommunicationLibrary/src/main/java/comlib/message/information/MessagePoliceForce.java	/^	public MessagePoliceForce(PoliceForce policeForce, int action)$/;"	m	class:MessagePoliceForce
 MessagePoliceForce	./CommunicationLibrary/src/main/java/comlib/message/information/MessagePoliceForce.java	/^	public MessagePoliceForce(int time, int ttl, int hp, int buriedness, int damage, int position, int id)$/;"	m	class:MessagePoliceForce
+MessagePoliceForce	./CommunicationLibrary/src/main/java/comlib/message/information/MessagePoliceForce.java	/^	public MessagePoliceForce(int time, int ttl, int hp, int buriedness, int damage, int position, int id, int action)$/;"	m	class:MessagePoliceForce
+MessagePoliceForce	./CommunicationLibrary/src/main/java/comlib/message/information/MessagePoliceForce.java	/^	public MessagePoliceForce(int time, int ttl, int hp, int buriedness, int damage, int position, int id, int target, int action)$/;"	m	class:MessagePoliceForce
 MessagePoliceForce	./CommunicationLibrary/src/main/java/comlib/message/information/MessagePoliceForce.java	/^public class MessagePoliceForce extends HumanMessage$/;"	c
 MessagePoliceForce	./CommunicationLibrary/src/main/java/comlib/message/information/MessagePoliceForce.java	/^public class MessagePoliceForce extends MessageHuman$/;"	c
 MessagePoliceForceEvent	./,ComlibWS/event/information/MessagePoliceForceEvent.java	/^public interface MessagePoliceForceEvent extends MessageEvent<MessagePoliceForce> {$/;"	i
@@ -3427,6 +3475,8 @@ addLayer	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/view/Layer
 addMessageComponent	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/messages/AbstractMessage.java	/^    protected void addMessageComponent(MessageComponent component) {$/;"	m	class:AbstractMessage
 addMessageForAgent	../roborescue-roborescue/modules/standard/src/rescuecore2/standard/kernel/comms/AbstractChannel.java	/^    protected void addMessageForAgent(Entity a, AKSpeak msg) {$/;"	m	class:AbstractChannel
 addMessageForSubscribers	../roborescue-roborescue/modules/standard/src/rescuecore2/standard/kernel/comms/AbstractChannel.java	/^    protected void addMessageForSubscribers(AKSpeak msg) {$/;"	m	class:AbstractChannel
+addNeighbour	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^    public RouteNode addNeighbour(EntityID id) {$/;"	m	class:RouteNode
+addNeighbour	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^    public RouteNode addNeighbour(RouteNode node) {$/;"	m	class:RouteNode
 addNeighbour	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^    public void addNeighbour(EntityID id) {$/;"	m	class:RouteNode
 addNeighbour	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^    public void addNeighbour(RouteNode node) {$/;"	m	class:RouteNode
 addNeighbourNode	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^    public void addNeighbourNode(EntityID id) {$/;"	m	class:RouteNode
@@ -4126,6 +4176,7 @@ comlib.manager	./CommunicationLibrary/src/main/java/comlib/manager/MessageManage
 comlib.manager	./CommunicationLibrary/src/main/java/comlib/manager/RadioConfig.java	/^package comlib.manager;$/;"	p
 comlib.manager	./CommunicationLibrary/src/main/java/comlib/manager/UpdateHelper.java	/^package comlib.manager;$/;"	p
 comlib.manager	./CommunicationLibrary/src/main/java/comlib/manager/VoiceConfig.java	/^package comlib.manager;$/;"	p
+comlib.message	./,ComlibWS/message/ActionID.java	/^package comlib.message;$/;"	p
 comlib.message	./,ComlibWS/message/CommunicationMessage.java	/^package comlib.message;$/;"	p
 comlib.message	./,ComlibWS/message/HumanMessage.java	/^package comlib.message;$/;"	p
 comlib.message	./,ComlibWS/message/InformationMessage.java	/^package comlib.message;$/;"	p
@@ -4142,6 +4193,7 @@ comlib.message	./,comlibWS/message/HumanMessage.java	/^package comlib.message;$/
 comlib.message	./,comlibWS/message/InformationMessage.java	/^package comlib.message;$/;"	p
 comlib.message	./,comlibWS/message/MapMessage.java	/^package comlib.message;$/;"	p
 comlib.message	./,comlibWS/message/MessageID.java	/^package comlib.message;$/;"	p
+comlib.message	./CommunicationLibrary/src/main/java/comlib/message/ActionID.java	/^package comlib.message;$/;"	p
 comlib.message	./CommunicationLibrary/src/main/java/comlib/message/CommunicationMessage.java	/^package comlib.message;$/;"	p
 comlib.message	./CommunicationLibrary/src/main/java/comlib/message/DummyMessage.java	/^package comlib.message;$/;"	p
 comlib.message	./CommunicationLibrary/src/main/java/comlib/message/HumanMessage.java	/^package comlib.message;$/;"	p
@@ -4975,6 +5027,7 @@ editor	../roborescue-roborescue/modules/gis2/src/gis2/scenario/AbstractTool.java
 editor	../roborescue-roborescue/modules/gis2/src/gis2/scenario/AgentOverlay.java	/^	private ScenarioEditor editor;$/;"	f	class:AgentOverlay	file:
 editor	../roborescue-roborescue/modules/maps/src/maps/gml/editor/AbstractFunction.java	/^    protected GMLEditor editor;$/;"	f	class:AbstractFunction
 editor	../roborescue-roborescue/modules/maps/src/maps/gml/editor/AbstractTool.java	/^    protected GMLEditor editor;$/;"	f	class:AbstractTool
+element	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    public final List<EntityID> element;$/;"	f	class:RouteEdge
 enablePanZoom	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/view/ViewComponent.java	/^    public void enablePanZoom() {$/;"	m	class:ViewComponent
 enabled	../roborescue-roborescue/modules/maps/src/maps/gml/editor/Snap.java	/^    private boolean enabled;$/;"	f	class:Snap	file:
 enabled	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/misc/gui/PanZoomListener.java	/^    private boolean enabled;$/;"	f	class:PanZoomListener	file:
@@ -5237,6 +5290,7 @@ first	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/misc/Pair.jav
 firstNeighbour	./AgentDevelopmentKit/src_old/OneTimeNode.java	/^    private EntityID firstNeighbour;$/;"	f	class:OneTimeNode	file:
 firstNeighbourPath	./AgentDevelopmentKit/src_old/OneTimeNode.java	/^    private List<EntityID> firstNeighbourPath;$/;"	f	class:OneTimeNode	file:
 firstNodeID	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    private EntityID firstNodeID;$/;"	f	class:RouteEdge	file:
+firstNodeID	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    public final EntityID firstNodeID;$/;"	f	class:RouteEdge
 firstNodeID	./AgentDevelopmentKit/src_old/RouteEdge.java	/^    private EntityID firstNodeID;$/;"	f	class:RouteEdge	file:
 fix	../roborescue-roborescue/modules/collapse/src/collapse/CollapseSimulator.java	/^	private List<java.awt.geom.Area> fix(java.awt.geom.Area area) {$/;"	m	class:CollapseSimulator	file:
 fixBuildingDirection	../roborescue-roborescue/modules/maps/src/maps/convert/osm2gml/CleanOSMStep.java	/^    private int fixBuildingDirection(Collection<OSMBuilding> buildings) {$/;"	m	class:CleanOSMStep	file:
@@ -5279,9 +5333,11 @@ found	../roborescue-roborescue/modules/standard/src/rescuecore2/standard/score/D
 frames	../roborescue-roborescue/modules/standard/src/rescuecore2/standard/view/AnimatedHumanLayer.java	/^    private Map<EntityID, Queue<Pair<Integer, Integer>>> frames;$/;"	f	class:AnimatedHumanLayer	file:
 freezeTime	../roborescue-roborescue/modules/kernel/src/kernel/FrozenAgentsCommandFilter.java	/^    private int freezeTime;$/;"	f	class:FrozenAgentsCommandFilter	file:
 from	../roborescue-roborescue/modules/maps/src/maps/convert/osm2gml/OSMRoadInfo.java	/^    private OSMNode from;$/;"	f	class:OSMRoadInfo	file:
+fromFirst	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    private List<EntityID> fromFirst;$/;"	f	class:RouteEdge	file:
 fromID	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/log/RecordType.java	/^    public static RecordType fromID(int id) {$/;"	m	class:RecordType
 fromLeft	../roborescue-roborescue/modules/maps/src/maps/convert/osm2gml/OSMRoadInfo.java	/^    private Point2D fromLeft;$/;"	f	class:OSMRoadInfo	file:
 fromRight	../roborescue-roborescue/modules/maps/src/maps/convert/osm2gml/OSMRoadInfo.java	/^    private Point2D fromRight;$/;"	f	class:OSMRoadInfo	file:
+fromSecond	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    private List<EntityID> fromSecond;$/;"	f	class:RouteEdge	file:
 fromStart	./AgentDevelopmentKit/basefile/sample/util/SampleComparator.java	/^    private Map<EntityID, Double> fromStart;$/;"	f	class:SampleComparator	file:
 fromStart	./AgentDevelopmentKit/gradle/util/DistanceComparator.java	/^    private Map<EntityID, Double> fromStart;$/;"	f	class:DistanceComparator	file:
 fromString	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/messages/control/ControlMessageURN.java	/^    public static ControlMessageURN fromString(String s) {$/;"	m	class:ControlMessageURN
@@ -5325,9 +5381,15 @@ get	./,ComlibWS/util/IntegerDataHelper.java	/^    public static int get(int data
 get	./,comlibWS/util/IntegerDataHelper.java	/^    public static int get(int data, int start, int size) {$/;"	m	class:IntegerDataHelper
 get	./AgentDevelopmentKit/src/main/java/adk/launcher/TeamLoader.java	/^    public Team get(String name) {$/;"	m	class:TeamLoader
 get	./CommunicationLibrary/src/main/java/comlib/util/IntegerDataHelper.java	/^    public static int get(int data, int start, int size) {$/;"	m	class:IntegerDataHelper
+getAction	./,ComlibWS/message/information/MessageAmbulanceTeam.java	/^	public int getAction()$/;"	m	class:MessageAmbulanceTeam
+getAction	./,ComlibWS/message/information/MessageFireBrigade.java	/^	public int getAction()$/;"	m	class:MessageFireBrigade
+getAction	./,ComlibWS/message/information/MessagePoliceForce.java	/^	public int getAction()$/;"	m	class:MessagePoliceForce
 getAction	./,ComlibWS/message/topdown/CommandAmbulance.java	/^	public int getAction()$/;"	m	class:CommandAmbulance
 getAction	./,ComlibWS/message/topdown/CommandFire.java	/^	public int getAction()$/;"	m	class:CommandFire
 getAction	./,ComlibWS/message/topdown/CommandPolice.java	/^	public int getAction()$/;"	m	class:CommandPolice
+getAction	./CommunicationLibrary/src/main/java/comlib/message/information/MessageAmbulanceTeam.java	/^	public int getAction()$/;"	m	class:MessageAmbulanceTeam
+getAction	./CommunicationLibrary/src/main/java/comlib/message/information/MessageFireBrigade.java	/^	public int getAction()$/;"	m	class:MessageFireBrigade
+getAction	./CommunicationLibrary/src/main/java/comlib/message/information/MessagePoliceForce.java	/^	public int getAction()$/;"	m	class:MessagePoliceForce
 getAction	./CommunicationLibrary/src/main/java/comlib/message/topdown/CommandAmbulance.java	/^	public int getAction()$/;"	m	class:CommandAmbulance
 getAction	./CommunicationLibrary/src/main/java/comlib/message/topdown/CommandFire.java	/^	public int getAction()$/;"	m	class:CommandFire
 getAction	./CommunicationLibrary/src/main/java/comlib/message/topdown/CommandPolice.java	/^	public int getAction()$/;"	m	class:CommandPolice
@@ -5694,10 +5756,13 @@ getDistance	../roborescue-roborescue/modules/traffic3/src/traffic3/objects/Traff
 getDistance	../roborescue-roborescue/modules/traffic3/src/traffic3/objects/TrafficArea.java	/^	private double getDistance(Line2D e1, Line2D e2) {$/;"	m	class:TrafficArea	file:
 getDistance	../roborescue-roborescue/modules/traffic3/src/traffic3/objects/TrafficArea.java	/^	private double getDistance(Line2D e1, Point2D p) {$/;"	m	class:TrafficArea	file:
 getDistance	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/PositionUtil.java	/^    public static double getDistance(Edge from, Edge to) {$/;"	m	class:PositionUtil
+getDistance	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/PositionUtil.java	/^    public static double getDistance(Pair<Integer, Integer> from, Edge to) {$/;"	m	class:PositionUtil
+getDistance	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/PositionUtil.java	/^    public static double getDistance(Pair<Integer, Integer> from, Point2D to) {$/;"	m	class:PositionUtil
 getDistance	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/PositionUtil.java	/^    public static double getDistance(Pair<Integer, Integer> position, Pair<Integer, Integer> another) {$/;"	m	class:PositionUtil
 getDistance	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/PositionUtil.java	/^    public static double getDistance(Point2D from, Point2D to) {$/;"	m	class:PositionUtil
 getDistance	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/PositionUtil.java	/^    public static double getDistance(RouteNode from, RouteNode to) {$/;"	m	class:PositionUtil
 getDistance	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    public double getDistance() {$/;"	m	class:RouteEdge
+getDistance	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    public double getDistance(EntityID areaID) {$/;"	m	class:RouteEdge
 getDistance	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    public double getDistance(EntityID areaID, EntityID target) {$/;"	m	class:RouteEdge
 getDistance	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    public double getDistance(EntityID nodeID, EntityID target) {$/;"	m	class:RouteEdge
 getDistance	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^    public double getDistance(EntityID from, EntityID to) {$/;"	m	class:RouteNode
@@ -6240,8 +6305,10 @@ getPath	./AgentDevelopmentKit/src/main/java/adk/team/util/RouteSearcher.java	/^ 
 getPath	./AgentDevelopmentKit/src/main/java/adk/team/util/RouteSearcher.java	/^    default List<EntityID> getPath(int time, Human from, Blockade blockade) {$/;"	m	interface:RouteSearcher
 getPath	./AgentDevelopmentKit/src/main/java/adk/team/util/RouteSearcher.java	/^    default List<EntityID> getPath(int time, Human from, EntityID to) {$/;"	m	interface:RouteSearcher
 getPath	./AgentDevelopmentKit/src/main/java/adk/team/util/RouteSearcher.java	/^    public List<EntityID> getPath(int time, EntityID from, EntityID to);$/;"	m	interface:RouteSearcher
+getPath	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    public List<EntityID> getPath(EntityID from) {$/;"	m	class:RouteEdge
 getPath	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    public List<EntityID> getPath(EntityID nodeID) {$/;"	m	class:RouteEdge
 getPath	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    public List<EntityID> getPath(EntityID nodeID, EntityID target) {$/;"	m	class:RouteEdge
+getPath	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    public List<EntityID> getPath(RouteNode from) {$/;"	m	class:RouteEdge
 getPath	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    public List<EntityID> getPath(RouteNode node) {$/;"	m	class:RouteEdge
 getPath	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    public List<EntityID> getPath(RouteNode node, EntityID target) {$/;"	m	class:RouteEdge
 getPath	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteGraph.java	/^    public List<EntityID> getPath(List<RouteNode> nodes) {$/;"	m	class:RouteGraph
@@ -6582,7 +6649,13 @@ getTargetID	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/message
 getTargetID	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/messages/control/KSUpdate.java	/^    public int getTargetID() {$/;"	m	class:KSUpdate
 getTargetID	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/messages/control/KVTimestep.java	/^    public int getTargetID() {$/;"	m	class:KVTimestep
 getTargetID	./,ComlibWS/message/MessageCommand.java	/^	public EntityID getTargetID()$/;"	m	class:MessageCommand
+getTargetID	./,ComlibWS/message/information/MessageAmbulanceTeam.java	/^	public EntityID getTargetID()$/;"	m	class:MessageAmbulanceTeam
+getTargetID	./,ComlibWS/message/information/MessageFireBrigade.java	/^	public EntityID getTargetID()$/;"	m	class:MessageFireBrigade
+getTargetID	./,ComlibWS/message/information/MessagePoliceForce.java	/^	public EntityID getTargetID()$/;"	m	class:MessagePoliceForce
 getTargetID	./CommunicationLibrary/src/main/java/comlib/message/MessageCommand.java	/^	public EntityID getTargetID()$/;"	m	class:MessageCommand
+getTargetID	./CommunicationLibrary/src/main/java/comlib/message/information/MessageAmbulanceTeam.java	/^	public EntityID getTargetID()$/;"	m	class:MessageAmbulanceTeam
+getTargetID	./CommunicationLibrary/src/main/java/comlib/message/information/MessageFireBrigade.java	/^	public EntityID getTargetID()$/;"	m	class:MessageFireBrigade
+getTargetID	./CommunicationLibrary/src/main/java/comlib/message/information/MessagePoliceForce.java	/^	public EntityID getTargetID()$/;"	m	class:MessagePoliceForce
 getTargets	../roborescue-roborescue/modules/sample/src/sample/SampleAmbulanceTeam.java	/^    private List<Human> getTargets() {$/;"	m	class:SampleAmbulanceTeam	file:
 getTeam	./AgentDevelopmentKit/src/main/java/adk/launcher/TeamLoader.java	/^    public Team getTeam(String name) {$/;"	m	class:TeamLoader
 getTeamName	./AgentDevelopmentKit/basefile/sample/SampleTeam.java	/^    public String getTeamName() {$/;"	m	class:SampleTeam
@@ -6947,6 +7020,7 @@ hashCode	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/misc/geome
 hashCode	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/worldmodel/AbstractEntity.java	/^    public int hashCode() {$/;"	m	class:AbstractEntity
 hashCode	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/worldmodel/EntityID.java	/^    public int hashCode() {$/;"	m	class:EntityID
 hashCode	../roborescue-roborescue/modules/rescuecore2/test/rescuecore2/connection/TestMessage.java	/^    public int hashCode() {$/;"	m	class:TestMessage
+hashCode	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    public int hashCode() {$/;"	m	class:RouteEdge
 hashCode	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^    public int hashCode() {$/;"	m	class:RouteNode
 haveImpassibleEdge	../roborescue-roborescue/modules/traffic3/src/traffic3/simulator/TrafficSimulator.java	/^	private boolean haveImpassibleEdge(Area dest){$/;"	m	class:TrafficSimulator	file:
 haveThisAreaInPath	../roborescue-roborescue/modules/traffic3/src/traffic3/objects/TrafficAgent.java	/^	private boolean haveThisAreaInPath(TrafficArea newArea) {$/;"	m	class:TrafficAgent	file:
@@ -7082,6 +7156,7 @@ ignoreTime	./AgentDevelopmentKit/src/main/java/adk/launcher/agent/TacticsAgent.j
 ignoreTimeThink	./AgentDevelopmentKit/src/main/java/adk/team/tactics/Tactics.java	/^    public void ignoreTimeThink(int currentTime, ChangeSet updateWorldData, MessageManager manager) {$/;"	m	class:Tactics
 imageViewer	../roborescue-roborescue/modules/sample/src/sample/LiveLogExtractor.java	/^    private ViewComponent imageViewer;$/;"	f	class:LiveLogExtractor	file:
 impassable	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    private Set<EntityID> impassable;$/;"	f	class:RouteEdge	file:
+impassableArea	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    private Set<EntityID> impassableArea;$/;"	f	class:RouteEdge	file:
 impassableArea	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteManager.java	/^    private Set<EntityID> impassableArea;$/;"	f	class:RouteManager	file:
 impassableAreas	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    private Set<EntityID> impassableAreas;$/;"	f	class:RouteEdge	file:
 impassableAreas	./AgentDevelopmentKit/src_old/RouteEdge.java	/^    private Set<EntityID> impassableAreas;$/;"	f	class:RouteEdge	file:
@@ -7161,6 +7236,7 @@ initOption	./AgentDevelopmentKit/src/main/java/adk/launcher/ConfigInitializer.ja
 initRandomWalk	./AgentDevelopmentKit/basefile/sample/util/SampleRouteSearcher.java	/^    private void initRandomWalk()$/;"	m	class:SampleRouteSearcher	file:
 initRandomWalk	./AgentDevelopmentKit/src/main/java/adk/sample/basic/util/BasicRouteSearcher.java	/^    private void initRandomWalk() {$/;"	m	class:BasicRouteSearcher	file:
 initRandomWalk	./AgentDevelopmentKit/src/main/java/adk/sample/basic/util/BasicRouteSearcher.java	/^    private void initRandomWalk()$/;"	m	class:BasicRouteSearcher	file:
+initRoadDistance	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    private void initRoadDistance(StandardWorldModel world) {$/;"	m	class:RouteEdge	file:
 initRouteSearcher	./AgentDevelopmentKit/src/main/java/adk/sample/basic/tactics/BasicAmbulance.java	/^    public abstract RouteSearcher initRouteSearcher();$/;"	m	class:BasicAmbulance
 initRouteSearcher	./AgentDevelopmentKit/src/main/java/adk/sample/basic/tactics/BasicFire.java	/^    public abstract RouteSearcher initRouteSearcher();$/;"	m	class:BasicFire
 initRouteSearcher	./AgentDevelopmentKit/src/main/java/adk/sample/basic/tactics/BasicPolice.java	/^    public abstract RouteSearcher initRouteSearcher();$/;"	m	class:BasicPolice
@@ -7323,6 +7399,7 @@ isRightTurn	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/misc/ge
 isRightTurn	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/misc/geometry/GeometryTools2D.java	/^    public static boolean isRightTurn(Vector2D first, Vector2D second) {$/;"	m	class:GeometryTools2D
 isRoad	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^    private Boolean isRoad;$/;"	f	class:RouteNode	file:
 isRoad	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^    public boolean isRoad() {$/;"	m	class:RouteNode
+isRoad	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^    public final Boolean isRoad;$/;"	f	class:RouteNode
 isRunning	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/misc/WorkerThread.java	/^    public boolean isRunning() {$/;"	m	class:WorkerThread
 isSecondNode	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    public boolean isSecondNode(EntityID areaID) {$/;"	m	class:RouteEdge
 isSecondNode	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    public boolean isSecondNode(EntityID nodeID) {$/;"	m	class:RouteEdge
@@ -8076,12 +8153,24 @@ moveTarget	./AgentDevelopmentKit/basefile/sample/tactics/SampleAmbulance.java	/^
 moveTarget	./AgentDevelopmentKit/basefile/sample/tactics/SampleFire.java	/^    public Action moveTarget(int currentTime) {$/;"	m	class:SampleFire
 moveTarget	./AgentDevelopmentKit/src/main/java/adk/sample/basic/tactics/BasicAmbulance.java	/^    public Action moveTarget(int currentTime) {$/;"	m	class:BasicAmbulance
 moveTarget	./AgentDevelopmentKit/src/main/java/adk/sample/basic/tactics/BasicFire.java	/^    public Action moveTarget(int currentTime) {$/;"	m	class:BasicFire
+myAction	./,ComlibWS/message/information/MessageAmbulanceTeam.java	/^	private int myAction;$/;"	f	class:MessageAmbulanceTeam	file:
+myAction	./,ComlibWS/message/information/MessageFireBrigade.java	/^	private int myAction;$/;"	f	class:MessageFireBrigade	file:
+myAction	./,ComlibWS/message/information/MessagePoliceForce.java	/^	private int myAction;$/;"	f	class:MessagePoliceForce	file:
 myAction	./,ComlibWS/message/topdown/CommandAmbulance.java	/^	private int myAction;$/;"	f	class:CommandAmbulance	file:
 myAction	./,ComlibWS/message/topdown/CommandFire.java	/^	private int myAction;$/;"	f	class:CommandFire	file:
 myAction	./,ComlibWS/message/topdown/CommandPolice.java	/^	private int myAction;$/;"	f	class:CommandPolice	file:
+myAction	./CommunicationLibrary/src/main/java/comlib/message/information/MessageAmbulanceTeam.java	/^	private int myAction;$/;"	f	class:MessageAmbulanceTeam	file:
+myAction	./CommunicationLibrary/src/main/java/comlib/message/information/MessageFireBrigade.java	/^	private int myAction;$/;"	f	class:MessageFireBrigade	file:
+myAction	./CommunicationLibrary/src/main/java/comlib/message/information/MessagePoliceForce.java	/^	private int myAction;$/;"	f	class:MessagePoliceForce	file:
 myAction	./CommunicationLibrary/src/main/java/comlib/message/topdown/CommandAmbulance.java	/^	private int myAction;$/;"	f	class:CommandAmbulance	file:
 myAction	./CommunicationLibrary/src/main/java/comlib/message/topdown/CommandFire.java	/^	private int myAction;$/;"	f	class:CommandFire	file:
 myAction	./CommunicationLibrary/src/main/java/comlib/message/topdown/CommandPolice.java	/^	private int myAction;$/;"	f	class:CommandPolice	file:
+myTargetID	./,ComlibWS/message/information/MessageAmbulanceTeam.java	/^	protected EntityID myTargetID;$/;"	f	class:MessageAmbulanceTeam
+myTargetID	./,ComlibWS/message/information/MessageFireBrigade.java	/^	protected EntityID myTargetID;$/;"	f	class:MessageFireBrigade
+myTargetID	./,ComlibWS/message/information/MessagePoliceForce.java	/^	protected EntityID myTargetID;$/;"	f	class:MessagePoliceForce
+myTargetID	./CommunicationLibrary/src/main/java/comlib/message/information/MessageAmbulanceTeam.java	/^	protected EntityID myTargetID;$/;"	f	class:MessageAmbulanceTeam
+myTargetID	./CommunicationLibrary/src/main/java/comlib/message/information/MessageFireBrigade.java	/^	protected EntityID myTargetID;$/;"	f	class:MessageFireBrigade
+myTargetID	./CommunicationLibrary/src/main/java/comlib/message/information/MessagePoliceForce.java	/^	protected EntityID myTargetID;$/;"	f	class:MessagePoliceForce
 name	../roborescue-roborescue/modules/kernel/src/kernel/AbstractKernelComponent.java	/^    private String name;$/;"	f	class:AbstractKernelComponent	file:
 name	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/config/Config.java	/^        private String name;$/;"	f	class:Config.ReaderContext	file:
 name	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/config/Config.java	/^        private String name;$/;"	f	class:Config.ResourceContext	file:
@@ -8159,6 +8248,7 @@ nodeHighlight	../roborescue-roborescue/modules/maps/src/maps/gml/editor/SplitEdg
 nodeHighlight	../roborescue-roborescue/modules/maps/src/maps/gml/editor/SplitShapeTool.java	/^    private NodeDecorator nodeHighlight;$/;"	f	class:SplitShapeTool	file:
 nodeHighlight	../roborescue-roborescue/modules/maps/src/maps/gml/editor/ValidateFunction.java	/^    private NodeDecorator nodeHighlight;$/;"	f	class:ValidateFunction	file:
 nodeID	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^    private EntityID nodeID;$/;"	f	class:RouteNode	file:
+nodeID	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^    public final EntityID nodeID;$/;"	f	class:RouteNode
 nodeID	./AgentDevelopmentKit/src_old/OneTimeNode.java	/^    private EntityID nodeID;$/;"	f	class:OneTimeNode	file:
 nodeID	./AgentDevelopmentKit/src_old/RouteNode.java	/^    private EntityID nodeID;$/;"	f	class:RouteNode	file:
 nodeList	./AgentDevelopmentKit/src_old/RouteGraph.java	/^    private List<RouteNode> nodeList;$/;"	f	class:RouteGraph	file:
@@ -8302,6 +8392,7 @@ passable	./AgentDevelopmentKit/src/main/java/adk/sample/basic/tactics/BasicPolic
 passable	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    public boolean passable() {$/;"	m	class:RouteEdge
 passable	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^    private boolean passable;$/;"	f	class:RouteNode	file:
 passable	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^    public boolean passable() {$/;"	m	class:RouteNode
+passable	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^    public boolean passable;$/;"	f	class:RouteNode
 passable	./AgentDevelopmentKit/src_old/BasicPolice.java	/^    public boolean passable(Road road) {$/;"	m	class:BasicPolice
 passable	./AgentDevelopmentKit/src_old/RouteEdge.java	/^    public boolean passable() {$/;"	m	class:RouteEdge
 passable	./AgentDevelopmentKit/src_old/RouteElement.java	/^    public boolean passable();$/;"	m	interface:RouteElement
@@ -8388,6 +8479,7 @@ posY	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^  
 position	../roborescue-roborescue/modules/standard/src/rescuecore2/standard/entities/Blockade.java	/^    private EntityRefProperty position;$/;"	f	class:Blockade	file:
 position	../roborescue-roborescue/modules/standard/src/rescuecore2/standard/entities/Human.java	/^    private EntityRefProperty position;$/;"	f	class:Human	file:
 position	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^    private Pair<Integer, Integer> position;$/;"	f	class:RouteNode	file:
+position	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^    public final Pair<Integer, Integer> position;$/;"	f	class:RouteNode
 positionHistory	../roborescue-roborescue/modules/standard/src/rescuecore2/standard/entities/Human.java	/^    private IntArrayProperty positionHistory;$/;"	f	class:Human	file:
 positionHistory	../roborescue-roborescue/modules/traffic3/src/traffic3/objects/TrafficAgent.java	/^	private List<Point2D> positionHistory;$/;"	f	class:TrafficAgent	file:
 positionHistoryFrequency	../roborescue-roborescue/modules/traffic3/src/traffic3/objects/TrafficAgent.java	/^	private int positionHistoryFrequency;$/;"	f	class:TrafficAgent	file:
@@ -8641,7 +8733,13 @@ rawRoadID	./,comlibWS/message/information/RoadMessage.java	/^	protected int rawR
 rawRoadID	./CommunicationLibrary/src/main/java/comlib/message/information/MessageRoad.java	/^	protected int rawRoadID;$/;"	f	class:MessageRoad
 rawRoadID	./CommunicationLibrary/src/main/java/comlib/message/information/RoadMessage.java	/^	protected int rawRoadID;$/;"	f	class:RoadMessage
 rawTargetID	./,ComlibWS/message/MessageCommand.java	/^	protected int rawTargetID;$/;"	f	class:MessageCommand
+rawTargetID	./,ComlibWS/message/information/MessageAmbulanceTeam.java	/^	protected int rawTargetID;$/;"	f	class:MessageAmbulanceTeam
+rawTargetID	./,ComlibWS/message/information/MessageFireBrigade.java	/^	protected int rawTargetID;$/;"	f	class:MessageFireBrigade
+rawTargetID	./,ComlibWS/message/information/MessagePoliceForce.java	/^	protected int rawTargetID;$/;"	f	class:MessagePoliceForce
 rawTargetID	./CommunicationLibrary/src/main/java/comlib/message/MessageCommand.java	/^	protected int rawTargetID;$/;"	f	class:MessageCommand
+rawTargetID	./CommunicationLibrary/src/main/java/comlib/message/information/MessageAmbulanceTeam.java	/^	protected int rawTargetID;$/;"	f	class:MessageAmbulanceTeam
+rawTargetID	./CommunicationLibrary/src/main/java/comlib/message/information/MessageFireBrigade.java	/^	protected int rawTargetID;$/;"	f	class:MessageFireBrigade
+rawTargetID	./CommunicationLibrary/src/main/java/comlib/message/information/MessagePoliceForce.java	/^	protected int rawTargetID;$/;"	f	class:MessagePoliceForce
 rawToID	./,ComlibWS/message/MessageCommand.java	/^	protected int rawToID;$/;"	f	class:MessageCommand
 rawToID	./CommunicationLibrary/src/main/java/comlib/message/MessageCommand.java	/^	protected int rawToID;$/;"	f	class:MessageCommand
 ray	../roborescue-roborescue/modules/standard/src/rescuecore2/standard/kernel/LineOfSightPerception.java	/^        private Line2D ray;$/;"	f	class:LineOfSightPerception.Ray	file:
@@ -9250,6 +9348,8 @@ removeIntersection	../roborescue-roborescue/modules/maps/src/maps/convert/osm2gm
 removeKernelListener	../roborescue-roborescue/modules/kernel/src/kernel/Kernel.java	/^    public void removeKernelListener(KernelListener l) {$/;"	m	class:Kernel
 removeKey	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/config/Config.java	/^    public void removeKey(String key) {$/;"	m	class:Config
 removeLayer	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/view/LayerViewComponent.java	/^    public void removeLayer(ViewLayer layer) {$/;"	m	class:LayerViewComponent
+removeNeighbour	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^    public RouteNode removeNeighbour(EntityID id) {$/;"	m	class:RouteNode
+removeNeighbour	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^    public RouteNode removeNeighbour(RouteNode node) {$/;"	m	class:RouteNode
 removeNeighbour	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^    public void removeNeighbour(EntityID id) {$/;"	m	class:RouteNode
 removeNeighbour	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteNode.java	/^    public void removeNeighbour(RouteNode node) {$/;"	m	class:RouteNode
 removeNode	../roborescue-roborescue/modules/maps/src/maps/convert/osm2gml/TemporaryMap.java	/^    private void removeNode(Node n) {$/;"	m	class:TemporaryMap	file:
@@ -9839,6 +9939,7 @@ second	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/misc/Pair.ja
 secondNeighbour	./AgentDevelopmentKit/src_old/OneTimeNode.java	/^    private EntityID secondNeighbour;$/;"	f	class:OneTimeNode	file:
 secondNeighbourPath	./AgentDevelopmentKit/src_old/OneTimeNode.java	/^    private List<EntityID> secondNeighbourPath;$/;"	f	class:OneTimeNode	file:
 secondNodeID	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    private EntityID secondNodeID;$/;"	f	class:RouteEdge	file:
+secondNodeID	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    public final EntityID secondNodeID;$/;"	f	class:RouteEdge
 secondNodeID	./AgentDevelopmentKit/src_old/RouteEdge.java	/^    private EntityID secondNodeID;$/;"	f	class:RouteEdge	file:
 seedGenerator	../roborescue-roborescue/modules/rescuecore2/src/rescuecore2/config/Config.java	/^    private static Random seedGenerator;$/;"	f	class:Config	file:
 seen	../roborescue-roborescue/modules/maps/src/maps/convert/osm2gml/SplitIntersectingEdgesStep.java	/^    private Set<Edge> seen;$/;"	f	class:SplitIntersectingEdgesStep	file:
@@ -10095,6 +10196,7 @@ setPanTriggerModifiers	../roborescue-roborescue/modules/rescuecore2/src/rescueco
 setPanZoomEnabled	../roborescue-roborescue/modules/maps/src/maps/gml/view/GMLMapViewer.java	/^    public void setPanZoomEnabled(boolean enabled) {$/;"	m	class:GMLMapViewer
 setPassable	../roborescue-roborescue/modules/maps/src/maps/gml/GMLEdge.java	/^    public void setPassable(boolean b) {$/;"	m	class:GMLEdge
 setPassable	../roborescue-roborescue/modules/maps/src/maps/gml/editor/TogglePassableTool.java	/^    private void setPassable(GMLEdge edge, boolean passable) {$/;"	m	class:TogglePassableTool	file:
+setPassable	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    public RouteEdge setPassable(EntityID areaID, boolean flag) {$/;"	m	class:RouteEdge
 setPassable	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteEdge.java	/^    public void setPassable(EntityID areaID, boolean flag) {$/;"	m	class:RouteEdge
 setPassable	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteManager.java	/^    public void setPassable(EntityID areaID, boolean flag) {$/;"	m	class:RouteManager
 setPassable	./AgentDevelopmentKit/src/main/java/adk/team/util/graph/RouteManager.java	/^    public void setPassable(StandardWorldModel world, EntityID areaID, boolean flag) {$/;"	m	class:RouteManager

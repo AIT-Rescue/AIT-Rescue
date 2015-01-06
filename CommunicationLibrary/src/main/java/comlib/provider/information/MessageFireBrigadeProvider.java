@@ -23,6 +23,8 @@ public class MessageFireBrigadeProvider extends HumanMessageProvider<MessageFire
 		super.writeMessage(config, bos, msg);
 		bos.writeBits(msg.getHumanID().getValue(), config.getSizeOfFireBrigadeID());
 		bos.writeBits(msg.getWater(), config.getSizeOfFireBrigadeWater());
+		bos.writeBits(msg.getTargetID().getValue(), 32);
+		bos.writeBits(msg.getAction(), 2);
 	}
 
 	protected void writeMessage(VoiceConfig config, StringBuilder sb, MessageFireBrigade msg)
@@ -38,7 +40,9 @@ public class MessageFireBrigadeProvider extends HumanMessageProvider<MessageFire
 				bsr.getBits(config.getSizeOfHumanDamage()),
 				bsr.getBits(config.getSizeOfHumanPosition()),
 				bsr.getBits(config.getSizeOfFireBrigadeID()),
-				bsr.getBits(config.getSizeOfFireBrigadeWater())
+				bsr.getBits(config.getSizeOfFireBrigadeWater()),
+				bsr.getBits(32),
+				bsr.getBits(2)
 				);
 	}
 

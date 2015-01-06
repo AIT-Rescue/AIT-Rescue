@@ -6,6 +6,7 @@ import comlib.message.MessageID;
 
 public class CommandPolice extends MessageCommand
 {
+	/* below id is same to information.MessagePoliceForce */
 	public static final int ACTION_REST = 0;
 	public static final int ACTION_MOVE = 1;
 	public static final int ACTION_CLEAR = 2;

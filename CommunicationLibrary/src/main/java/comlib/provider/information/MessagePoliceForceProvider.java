@@ -22,6 +22,8 @@ public class MessagePoliceForceProvider extends HumanMessageProvider<MessagePoli
 	{
 		super.writeMessage(config, bos, msg);
 		bos.writeBits(msg.getHumanID().getValue(), config.getSizeOfPoliceForceID());
+		bos.writeBits(msg.getTargetID().getValue(), 32);
+		bos.writeBits(msg.getAction(), 2);
 	}
 
 	protected void writeMessage(VoiceConfig config, StringBuilder sb, MessagePoliceForce msg)
@@ -36,7 +38,9 @@ public class MessagePoliceForceProvider extends HumanMessageProvider<MessagePoli
 				bsr.getBits(config.getSizeOfHumanBuriedness()),
 				bsr.getBits(config.getSizeOfHumanDamage()),
 				bsr.getBits(config.getSizeOfHumanPosition()),
-				bsr.getBits(config.getSizeOfPoliceForceID())
+				bsr.getBits(config.getSizeOfPoliceForceID()),
+				bsr.getBits(32),
+				bsr.getBits(2)
 				);
 	}
 

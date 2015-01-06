@@ -22,6 +22,8 @@ public class MessageAmbulanceTeamProvider extends HumanMessageProvider<MessageAm
 	{
 		super.writeMessage(config, bos, msg);
 		bos.writeBits(msg.getHumanID().getValue(), config.getSizeOfAmbulanceTeamID());
+		bos.writeBits(msg.getTargetID().getValue(), 32);
+		bos.writeBits(msg.getAction(), 2);
 	}
 
 	protected void writeMessage(VoiceConfig config, StringBuilder sb, MessageAmbulanceTeam msg)
@@ -36,7 +38,9 @@ public class MessageAmbulanceTeamProvider extends HumanMessageProvider<MessageAm
 				bsr.getBits(config.getSizeOfHumanBuriedness()),
 				bsr.getBits(config.getSizeOfHumanDamage()),
 				bsr.getBits(config.getSizeOfHumanPosition()),
-				bsr.getBits(config.getSizeOfAmbulanceTeamID())
+				bsr.getBits(config.getSizeOfAmbulanceTeamID()),
+				bsr.getBits(32),
+				bsr.getBits(2)
 				);
 	}
 
