@@ -61,12 +61,12 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
             if(this.someoneOnBoard()) {
                 return new ActionUnload(this);
             }
-            if(this.me.getHP() < 5000) {
+            if(this.me.getHP() < 6000) {
                 return new ActionRest(this);
             }
         }
         //避難所への移動条件
-        if(this.someoneOnBoard() || this.me.getHP() < 1000) {
+        if(this.someoneOnBoard() || this.me.getHP() <= 2000) {
             return this.moveRefuge(currentTime);
         }
         //対象の選択・切り替え
@@ -82,26 +82,26 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
             }
             if (victim.getBuriedness() > 0) {
                 return new ActionRescue(this, this.target);
-            } else {
-                if (victim instanceof Civilian) {
-                    Civilian civilian = (Civilian) victim;
-                    manager.addSendMessage(new MessageCivilian(civilian));
-                    this.victimSelector.remove(civilian);
-                    return new ActionLoad(this, this.target);
-                }
-                if (victim instanceof AmbulanceTeam) {
-                    AmbulanceTeam ambulanceTeam = (AmbulanceTeam) victim;
-                    manager.addSendMessage(new MessageAmbulanceTeam(ambulanceTeam));
-                    this.victimSelector.remove(ambulanceTeam);
-                } else if (victim instanceof FireBrigade) {
-                    FireBrigade fireBrigade = (FireBrigade) victim;
-                    manager.addSendMessage(new MessageFireBrigade(fireBrigade));
-                    this.victimSelector.remove(fireBrigade);
-                } else if (victim instanceof PoliceForce) {
-                    PoliceForce policeForce = (PoliceForce) victim;
-                    manager.addSendMessage(new MessagePoliceForce(policeForce));
-                    this.victimSelector.remove(policeForce);
-                }
+            }
+            //救助済みの場合
+            if (victim instanceof Civilian) {
+                Civilian civilian = (Civilian) victim;
+                manager.addSendMessage(new MessageCivilian(civilian));
+                this.victimSelector.remove(civilian);
+                return new ActionLoad(this, this.target);
+            }
+            if (victim instanceof AmbulanceTeam) {
+                AmbulanceTeam ambulanceTeam = (AmbulanceTeam) victim;
+                //manager.addSendMessage(new MessageAmbulanceTeam(ambulanceTeam));
+                this.victimSelector.remove(ambulanceTeam);
+            } else if (victim instanceof FireBrigade) {
+                FireBrigade fireBrigade = (FireBrigade) victim;
+                //manager.addSendMessage(new MessageFireBrigade(fireBrigade));
+                this.victimSelector.remove(fireBrigade);
+            } else if (victim instanceof PoliceForce) {
+                PoliceForce policeForce = (PoliceForce) victim;
+                //manager.addSendMessage(new MessagePoliceForce(policeForce));
+                this.victimSelector.remove(policeForce);
             }
             //対象が救助済み．または対象外の場合
             this.target = this.victimSelector.getNewTarget(currentTime);
@@ -110,7 +110,7 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
     }
 
     public boolean someoneOnBoard() {
-        return this.target != null && ((Human)this.getWorld().getEntity(this.target)).getPosition().getValue() == this.getID().getValue();
+        return this.target != null && ((Human)this.world.getEntity(this.target)).getPosition().getValue() == this.agentID.getValue();
     }
 
     public Action moveRefuge(int currentTime) {

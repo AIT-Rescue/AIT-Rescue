@@ -55,7 +55,7 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
         this.organizeUpdateInfo(currentTime, updateWorldData, manager);
         //状態の確認
         if(this.me.getBuriedness() > 0) {
-            manager.addSendMessage(new MessageFireBrigade(this.me));
+            manager.addSendMessage(new MessageFireBrigade(this.me, this.agentID, MessageFireBrigade.ACTION_REST));
             for(StandardEntity entity : this.world.getObjectsInRange(this.me, this.maxDistance)) {
                 if(entity instanceof Building) {
                     Building building = (Building)entity;

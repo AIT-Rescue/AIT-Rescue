@@ -70,7 +70,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         //埋まっている場合，周辺の道路の瓦礫の除去
         if(this.me.getBuriedness() > 0) {
             this.beforeMove = false;
-            manager.addSendMessage(new MessagePoliceForce(this.me));
+            manager.addSendMessage(new MessagePoliceForce(this.me, this.agentID, MessagePoliceForce.ACTION_REST));
             List<EntityID> roads = ((Area)this.location).getNeighbours();
             if(roads.isEmpty()) {
                 return new ActionRest(this);
@@ -83,9 +83,16 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
             Vector2D vector = (new Point2D(area.getX(), area.getY())).minus(this.agentPoint).normalised().scale(1000000);
             return new ActionClear(this, (int) (this.me.getX() + vector.getX()), (int) (this.me.getY() + vector.getY()));
         }
+
+        int oldTarget = 0;
         //対象の選択
-        int oldTarget = this.target.getValue();
-        this.target = this.target != null ? this.impassableSelector.updateTarget(currentTime, this.target) : this.impassableSelector.getNewTarget(currentTime);
+        if(this.target != null) {
+            oldTarget = this.target.getValue();
+            this.target = this.impassableSelector.updateTarget(currentTime, this.target);
+        }
+        else {
+            this.target = this.impassableSelector.getNewTarget(currentTime);
+        }
         if(this.target == null) {
             this.beforeMove = true;
             return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
