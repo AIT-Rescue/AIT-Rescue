@@ -1,11 +1,13 @@
 package adk.launcher;
 
+import adk.launcher.connect.Connect;
+import adk.launcher.connect.ConnectAmbulanceAgent;
+import adk.launcher.connect.ConnectPoliceAgent;
 import rescuecore2.registry.Registry;
 import rescuecore2.standard.entities.StandardEntityFactory;
 import rescuecore2.standard.entities.StandardPropertyFactory;
 import rescuecore2.standard.messages.StandardMessageFactory;
 
-import adk.launcher.agent.AmbulanceTeamAgent;
 import adk.launcher.agent.FireBrigadeAgent;
 import adk.launcher.agent.PoliceForceAgent;
 import adk.team.Team;
@@ -36,7 +38,7 @@ public class AgentConnector {
         //init config
         this.config = ConfigInitializer.getConfig(args);
         //load team jar
-		this.loader = new TeamLoader(new File(config.getValue(ConfigKey.KEY_DIRECTORY, System.getProperty("user.dir")), "tactics"));
+		this.loader = new TeamLoader(new File(System.getProperty("user.dir"), "tactics"));
     }
     
     public void start() {
@@ -55,64 +57,8 @@ public class AgentConnector {
     }
     
     private void connectAmbulance(ComponentLauncher cl, String name, int count) {
-		System.out.println("[START] Connect Ambulance (teamName:" + name + ")");
-		System.out.println("[INFO ] Load Ambulance Team (teamName:" + name + ")");
-		Team team = this.loader.get(name);
-		if(team == null) {
-			System.out.println("[ERROR] Team is Null !!");
-			if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
-				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_LOAD_RETRY, 10); i++) {
-					System.out.println("[INFO ] Retry Load Team (teamName:" + name + ")");
-					team = this.loader.getRandomTeam();
-					if(team != null) {
-						break;
-					}
-				}
-			}
-			if(team == null) {
-				if (this.config.getBooleanValue(ConfigKey.KEY_DUMMY_SYSTEM, false)) {
-					System.out.println("[INFO ] Load Dummy System");
-					team = this.loader.getDummy();
-				} else {
-					System.out.println("[ERROR] Cannot Load Team !!");
-					System.out.println("[END  ] Connect Ambulance (success:0)");
-					return;
-				}
-			}
-		}
-		if(team.getAmbulanceTeamTactics() == null) {
-			System.out.println("[ERROR] Cannot Load Ambulance Team Tactics !!");
-			if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
-				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_LOAD_RETRY, 10); i++) {
-					System.out.println("[INFO ] Retry Load Team (teamName:" + name + ")");
-					team = this.loader.getRandomTeam();
-					if(team.getAmbulanceTeamTactics() != null) {
-						break;
-					}
-				}
-			}
-			if(team.getAmbulanceTeamTactics() == null) {
-				if (this.config.getBooleanValue(ConfigKey.KEY_DUMMY_SYSTEM, false)) {
-					System.out.println("[INFO ] Load Dummy System");
-					team = this.loader.getDummy();
-				} else {
-					System.out.println("[END  ] Connect Ambulance (success:0)");
-					return;
-				}
-			}
-		}
-		System.out.println("[INFO ] Ambulance Team Tactics (teamName:" + team.getTeamName() + ")");
-        name = "[INFO ] Connect AmbulanceTeamAgent (teamName:" + team.getTeamName() + ")";
-		int connectAgent = 0;
-        try {
-            for (int i = 0; i != count; ++i) {
-                cl.connect(new AmbulanceTeamAgent(team.getAmbulanceTeamTactics()));
-                System.out.println(name);
-				connectAgent++;
-            }
-        } catch (ComponentConnectionException | InterruptedException | ConnectionException ignored) {
-        }
-		System.out.println("[END  ] Connect Ambulance (success:" + connectAgent + ")");
+		Connect connect = new ConnectAmbulanceAgent();
+		connect.connect(cl, this.config, this.loader, name, count);
     }
 
 	private void connectFire(ComponentLauncher cl) {
@@ -185,63 +131,7 @@ public class AgentConnector {
 	}
 
 	private void connectPolice(ComponentLauncher cl, String name, int count) {
-		System.out.println("[START] Connect Police (teamName:" + name + ")");
-		System.out.println("[INFO ] Load Police Team (teamName:" + name + ")");
-		Team team = this.loader.get(name);
-		if(team == null) {
-			System.out.println("[ERROR] Team is Null !!");
-			if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
-				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_LOAD_RETRY, 10); i++) {
-					System.out.println("[INFO ] Retry Load Team (teamName:" + name + ")");
-					team = this.loader.getRandomTeam();
-					if(team != null) {
-						break;
-					}
-				}
-			}
-			if(team == null) {
-				if (this.config.getBooleanValue(ConfigKey.KEY_DUMMY_SYSTEM, false)) {
-					System.out.println("[INFO ] Load Dummy System");
-					team = this.loader.getDummy();
-				} else {
-					System.out.println("[ERROR] Cannot Load Team !!");
-					System.out.println("[END  ] Connect Police (success:0)");
-					return;
-				}
-			}
-		}
-		if(team.getPoliceForceTactics() == null) {
-			System.out.println("[ERROR] Cannot Load Police Force Tactics !!");
-			if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
-				for (int i = 0; i < this.config.getIntValue(ConfigKey.KEY_LOAD_RETRY, 10); i++) {
-					System.out.println("[INFO ] Retry Load Team (teamName:" + name + ")");
-					team = this.loader.getRandomTeam();
-					if(team.getPoliceForceTactics() != null) {
-						break;
-					}
-				}
-			}
-			if(team.getPoliceForceTactics() == null) {
-				if (this.config.getBooleanValue(ConfigKey.KEY_DUMMY_SYSTEM, false)) {
-					System.out.println("[INFO ] Load Dummy System");
-					team = this.loader.getDummy();
-				} else {
-					System.out.println("[END  ] Connect Police (success:0)");
-					return;
-				}
-			}
-		}
-		System.out.println("[INFO ] Police Force Tactics (teamName:" + team.getTeamName() + ")");
-		name = "[INFO ] Connect PoliceForceAgent (teamName:" + team.getTeamName() + ")";
-		int connectAgent = 0;
-		try {
-			for (int i = 0; i != count; ++i) {
-				cl.connect(new PoliceForceAgent(team.getPoliceForceTactics()));
-				System.out.println(name);
-				connectAgent++;
-			}
-		} catch (ComponentConnectionException | InterruptedException | ConnectionException ignored) {
-		}
-		System.out.println("[END  ] Connect Police (success:" + connectAgent + ")");
+		Connect connect = new ConnectPoliceAgent();
+		connect.connect(cl, this.config, this.loader, name, count);
 	}
 }

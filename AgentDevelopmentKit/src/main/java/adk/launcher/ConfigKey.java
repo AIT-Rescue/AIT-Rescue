@@ -2,7 +2,7 @@ package adk.launcher;
 
 public final class ConfigKey {
     
-    public static final String KEY_DIRECTORY = "adk.launcher.directory";
+    //public static final String KEY_DIRECTORY = "adk.launcher.directory";
 
     public static final String KEY_LOAD_RETRY = "adk.tactics.load.retry";
 

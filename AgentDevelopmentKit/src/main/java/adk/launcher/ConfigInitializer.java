@@ -12,7 +12,7 @@ public class ConfigInitializer {
 
     public static Config getConfig(String[] args) {
         Config commandLine = analysis(args);
-        File configDir = new File(commandLine.getValue(ConfigKey.KEY_DIRECTORY, "."), "config");
+        File configDir = new File(System.getProperty("user.dir"), "config");
         if (!configDir.exists()) {
             if(!configDir.mkdir()) {
                 return commandLine;
@@ -43,7 +43,6 @@ public class ConfigInitializer {
 
     public static Map<String, Option> initOption() {
         Map<String, Option> options = new HashMap<>();
-        registerOption(options, new OptionDirectory());
         registerOption(options, new OptionServer());
         registerOption(options, new OptionHost());
         registerOption(options, new OptionPort());
