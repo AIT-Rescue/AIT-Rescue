@@ -10,16 +10,16 @@ import java.util.Map;
 
 public class ConfigInitializer {
 
-    public static Config getConfig(String[] args) {
+    public static Config getConfig(File configPath, String[] args) {
         Config commandLine = analysis(args);
-        File configDir = new File(System.getProperty("user.dir"), "config");
-        if (!configDir.exists()) {
-            if(!configDir.mkdir()) {
+        //File configDir = new File(System.getProperty("user.dir"), "config");
+        if (!configPath.exists()) {
+            if(!configPath.mkdir()) {
                 return commandLine;
             }
         }
         try {
-            Config config = new Config(configDir);
+            Config config = new Config(configPath);
             config.merge(commandLine);
             return config;
         } catch (ConfigException e) {
@@ -41,7 +41,7 @@ public class ConfigInitializer {
         return config;
     }
 
-    public static Map<String, Option> initOption() {
+    private static Map<String, Option> initOption() {
         Map<String, Option> options = new HashMap<>();
         registerOption(options, new OptionServer());
         registerOption(options, new OptionHost());
@@ -55,7 +55,7 @@ public class ConfigInitializer {
         return options;
     }
 
-    public static void registerOption(Map<String, Option> options, Option option) {
+    private static void registerOption(Map<String, Option> options, Option option) {
         options.put(option.getKey(), option);
     }
 }

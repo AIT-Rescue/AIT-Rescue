@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 public abstract class TacticsAgent<E extends StandardEntity> extends CommunicationAgent<E> {
     
-    private Tactics tactics;
+    protected Tactics tactics;
     public int ignoreTime;
 
     public TacticsAgent(Tactics t) {
@@ -30,7 +30,7 @@ public abstract class TacticsAgent<E extends StandardEntity> extends Communicati
         super.postConnect();
         this.ignoreTime = this.config.getIntValue(kernel.KernelConstants.IGNORE_AGENT_COMMANDS_KEY);
         this.tactics.world = this.getWorld();
-        this.tactics.model = this.tactics.world;//this.getWorld();
+        this.tactics.model = this.getWorld();
         this.tactics.agentID = this.getID();
         this.tactics.refugeList = this.getRefuges();
         //this.tactics.setWorldInfo(this);

@@ -9,7 +9,7 @@ import rescuecore2.components.ComponentLauncher;
 import rescuecore2.config.Config;
 import rescuecore2.connection.ConnectionException;
 
-public class ConnectPoliceAgent implements Connect{
+public class ConnectAmbulanceCenter implements Connect {
     @Override
     public void connect(ComponentLauncher launcher, Config config, TeamLoader loader, String name, int count) {
         System.out.println("[START] Connect Police (teamName:" + name + ")");

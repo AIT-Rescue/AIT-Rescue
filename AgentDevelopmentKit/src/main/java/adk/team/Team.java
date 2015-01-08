@@ -1,5 +1,11 @@
 package adk.team;
 
+import adk.sample.dummy.control.DummyControlAmbulance;
+import adk.sample.dummy.control.DummyControlFire;
+import adk.sample.dummy.control.DummyControlPolice;
+import adk.team.control.ControlAmbulance;
+import adk.team.control.ControlFire;
+import adk.team.control.ControlPolice;
 import adk.team.tactics.TacticsAmbulance;
 import adk.team.tactics.TacticsFire;
 import adk.team.tactics.TacticsPolice;
@@ -13,15 +19,17 @@ public abstract class Team {
 
     public abstract TacticsPolice getPoliceForceTactics();
 
-    /*
-    public FireStationTactics getFireStationTactics() {
-        return null;
+    //control
+
+    public ControlAmbulance getAmbulanceCentreControl() {
+        return new DummyControlAmbulance();
     }
-    public AmbulanceCentreTactics getAmbulanceCentreTactics() {
-        return null;
+
+    public ControlFire getFireStationControl() {
+        return new DummyControlFire();
     }
-   public PoliceOfficeTactics getPoliceOfficeTactics() {
-       return null;
+
+   public ControlPolice getPoliceOfficeControl() {
+       return new DummyControlPolice();
    }
-   */
 }

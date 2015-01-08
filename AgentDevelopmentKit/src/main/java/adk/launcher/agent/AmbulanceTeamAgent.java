@@ -41,7 +41,7 @@ public class AmbulanceTeamAgent extends TacticsAgent<AmbulanceTeam> {
 
     @Override
     protected void setAgentEntity() {
-        this.ta.me = super.me();
+        this.ta.me = this.me();
         this.ta.location = this.ta.me.getPosition(this.model);
     }
 
