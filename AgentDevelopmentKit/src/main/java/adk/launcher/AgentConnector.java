@@ -1,9 +1,6 @@
 package adk.launcher;
 
-import adk.launcher.connect.Connect;
-import adk.launcher.connect.ConnectAmbulanceAgent;
-import adk.launcher.connect.ConnectFireAgent;
-import adk.launcher.connect.ConnectPoliceAgent;
+import adk.launcher.connect.*;
 import rescuecore2.registry.Registry;
 import rescuecore2.standard.entities.StandardEntityFactory;
 import rescuecore2.standard.entities.StandardPropertyFactory;
@@ -24,6 +21,8 @@ public class AgentConnector {
     private Config config;
     
     private TeamLoader loader;
+
+    //private List<Connect> connectList;
     
     public AgentConnector(String[] args) {
         this(DIRECTORY_CONFIG, DIRECTORY_TACTICS, args);
@@ -42,6 +41,12 @@ public class AgentConnector {
         this.config = ConfigInitializer.getConfig(configPath, args);
         //load team jar
 		this.loader = new TeamLoader(tacticsPath);
+        /*this.connectList = Lists.newArrayList(
+                new ConnectAmbulanceAgent(),
+                new ConnectFireAgent(),
+                new ConnectPoliceAgent(),
+                new ConnectAmbulanceCenter()
+        );*/
     }
     
     public void start() {
@@ -52,6 +57,9 @@ public class AgentConnector {
         this.connectAmbulance(cl);
         this.connectFire(cl);
         this.connectPolice(cl);
+        new ConnectAmbulanceCenter().connect(cl, this.config, this.loader, this.config.getValue(ConfigKey.KEY_AMBULANCE_NAME), this.config.getIntValue(ConfigKey.KEY_AMBULANCE_COUNT));
+        new ConnectFireCenter().connect(cl, this.config, this.loader, this.config.getValue(ConfigKey.KEY_FIRE_NAME), this.config.getIntValue(ConfigKey.KEY_FIRE_COUNT));
+        new ConnectPoliceCenter().connect(cl, this.config, this.loader, this.config.getValue(ConfigKey.KEY_POLICE_NAME), this.config.getIntValue(ConfigKey.KEY_FIRE_COUNT));
         System.out.println("[END  ] Success Connect Server");
     }
     
