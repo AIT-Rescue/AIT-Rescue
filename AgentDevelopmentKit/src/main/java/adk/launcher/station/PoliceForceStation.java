@@ -1,19 +1,18 @@
-package adk.launcher.agent;
+package adk.launcher.station;
 
-import adk.team.control.ControlAmbulance;
-import rescuecore2.standard.entities.AmbulanceCentre;
+import adk.team.control.ControlPolice;
+import rescuecore2.standard.entities.PoliceOffice;
 import rescuecore2.standard.entities.StandardEntity;
 import rescuecore2.standard.entities.StandardEntityURN;
 
 import java.util.EnumSet;
 
-public class AmbulanceTeamStation extends ControllingStation<AmbulanceCentre> {
+public class PoliceForceStation extends ControllingStation<PoliceOffice> {
+    private ControlPolice cp;
 
-    private ControlAmbulance ca;
-
-    public AmbulanceTeamStation(ControlAmbulance controlAmbulance) {
-        super(controlAmbulance);
-        this.ca = controlAmbulance;
+    public PoliceForceStation(ControlPolice controlPolice) {
+        super(controlPolice);
+        this.cp = controlPolice;
     }
 
     @Override
@@ -23,23 +22,23 @@ public class AmbulanceTeamStation extends ControllingStation<AmbulanceCentre> {
 
     @Override
     protected void setCenterEntity() {
-        this.ca.me = this.me();
+        this.cp.me = this.me();
     }
 
     @Override
     protected EnumSet<StandardEntityURN> getRequestedEntityURNsEnum() {
-        return EnumSet.of(StandardEntityURN.AMBULANCE_CENTRE);
+        return EnumSet.of(StandardEntityURN.POLICE_OFFICE);
     }
 
     @Override
     public String toString() {
-        return "Ambulance Centre [control: " + this.ca.getControlName() + " ]";
+        return "Police Office [control: " + this.cp.getControlName() + " ]";
     }
 
     @Override
-    protected AmbulanceCentre me() {
+    protected PoliceOffice me() {
         try {
-            return (AmbulanceCentre)this.model.getEntity(this.getID());
+            return (PoliceOffice)this.model.getEntity(this.getID());
         }
         catch(NullPointerException e) {
             return null;

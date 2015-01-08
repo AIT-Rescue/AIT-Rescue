@@ -9,9 +9,11 @@ import rescuecore2.components.ComponentLauncher;
 import rescuecore2.config.Config;
 import rescuecore2.connection.ConnectionException;
 
-public class ConnectPoliceAgent implements Connect{
+public class ConnectorPoliceAgent implements Connector {
     @Override
-    public void connect(ComponentLauncher launcher, Config config, TeamLoader loader, String name, int count) {
+    public void connect(ComponentLauncher launcher, Config config, TeamLoader loader) {
+        String name = config.getValue(ConfigKey.KEY_POLICE_AGENT_NAME, "dummy");
+        int count = config.getIntValue(ConfigKey.KEY_POLICE_AGENT_COUNT, -1);
         System.out.println("[START] Connect Police (teamName:" + name + ")");
         System.out.println("[INFO ] Load Police Team (teamName:" + name + ")");
         Team team = loader.get(name);

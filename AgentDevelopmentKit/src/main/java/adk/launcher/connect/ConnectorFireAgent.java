@@ -9,9 +9,11 @@ import rescuecore2.components.ComponentLauncher;
 import rescuecore2.config.Config;
 import rescuecore2.connection.ConnectionException;
 
-public class ConnectFireAgent implements Connect {
+public class ConnectorFireAgent implements Connector {
     @Override
-    public void connect(ComponentLauncher launcher, Config config, TeamLoader loader, String name, int count) {
+    public void connect(ComponentLauncher launcher, Config config, TeamLoader loader) {
+        String name = config.getValue(ConfigKey.KEY_FIRE_AGENT_NAME, "dummy");
+        int count = config.getIntValue(ConfigKey.KEY_FIRE_AGENT_COUNT, -1);
         System.out.println("[START] Connect Fire (teamName:" + name + ")");
         System.out.println("[INFO ] Load Fire Team (teamName:" + name + ")");
         Team team = loader.get(name);

@@ -17,17 +17,16 @@ import java.util.jar.Manifest;
 public class TeamLoader {
 
     public static final String KEYWORD_RANDOM = "random";
-
-    private Map<String, Team> teamMap;
-    private List<String> nameList;
-
     private Random random;
 
+    //team module
+    private Map<String, Team> teamMap;
+    private List<String> teamNameList;
     private Team dummy;
     
     public TeamLoader(File loadFile) {
         this.teamMap = new HashMap<>();
-        this.nameList = new ArrayList<>();
+        this.teamNameList = new ArrayList<>();
         this.random = new Random((new Date()).getTime());
         this.dummy = new DummyTeam();
         this.load(loadFile);
@@ -42,11 +41,11 @@ public class TeamLoader {
     }
 
     public Team getRandomTeam() {
-        return nameList.isEmpty() ? null : this.teamMap.get(this.nameList.get(this.random.nextInt(this.nameList.size())));
+        return teamNameList.isEmpty() ? null : this.teamMap.get(this.teamNameList.get(this.random.nextInt(this.teamNameList.size())));
     }
 
     public int size() {
-        return nameList.size();
+        return teamNameList.size();
     }
 
     public Team getDummy() {
@@ -71,10 +70,10 @@ public class TeamLoader {
         List<String> list = new ArrayList<>();
         this.loadJar(loadFile, loader, list);
         this.loadTeam(loader, list);
-        if(this.nameList.isEmpty()) {
+        if(this.teamNameList.isEmpty()) {
             String name = this.dummy.getTeamName();
             this.teamMap.put(name, this.dummy);
-            this.nameList.add(name);
+            this.teamNameList.add(name);
         }
         System.out.println("[END  ] Load Jar");
     }
@@ -119,7 +118,7 @@ public class TeamLoader {
                     Team team = (Team) obj;
                     String name = team.getTeamName();
                     System.out.println("[INFO ] Load Success (teamName:" + name + ")");
-                    this.nameList.add(name);
+                    this.teamNameList.add(name);
                     this.teamMap.put(name, team);
                 }
             } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) { //loadClass
