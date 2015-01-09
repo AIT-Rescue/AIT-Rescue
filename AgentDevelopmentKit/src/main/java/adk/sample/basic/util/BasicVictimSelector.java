@@ -52,7 +52,6 @@ public class BasicVictimSelector implements VictimSelector {
         else if(entity instanceof Human) {
             this.add((Human)entity);
         }
-
     }
 
     @Override
@@ -70,7 +69,7 @@ public class BasicVictimSelector implements VictimSelector {
         StandardEntity entity = this.provider.getWorld().getEntity(id);
         if(entity instanceof Civilian) {
             this.civilianList.remove(entity);
-            this.agentList.remove(entity);
+            //this.agentList.remove(entity);
         }
         else if(entity instanceof Human) {
             this.agentList.remove(entity);

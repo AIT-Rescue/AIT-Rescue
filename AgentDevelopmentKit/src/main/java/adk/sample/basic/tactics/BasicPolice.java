@@ -97,6 +97,14 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
             this.beforeMove = true;
             return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
         }
+
+
+
+        //if(PositionUtil.equalsPoint(this.agentPoint, this.mainTargetPoint, 10.0D)) {
+        // 位置をまず求め，同じ位置ならoldTargetのリストから削除．
+        //
+
+
         //対象まで移動
         if(this.location.getID().getValue() != this.target.getValue()) {
             if(this.location instanceof Building || this.passable((Road)this.location)) {

@@ -60,7 +60,8 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
                 if(entity instanceof Building) {
                     Building building = (Building)entity;
                     this.target = building.getID();
-                    if (building.isOnFire() && (this.world.getDistance(this.agentID, this.target) <= this.maxDistance)) {
+                    //if (building.isOnFire() && (this.world.getDistance(this.agentID, this.target) <= this.maxDistance)) {
+                    if(building.isOnFire()) {
                         return new ActionExtinguish(this, this.target, this.maxPower);
                     }
                 }
@@ -68,7 +69,7 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
             return new ActionRest(this);
         }
         int waterLimit = 2;
-        if (this.me.getWater() <= ((this.maxWater / 10 * waterLimit))) {
+        if (this.me.getWater() <= ((this.maxWater / 10) * waterLimit)) {
             this.target = null;
             return this.moveRefuge(currentTime);
         }
