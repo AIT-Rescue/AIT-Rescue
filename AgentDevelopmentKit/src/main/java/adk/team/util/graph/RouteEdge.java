@@ -156,7 +156,7 @@ public class RouteEdge {
     public List<EntityID> getPath(EntityID from, EntityID to) {
         int nodeIndex = this.isFirstNode(from) ? 1 : this.isSecondNode(from) ? this.element.size() - 2 : this.element.indexOf(from);
         int targetIndex = this.isSecondNode(to) ? this.element.size() - 2 : this.isFirstNode(from) ? 1 : this.element.indexOf(to);
-        if(nodeIndex != -1 && targetIndex != -1) {
+        if(nodeIndex >= 0 && targetIndex >= 0) {
             if(nodeIndex > targetIndex) {
                 List<EntityID> path = Arrays.asList(Arrays.copyOfRange(this.element.toArray(new EntityID[this.element.size()]), targetIndex, nodeIndex + 1));
                 Collections.reverse(path);
