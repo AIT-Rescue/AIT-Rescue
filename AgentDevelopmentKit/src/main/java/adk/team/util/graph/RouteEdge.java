@@ -15,13 +15,13 @@ public class RouteEdge {
     //element.get(element.size() - 1);
     public final EntityID secondNodeID;
     //cache
-    private List<EntityID> fromFirst;
-    private List<EntityID> fromSecond;
+    protected List<EntityID> fromFirst;
+    protected List<EntityID> fromSecond;
 
-    private Set<EntityID> impassableArea;
+    public Set<EntityID> impassableArea;
 
-    private Table<EntityID, EntityID, Double> routeDistance;
-    private Map<EntityID, Double> roadDistance;
+    protected Table<EntityID, EntityID, Double> routeDistance;
+    protected Map<EntityID, Double> roadDistance;
 
     private RouteEdge(StandardWorldModel world, List<EntityID> path) {
         this.firstNodeID = path.get(0);
@@ -37,9 +37,9 @@ public class RouteEdge {
         this.firstNodeID = original.firstNodeID;
         this.secondNodeID = original.secondNodeID;
         this.element = original.element;
-        this.impassableArea = new HashSet<>(original.getImpassableAreas());
-        this.routeDistance = HashBasedTable.create(original.getDistanceTable());
-        this.roadDistance = new HashMap<>(original.getDistanceMap());
+        this.impassableArea = new HashSet<>(original.impassableArea);
+        this.routeDistance = HashBasedTable.create(original.routeDistance);
+        this.roadDistance = new HashMap<>(original.roadDistance);
         this.fromFirst = original.getPath(this.firstNodeID);
         this.fromSecond = original.getPath(this.secondNodeID);
     }
@@ -98,44 +98,39 @@ public class RouteEdge {
         return this.impassableArea.isEmpty();
     }
 
-    public Set<EntityID> getImpassableAreas() {
-        return this.impassableArea;
-    }
-
     public RouteEdge setPassable(EntityID areaID, boolean flag) {
-        if(flag) {
-            this.impassableArea.add(areaID);
-        }
-        else {
-            this.impassableArea.remove(areaID);
+        if(this.isEdgeElement(areaID)) {
+            if (flag) {
+                this.impassableArea.add(areaID);
+            } else {
+                this.impassableArea.remove(areaID);
+            }
         }
         return this;
     }
 
     public double getDistance() {
-        return this.routeDistance.get(this.firstNodeID, this.secondNodeID);
+        return this.getDistance(this.firstNodeID, this.secondNodeID);
     }
 
-    public double getDistance(EntityID areaID) {
+    public double getRoadDistance(EntityID areaID) {
         return this.roadDistance.get(areaID);
     }
 
-    public double getDistance(EntityID areaID, EntityID target) {
-        if(areaID.getValue() == target.getValue()) {
+    public double getDistance(EntityID areaID, EntityID targetID) {
+        if(areaID.getValue() == targetID.getValue()) {
             return 0.0D;
         }
-        if(this.routeDistance.contains(areaID, target)) {
-            return this.routeDistance.get(areaID, target);
-        }
-        if(this.isEdgeElement(areaID) && this.isEdgeElement(target)) {
-            boolean reverse = this.element.indexOf(areaID) > this.element.indexOf(target);
-            double start = this.routeDistance.get(reverse ? target : areaID, this.secondNodeID);
-            double end = this.routeDistance.get(reverse ? areaID : target, this.secondNodeID);
-            double road = this.roadDistance.get(reverse ? areaID : target);
-            double distance = Math.abs(start - end - road);
-            this.routeDistance.put(areaID, target, distance);
-            this.routeDistance.put(target, areaID, distance);
-            return distance;
+        int areaIndex = this.element.indexOf(areaID);
+        int targetIndex = this.element.indexOf(targetID);
+        if(areaIndex >= 0 && targetIndex >= 0) {
+            boolean reverse = areaIndex > targetIndex;
+            double start = this.routeDistance.get(reverse ? targetID : areaID, this.secondNodeID);
+            double end = this.routeDistance.get(reverse ? areaID : targetID, this.secondNodeID);
+            double road = this.roadDistance.get(reverse ? areaID : targetID);
+            double areaDistance = this.isNeighbourNode(areaID) ? this.roadDistance.get(areaID) : (this.roadDistance.get(areaID) / 2);
+            double targetDistance = this.isNeighbourNode(targetID) ? this.roadDistance.get(targetID) : (this.roadDistance.get(targetID) / 2);
+            return Math.abs(start - end - road + areaDistance + targetDistance);
         }
         return Double.NaN;
     }
@@ -146,21 +141,21 @@ public class RouteEdge {
 
     public List<EntityID> getPath(EntityID from) {
         if(this.isFirstNode(from)) {
-            return this.fromFirst;
+            return new ArrayList<>(this.fromFirst);
         }
         if(this.isSecondNode(from)) {
-            return this.fromSecond;
+            return new ArrayList<>(this.fromSecond);
         }
         return null;
     }
 
-    public List<EntityID> getPath(RouteNode node, EntityID target) {
-        return this.getPath(node.nodeID, target);
+    public List<EntityID> getPath(RouteNode from, EntityID to) {
+        return this.getPath(from.nodeID, to);
     }
 
-    public List<EntityID> getPath(EntityID nodeID, EntityID target) {
-        int nodeIndex = this.isFirstNode(nodeID) ? 1 : this.isSecondNode(nodeID) ? this.element.size() - 2 : this.element.indexOf(nodeID);
-        int targetIndex = this.isSecondNode(target) ? this.element.size() - 2 : this.isFirstNode(nodeID) ? 1 : this.element.indexOf(target);
+    public List<EntityID> getPath(EntityID from, EntityID to) {
+        int nodeIndex = this.isFirstNode(from) ? 1 : this.isSecondNode(from) ? this.element.size() - 2 : this.element.indexOf(from);
+        int targetIndex = this.isSecondNode(to) ? this.element.size() - 2 : this.isFirstNode(from) ? 1 : this.element.indexOf(to);
         if(nodeIndex != -1 && targetIndex != -1) {
             if(nodeIndex > targetIndex) {
                 List<EntityID> path = Arrays.asList(Arrays.copyOfRange(this.element.toArray(new EntityID[this.element.size()]), targetIndex, nodeIndex + 1));
@@ -172,28 +167,18 @@ public class RouteEdge {
         return null;
     }
 
-    protected Table<EntityID, EntityID, Double> getDistanceTable() {
-        return  this.routeDistance;
-    }
-
-    protected Map<EntityID, Double> getDistanceMap() {
-        return this.roadDistance;
-    }
-
     private void initRoadDistance(StandardWorldModel world) {
         this.roadDistance = new HashMap<>();
-        int size = this.element.size() - 1;
-        /*
+        int limit = this.element.size() - 1;
         Area area = (Area)world.getEntity(this.firstNodeID);
         this.roadDistance.put(this.firstNodeID, PositionUtil.getDistance(area.getLocation(world), area.getEdgeTo(this.element.get(1))));
         area = (Area)world.getEntity(this.secondNodeID);
-        this.roadDistance.put(this.secondNodeID, PositionUtil.getDistance(area.getLocation(world), area.getEdgeTo(this.element.get(size - 1))));
-        */
-        this.roadDistance.put(this.firstNodeID, 0.0D);
-        this.roadDistance.put(this.secondNodeID, 0.0D);
-        for(int i = 1; i < size; i++) {
+        this.roadDistance.put(this.secondNodeID, PositionUtil.getDistance(area.getLocation(world), area.getEdgeTo(this.element.get(limit - 1))));
+        //this.roadDistance.put(this.firstNodeID, 0.0D);
+        //this.roadDistance.put(this.secondNodeID, 0.0D);
+        for(int i = 1; i < limit; i++) {
             EntityID areaID = this.element.get(i);
-            Area area = (Area)world.getEntity(areaID);
+            area = (Area)world.getEntity(areaID);
             double distance = PositionUtil.getDistance(area.getEdgeTo(this.element.get(i - 1)), area.getEdgeTo(this.element.get(i + 1)));
             this.roadDistance.put(areaID, distance);
         }
@@ -219,7 +204,6 @@ public class RouteEdge {
         this.fromFirst = path;
         this.fromSecond = reverse;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -266,6 +250,16 @@ public class RouteEdge {
 
     public List<EntityID> getAllElement() {
         return this.element;
+    }
+    */
+
+     /*
+    protected Table<EntityID, EntityID, Double> getDistanceTable() {
+        return  this.routeDistance;
+    }
+
+    protected Map<EntityID, Double> getDistanceMap() {
+        return this.roadDistance;
     }
     */
 
