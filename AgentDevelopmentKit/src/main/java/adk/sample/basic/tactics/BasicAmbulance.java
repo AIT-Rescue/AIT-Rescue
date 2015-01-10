@@ -94,15 +94,15 @@ public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSe
             //災害救助エージェント
             if (victim instanceof AmbulanceTeam) {
                 AmbulanceTeam ambulanceTeam = (AmbulanceTeam) victim;
-                //manager.addSendMessage(new MessageAmbulanceTeam(ambulanceTeam));
+                manager.addSendMessage(new MessageAmbulanceTeam(ambulanceTeam, MessageAmbulanceTeam.ACTION_REST, null));
                 this.victimSelector.remove(ambulanceTeam);
             } else if (victim instanceof FireBrigade) {
                 FireBrigade fireBrigade = (FireBrigade) victim;
-                //manager.addSendMessage(new MessageFireBrigade(fireBrigade));
+                manager.addSendMessage(new MessageFireBrigade(fireBrigade, MessageFireBrigade.ACTION_REST, null));
                 this.victimSelector.remove(fireBrigade);
             } else if (victim instanceof PoliceForce) {
                 PoliceForce policeForce = (PoliceForce) victim;
-                //manager.addSendMessage(new MessagePoliceForce(policeForce));
+                manager.addSendMessage(new MessagePoliceForce(policeForce, MessagePoliceForce.ACTION_REST, null));
                 this.victimSelector.remove(policeForce);
             }
             //対象が救助済み．または対象外の場合

@@ -2,7 +2,6 @@ package comlib.message.information;
 
 import comlib.message.MessageHuman;
 import comlib.message.MessageID;
-import rescuecore2.standard.entities.Human;
 import rescuecore2.standard.entities.PoliceForce;
 import rescuecore2.worldmodel.EntityID;
 
@@ -18,9 +17,9 @@ public class MessagePoliceForce extends MessageHuman
 	protected EntityID myTargetID;
 	private int myAction;
 
-	public MessagePoliceForce(PoliceForce policeForce, EntityID target, int action)
+	public MessagePoliceForce(PoliceForce policeForce, int action, EntityID target)
 	{
-		super(MessageID.policeForceMessage, (Human)policeForce);
+		super(MessageID.policeForceMessage, policeForce);
 		this.myTargetID = target;
 		this.myAction = action;
 	}

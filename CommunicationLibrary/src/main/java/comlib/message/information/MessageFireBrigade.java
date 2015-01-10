@@ -3,7 +3,6 @@ package comlib.message.information;
 import comlib.message.MessageHuman;
 import comlib.message.MessageID;
 import rescuecore2.standard.entities.FireBrigade;
-import rescuecore2.standard.entities.Human;
 import rescuecore2.worldmodel.EntityID;
 
 
@@ -20,9 +19,9 @@ public class MessageFireBrigade extends MessageHuman
 	private int fireBrigadeWater;
 	private int myAction;
 
-	public MessageFireBrigade(FireBrigade fireBrigade, EntityID target, int action)
+	public MessageFireBrigade(FireBrigade fireBrigade, int action, EntityID target)
 	{
-		super(MessageID.fireBrigadeMessage, (Human)fireBrigade);
+		super(MessageID.fireBrigadeMessage, fireBrigade);
 		this.fireBrigadeWater = fireBrigade.getWater();
 		this.myTargetID = target;
 		this.myAction = action;

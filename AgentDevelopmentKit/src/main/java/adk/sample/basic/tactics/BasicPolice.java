@@ -70,7 +70,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         //埋まっている場合，周辺の道路の瓦礫の除去
         if(this.me.getBuriedness() > 0) {
             this.beforeMove = false;
-            manager.addSendMessage(new MessagePoliceForce(this.me, this.agentID, MessagePoliceForce.ACTION_REST));
+            manager.addSendMessage(new MessagePoliceForce(this.me, MessagePoliceForce.ACTION_REST, this.agentID));
             List<EntityID> roads = ((Area)this.location).getNeighbours();
             if(roads.isEmpty()) {
                 return new ActionRest(this);

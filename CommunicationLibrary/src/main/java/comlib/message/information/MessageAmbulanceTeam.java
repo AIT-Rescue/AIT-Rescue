@@ -3,7 +3,6 @@ package comlib.message.information;
 import comlib.message.MessageHuman;
 import comlib.message.MessageID;
 import rescuecore2.standard.entities.AmbulanceTeam;
-import rescuecore2.standard.entities.Human;
 import rescuecore2.worldmodel.EntityID;
 
 
@@ -19,9 +18,9 @@ public class MessageAmbulanceTeam extends MessageHuman
 	protected EntityID myTargetID;
 	private int myAction;
 
-	public MessageAmbulanceTeam(AmbulanceTeam ambulanceTeam, EntityID target, int action)
+	public MessageAmbulanceTeam(AmbulanceTeam ambulanceTeam, int action, EntityID target)
 	{
-		super(MessageID.ambulanceTeamMessage, (Human)ambulanceTeam);
+		super(MessageID.ambulanceTeamMessage, ambulanceTeam);
 		this.myTargetID = target;
 		this.myAction = action;
 	}
