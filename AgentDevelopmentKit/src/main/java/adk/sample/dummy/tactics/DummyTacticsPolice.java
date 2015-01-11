@@ -2,7 +2,7 @@ package adk.sample.dummy.tactics;
 
 import adk.sample.basic.event.BasicRoadEvent;
 import adk.sample.basic.util.BasicImpassableSelector;
-import adk.sample.basic.tactics.BasicPolice;
+import adk.sample.basic.tactics.BasicTacticsPolice;
 import adk.sample.basic.util.BasicRouteSearcher;
 import adk.team.util.ImpassableSelector;
 import adk.team.util.RouteSearcher;
@@ -16,7 +16,7 @@ import rescuecore2.standard.entities.StandardEntity;
 import rescuecore2.worldmodel.ChangeSet;
 import rescuecore2.worldmodel.EntityID;
 
-public class DummyPolice extends BasicPolice {
+public class DummyTacticsPolice extends BasicTacticsPolice {
 
     @Override
     public String getTacticsName() {
@@ -31,18 +31,12 @@ public class DummyPolice extends BasicPolice {
 
     @Override
     public ImpassableSelector initDebrisRemovalSelector() {
-        if(this.impassableSelector == null) {
-            this.impassableSelector = new BasicImpassableSelector(this);
-        }
-        return this.impassableSelector;
+        return new BasicImpassableSelector(this);
     }
 
     @Override
     public RouteSearcher initRouteSearcher() {
-        if(this.routeSearcher == null) {
-            this.routeSearcher = new BasicRouteSearcher(this);
-        }
-        return this.routeSearcher;
+        return new BasicRouteSearcher(this);
     }
 
     @Override

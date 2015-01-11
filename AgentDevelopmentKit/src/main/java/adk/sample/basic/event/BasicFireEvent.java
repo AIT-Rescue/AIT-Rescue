@@ -3,7 +3,7 @@ package adk.sample.basic.event;
 import adk.team.util.provider.VictimSelectorProvider;
 import adk.team.util.provider.WorldProvider;
 import comlib.event.information.MessageFireBrigadeEvent;
-import comlib.manager.UpdateHelper;
+import comlib.manager.MessageReflectHelper;
 import comlib.message.information.MessageFireBrigade;
 import rescuecore2.standard.entities.FireBrigade;
 
@@ -19,7 +19,7 @@ public class BasicFireEvent implements MessageFireBrigadeEvent {
 
     @Override
     public void receivedRadio(MessageFireBrigade message) {
-        FireBrigade fireBrigade = UpdateHelper.reflectedMessage(this.wp.getWorld(), message);
+        FireBrigade fireBrigade = MessageReflectHelper.reflectedMessage(this.wp.getWorld(), message);
         this.vsp.getVictimSelector().add(fireBrigade);
     }
 

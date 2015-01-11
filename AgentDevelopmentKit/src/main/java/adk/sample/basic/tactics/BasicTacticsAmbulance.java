@@ -16,7 +16,7 @@ import rescuecore2.worldmodel.EntityID;
 
 import java.util.List;
 
-public abstract class BasicAmbulance extends TacticsAmbulance implements RouteSearcherProvider, VictimSelectorProvider {
+public abstract class BasicTacticsAmbulance extends TacticsAmbulance implements RouteSearcherProvider, VictimSelectorProvider {
 
     public VictimSelector victimSelector;
 

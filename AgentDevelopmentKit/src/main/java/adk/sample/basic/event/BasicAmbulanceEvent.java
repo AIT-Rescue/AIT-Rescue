@@ -3,7 +3,7 @@ package adk.sample.basic.event;
 import adk.team.util.provider.VictimSelectorProvider;
 import adk.team.util.provider.WorldProvider;
 import comlib.event.information.MessageAmbulanceTeamEvent;
-import comlib.manager.UpdateHelper;
+import comlib.manager.MessageReflectHelper;
 import comlib.message.information.MessageAmbulanceTeam;
 import rescuecore2.standard.entities.AmbulanceTeam;
 
@@ -19,8 +19,10 @@ public class BasicAmbulanceEvent implements MessageAmbulanceTeamEvent {
 
     @Override
     public void receivedRadio(MessageAmbulanceTeam message) {
-        AmbulanceTeam ambulanceTeam = UpdateHelper.reflectedMessage(this.wp.getWorld(), message);
-        this.vsp.getVictimSelector().add(ambulanceTeam);
+        if(message.getHumanID().getValue() != this.wp.getOwnerID().getValue() ) {
+            AmbulanceTeam ambulanceTeam = MessageReflectHelper.reflectedMessage(this.wp.getWorld(), message);
+            this.vsp.getVictimSelector().add(ambulanceTeam);
+        }
     }
 
     @Override

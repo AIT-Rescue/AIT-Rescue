@@ -3,7 +3,7 @@ package comlib.manager;
 import comlib.message.information.*;
 import rescuecore2.standard.entities.*;
 
-public class UpdateHelper {
+public class MessageReflectHelper {
     public static Building reflectedMessage(StandardWorldModel world, MessageBuilding message) {
         Building building = (Building)world.getEntity(message.getBuildingID());
         building.setFieryness(message.getFieryness());

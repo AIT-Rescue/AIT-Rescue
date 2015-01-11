@@ -13,6 +13,7 @@ import rescuecore2.worldmodel.EntityID;
 import java.util.*;
 
 //RouteGraphSample
+//A-star
 public class SampleRouteSearcher implements RouteSearcher {
 
     private WorldProvider<? extends Human> provider;
@@ -53,7 +54,7 @@ public class SampleRouteSearcher implements RouteSearcher {
         // process
         while(open.size() != 0) {
             RouteNode current = open.get(0); //sort
-            EntityID currentID = current.getID();
+            EntityID currentID = current.nodeID;
             //目的地に着いた時
             if(currentID.getValue() == goalID.getValue()) {
                 List<RouteNode> nodePath = Lists.newArrayList(current);

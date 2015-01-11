@@ -81,6 +81,9 @@ public class SampleImpassableSelector implements ImpassableSelector {
 
     @Override
     public EntityID updateTarget(int time, EntityID target) {
+        if(this.passableRoadList.contains(target)) {
+            return this.getNewTarget(time);
+        }
         for(StandardEntity police : this.provider.getWorld().getEntitiesOfType(StandardEntityURN.POLICE_FORCE)) {
             if(target.getValue() == ((PoliceForce)police).getPosition().getValue()) {
                 if(this.provider.getID().getValue() < police.getID().getValue()) {

@@ -20,8 +20,8 @@ public class SampleComparator implements Comparator<RouteNode> {
 
     @Override
     public int compare(RouteNode node1, RouteNode node2) {
-        EntityID id1 = node1.getID();
-        EntityID id2 = node2.getID();
+        EntityID id1 = node1.nodeID;
+        EntityID id2 = node2.nodeID;
         double end1 = PositionUtil.getLinearDistance(this.goal, node1);
         double end2 = PositionUtil.getLinearDistance(this.goal, node2);
         double value1 = fromStart.get(id1) + end1;

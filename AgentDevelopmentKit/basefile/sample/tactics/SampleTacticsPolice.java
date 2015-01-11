@@ -1,14 +1,20 @@
-package adk.sample.basic.tactics;
+package sample.tactics;
 
-import adk.team.action.*;
+import adk.team.action.Action;
+import adk.team.action.ActionClear;
+import adk.team.action.ActionMove;
+import adk.team.action.ActionRest;
 import adk.team.tactics.TacticsPolice;
 import adk.team.util.ImpassableSelector;
 import adk.team.util.RouteSearcher;
 import adk.team.util.graph.PositionUtil;
+import adk.team.util.graph.RouteManager;
 import adk.team.util.provider.ImpassableSelectorProvider;
 import adk.team.util.provider.RouteSearcherProvider;
 import com.google.common.collect.Lists;
 import comlib.manager.MessageManager;
+import comlib.message.information.MessageBuilding;
+import comlib.message.information.MessageCivilian;
 import comlib.message.information.MessagePoliceForce;
 import rescuecore2.config.Config;
 import rescuecore2.misc.geometry.Point2D;
@@ -16,11 +22,14 @@ import rescuecore2.misc.geometry.Vector2D;
 import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.ChangeSet;
 import rescuecore2.worldmodel.EntityID;
+import sample.event.SampleRoadEvent;
+import sample.util.SampleImpassableSelector;
+import sample.util.SampleRouteSearcher;
 
 import java.awt.geom.Line2D;
 import java.util.*;
 
-public abstract class BasicPolice extends TacticsPolice implements RouteSearcherProvider, ImpassableSelectorProvider {
+public class SampleTacticsPolice extends TacticsPolice implements RouteSearcherProvider, ImpassableSelectorProvider {
 
     public ImpassableSelector impassableSelector;
 
@@ -36,8 +45,9 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
 
     @Override
     public void preparation(Config config) {
-        this.routeSearcher = this.initRouteSearcher();
-        this.impassableSelector = this.initDebrisRemovalSelector();
+        this.routeSearcher = new SampleRouteSearcher(this, new RouteManager(this.world));
+        this.impassableSelector = new SampleImpassableSelector(this);
+        //Police
         this.agentPoint = new Point2D[2];
         this.beforeMove = false;
         this.neighbourEdgesMap = new HashMap<>();
@@ -47,12 +57,6 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         this.count = -1;
     }
 
-    public abstract ImpassableSelector initDebrisRemovalSelector();
-
-    public abstract RouteSearcher initRouteSearcher();
-
-    public abstract void organizeUpdateInfo(int currentTime, ChangeSet updateWorldInfo, MessageManager manager);
-
     @Override
     public RouteSearcher getRouteSearcher() {
         return this.routeSearcher;
@@ -61,6 +65,16 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
     @Override
     public ImpassableSelector getImpassableSelector() {
         return this.impassableSelector;
+    }
+
+    @Override
+    public String getTacticsName() {
+        return "Sample";
+    }
+
+    @Override
+    public void registerEvent(MessageManager manager) {
+        manager.registerEvent(new SampleRoadEvent(this, this));
     }
 
     @Override
@@ -152,18 +166,6 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if(this.location.getID().getValue() != this.target.getValue()) {
-            /*if(this.location instanceof Building) {
-                this.beforeMove = true;
-                List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
-                return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
-            }
-            else if(this.passable((Road)this.location)) {
-                this.beforeMove = true;
-                List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
-                return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
-            }*/
-            //通れない道なら，Targetに設定
-            //this.target = this.location.getID();
             this.beforeMove = true;
             List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
             return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
@@ -209,6 +211,27 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         else {
             this.beforeMove = true;
             return new ActionMove(this, Lists.newArrayList(this.target), (int) this.mainTargetPoint.getX(), (int) this.mainTargetPoint.getY());
+        }
+    }
+
+    public void organizeUpdateInfo(int currentTime, ChangeSet updateWorldInfo, MessageManager manager) {
+        for (EntityID next : updateWorldInfo.getChangedEntities()) {
+            StandardEntity entity = this.getWorld().getEntity(next);
+            if(entity instanceof Blockade) {
+                this.impassableSelector.add((Blockade) entity);
+            }
+            else if(entity instanceof Civilian) {
+                Civilian civilian = (Civilian)entity;
+                if(civilian.getBuriedness() > 0) {
+                    manager.addSendMessage(new MessageCivilian(civilian));
+                }
+            }
+            else if(entity instanceof Building) {
+                Building b = (Building)entity;
+                if(b.isOnFire()) {
+                    manager.addSendMessage(new MessageBuilding(b));
+                }
+            }
         }
     }
 

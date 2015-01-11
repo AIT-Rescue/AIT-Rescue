@@ -3,7 +3,7 @@ package adk.sample.basic.event;
 import adk.team.util.provider.ImpassableSelectorProvider;
 import adk.team.util.provider.WorldProvider;
 import comlib.event.information.MessageRoadEvent;
-import comlib.manager.UpdateHelper;
+import comlib.manager.MessageReflectHelper;
 import comlib.message.information.MessageRoad;
 import rescuecore2.standard.entities.Blockade;
 
@@ -23,7 +23,7 @@ public class BasicRoadEvent implements MessageRoadEvent {
             this.drsp.getImpassableSelector().remove(message.getRoadID());
         }
         else {
-            Blockade blockade = UpdateHelper.reflectedMessage(this.wp.getWorld(), message);
+            Blockade blockade = MessageReflectHelper.reflectedMessage(this.wp.getWorld(), message);
             this.drsp.getImpassableSelector().add(blockade);
         }
     }

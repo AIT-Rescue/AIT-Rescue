@@ -1,11 +1,14 @@
 import java.text.SimpleDateFormat
 
+def defaultName = name
+
 task backupSrc(type: Zip) {
     SimpleDateFormat sdf = new SimpleDateFormat('yyyyMMddHHmmss')
     String date = sdf.format(Calendar.getInstance().getTime())
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    destinationDir = new File(projectDir, 'backup')
-    String buildName = teamName + '-source-' + date
+    destinationDir = file('backup')//new File(rootDir, 'backup')
+    def newTeamName = 'default'.equalsIgnoreCase(teamName) ? defaultName : teamName;
+    String buildName = newTeamName + '-source-' + date
     archiveName = buildName + '.zip'
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     into(buildName) {

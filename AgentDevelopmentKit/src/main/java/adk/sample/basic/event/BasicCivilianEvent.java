@@ -3,7 +3,7 @@ package adk.sample.basic.event;
 import adk.team.util.provider.VictimSelectorProvider;
 import adk.team.util.provider.WorldProvider;
 import comlib.event.information.MessageCivilianEvent;
-import comlib.manager.UpdateHelper;
+import comlib.manager.MessageReflectHelper;
 import comlib.message.information.MessageCivilian;
 import rescuecore2.standard.entities.Civilian;
 
@@ -19,7 +19,7 @@ public class BasicCivilianEvent implements MessageCivilianEvent {
 
     @Override
     public void receivedRadio(MessageCivilian message) {
-        Civilian civilian = UpdateHelper.reflectedMessage(this.wp.getWorld(), message);
+        Civilian civilian = MessageReflectHelper.reflectedMessage(this.wp.getWorld(), message);
         this.vsp.getVictimSelector().add(civilian);
     }
 

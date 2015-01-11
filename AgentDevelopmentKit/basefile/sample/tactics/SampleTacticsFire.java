@@ -1,4 +1,4 @@
-package adk.sample.basic.tactics;
+package sample.tactics;
 
 import adk.team.action.Action;
 import adk.team.action.ActionExtinguish;
@@ -6,22 +6,26 @@ import adk.team.action.ActionMove;
 import adk.team.action.ActionRest;
 import adk.team.tactics.TacticsFire;
 import adk.team.util.BuildingSelector;
-import adk.team.util.RouteSearcher;
 import adk.team.util.graph.PositionUtil;
+import adk.team.util.RouteSearcher;
+import adk.team.util.graph.RouteManager;
 import adk.team.util.provider.BuildingSelectorProvider;
 import adk.team.util.provider.RouteSearcherProvider;
 import comlib.manager.MessageManager;
+import comlib.message.information.MessageCivilian;
 import comlib.message.information.MessageFireBrigade;
+import comlib.message.information.MessageRoad;
 import rescuecore2.config.Config;
-import rescuecore2.standard.entities.Building;
-import rescuecore2.standard.entities.Refuge;
-import rescuecore2.standard.entities.StandardEntity;
+import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.ChangeSet;
 import rescuecore2.worldmodel.EntityID;
+import sample.event.SampleBuildingEvent;
+import sample.util.SampleBuildingSelector;
+import sample.util.SampleRouteSearcher;
 
 import java.util.List;
 
-public abstract class BasicFire extends TacticsFire implements RouteSearcherProvider, BuildingSelectorProvider {
+public class SampleTacticsFire extends TacticsFire implements RouteSearcherProvider, BuildingSelectorProvider {
 
     public BuildingSelector buildingSelector;
 
@@ -29,13 +33,9 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
 
     @Override
     public void preparation(Config config) {
-        this.buildingSelector = this.initBuildingSelector();
-        this.routeSearcher = this.initRouteSearcher();
+        this.buildingSelector = new SampleBuildingSelector(this);
+        this.routeSearcher = new SampleRouteSearcher(this, new RouteManager(this.world));
     }
-
-    public abstract BuildingSelector initBuildingSelector();
-
-    public abstract RouteSearcher initRouteSearcher();
 
     @Override
     public BuildingSelector getBuildingSelector() {
@@ -47,7 +47,15 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
         return this.routeSearcher;
     }
 
-    public abstract void organizeUpdateInfo(int currentTime, ChangeSet updateWorldInfo, MessageManager manager);
+    @Override
+    public String getTacticsName() {
+        return "Sample";
+    }
+
+    @Override
+    public void registerEvent(MessageManager manager) {
+        manager.registerEvent(new SampleBuildingEvent(this, this));
+    }
 
     @Override
     public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
@@ -60,7 +68,6 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
                 if(entity instanceof Building) {
                     Building building = (Building)entity;
                     this.target = building.getID();
-                    //if (building.isOnFire() && (this.world.getDistance(this.agentID, this.target) <= this.maxDistance)) {
                     if(building.isOnFire()) {
                         return new ActionExtinguish(this, this.target, this.maxPower);
                     }
@@ -93,6 +100,25 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
         return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
     }
 
+    public void organizeUpdateInfo(int currentTime, ChangeSet updateWorldInfo, MessageManager manager) {
+        for (EntityID next : updateWorldInfo.getChangedEntities()) {
+            StandardEntity entity = this.getWorld().getEntity(next);
+            if(entity instanceof Building) {
+                this.buildingSelector.add((Building) entity);
+            }
+            else if(entity instanceof Civilian) {
+                Civilian civilian = (Civilian)entity;
+                if(civilian.getBuriedness() > 0) {
+                    manager.addSendMessage(new MessageCivilian(civilian));
+                }
+            }
+            else if(entity instanceof Blockade) {
+                Blockade blockade = (Blockade) entity;
+                manager.addSendMessage(new MessageRoad((Road)this.world.getEntity(blockade.getPosition()), blockade, false));
+            }
+        }
+    }
+
     public Action moveRefuge(int currentTime) {
         Refuge result = PositionUtil.getNearTarget(this.world, this.me, this.getRefuges());
         List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, result);
@@ -111,3 +137,4 @@ public abstract class BasicFire extends TacticsFire implements RouteSearcherProv
         return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
     }
 }
+

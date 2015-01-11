@@ -6,7 +6,7 @@ import adk.sample.basic.event.BasicFireEvent;
 import adk.sample.basic.event.BasicPoliceEvent;
 import adk.sample.basic.util.BasicRouteSearcher;
 import adk.sample.basic.util.BasicVictimSelector;
-import adk.sample.basic.tactics.BasicAmbulance;
+import adk.sample.basic.tactics.BasicTacticsAmbulance;
 import adk.team.util.RouteSearcher;
 import adk.team.util.VictimSelector;
 import comlib.manager.MessageManager;
@@ -16,7 +16,7 @@ import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.ChangeSet;
 import rescuecore2.worldmodel.EntityID;
 
-public class DummyAmbulance extends BasicAmbulance {
+public class DummyTacticsAmbulance extends BasicTacticsAmbulance {
 
     @Override
     public String getTacticsName() {
