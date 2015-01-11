@@ -26,7 +26,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
 
     public RouteSearcher routeSearcher;
 
-    public Point2D agentPoint;
+    public Point2D[] agentPoint;
     public boolean beforeMove;
     public Map<EntityID, List<List<Edge>>> neighbourEdgesMap;
     public Map<EntityID, List<Point2D>> passablePointMap;
@@ -38,6 +38,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
     public void preparation(Config config) {
         this.routeSearcher = this.initRouteSearcher();
         this.impassableSelector = this.initDebrisRemovalSelector();
+        this.agentPoint = new Point2D[2];
         this.beforeMove = false;
         this.neighbourEdgesMap = new HashMap<>();
         this.passablePointMap = new HashMap<>();
@@ -65,7 +66,8 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
     @Override
     public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
         this.organizeUpdateInfo(currentTime, updateWorldData, manager);
-        this.agentPoint = new Point2D(this.me.getX(), this.me.getY());
+        this.agentPoint[1] = this.agentPoint[0];
+        this.agentPoint[0] = new Point2D(this.me.getX(), this.me.getY());
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //状態の確認
         //埋まっている場合，周辺の道路の瓦礫の除去
@@ -81,7 +83,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
             }
             this.count--;
             Area area = (Area)this.world.getEntity(roads.get(this.count));
-            Vector2D vector = (new Point2D(area.getX(), area.getY())).minus(this.agentPoint).normalised().scale(1000000);
+            Vector2D vector = (new Point2D(area.getX(), area.getY())).minus(this.agentPoint[0]).normalised().scale(1000000);
             return new ActionClear(this, (int) (this.me.getX() + vector.getX()), (int) (this.me.getY() + vector.getY()));
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,13 +91,13 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         //mainTargetPointと現在の地点が誤差含め同じか
         //同じならばoldTargetのデータから地点の削除
         if(this.mainTargetPoint != null) {
-            if(PositionUtil.equalsPoint(this.agentPoint, this.mainTargetPoint, 2.0D)) {
+            if(PositionUtil.equalsPoint(this.agentPoint[0], this.mainTargetPoint, 2.0D)) {
                 this.removeTargetPoint((Road)this.world.getEntity(this.target), this.mainTargetPoint);
                 this.mainTargetPoint = null;
             }
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //対象の選択または，対象の変更(EntityID oldTarget = this.target)
+        //対象の選択または，対象の変更
         //対象が存在しない場合，noTargetMove
         int oldTarget = 0;
         if(this.target != null) {
@@ -110,8 +112,33 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
             return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if(this.location.getID().getValue() != this.target.getValue()) {
+        if(this.beforeMove && (PositionUtil.equalsPoint(this.agentPoint[0], this.agentPoint[1], 2.0D))) {
             if(this.location instanceof Building) {
+                this.beforeMove = false;
+                List<EntityID> roads = ((Area)this.location).getNeighbours();
+                if(roads.isEmpty()) {
+                    return new ActionRest(this);
+                }
+                if(this.count <= 0) {
+                    this.count = roads.size();
+                }
+                this.count--;
+                Area area = (Area)this.world.getEntity(roads.get(this.count));
+                Vector2D vector = (new Point2D(area.getX(), area.getY())).minus(this.agentPoint[0]).normalised().scale(1000000);
+                return new ActionClear(this, (int) (this.me.getX() + vector.getX()), (int) (this.me.getY() + vector.getY()));
+            }
+            List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
+            if(path != null) {
+                this.beforeMove = false;
+                Road road = (Road) this.location;
+                Edge edge = road.getEdgeTo(path.get(1));
+                Vector2D vector = this.getVector(this.agentPoint[0], PositionUtil.getEdgePoint(edge), road);
+                return new ActionClear(this, (int) (this.me.getX() + vector.getX()), (int) (this.me.getY() + vector.getY()));
+            }
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        if(this.location.getID().getValue() != this.target.getValue()) {
+            /*if(this.location instanceof Building) {
                 this.beforeMove = true;
                 List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
                 return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
@@ -120,11 +147,15 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
                 this.beforeMove = true;
                 List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
                 return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
-            }
+            }*/
             //通れない道なら，Targetに設定
-            this.target = this.location.getID();
+            //this.target = this.location.getID();
+            this.beforeMove = true;
+            List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
+            return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         //対象の確定
         Road road = (Road)this.world.getEntity(this.target);
         //道の点の選択
@@ -137,7 +168,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //移動した直後か，Clear後の移動を行った場合
         if(this.beforeMove) {
-            if(PositionUtil.equalsPoint(this.agentPoint, this.mainTargetPoint, 2.0D)) {
+            if(PositionUtil.equalsPoint(this.agentPoint[0], this.mainTargetPoint, 2.0D)) {
                 this.removeTargetPoint(road, this.mainTargetPoint);
                 this.mainTargetPoint = null;
                 List<Point2D> clearPoint = this.clearListMap.get(this.target);
@@ -156,7 +187,7 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
                 }
             }
             else {
-                Vector2D vector = this.getVector(this.agentPoint, this.mainTargetPoint, road);
+                Vector2D vector = this.getVector(this.agentPoint[0], this.mainTargetPoint, road);
                 this.beforeMove = false;
                 return new ActionClear(this, (int) (this.me.getX() + vector.getX()), (int) (this.me.getY() + vector.getY()));
             }
