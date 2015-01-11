@@ -74,15 +74,15 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         if(this.me.getBuriedness() > 0) {
             this.beforeMove = false;
             manager.addSendMessage(new MessagePoliceForce(this.me, MessagePoliceForce.ACTION_REST, this.agentID));
-            List<EntityID> roads = ((Area)this.location).getNeighbours();
-            if(roads.isEmpty()) {
+            List<EntityID> neighbours = ((Area)this.location).getNeighbours();
+            if(neighbours.isEmpty()) {
                 return new ActionRest(this);
             }
             if(this.count <= 0) {
-                this.count = roads.size();
+                this.count = neighbours.size();
             }
             this.count--;
-            Area area = (Area)this.world.getEntity(roads.get(this.count));
+            Area area = (Area)this.world.getEntity(neighbours.get(this.count));
             Vector2D vector = (new Point2D(area.getX(), area.getY())).minus(this.agentPoint[0]).normalised().scale(1000000);
             return new ActionClear(this, (int) (this.me.getX() + vector.getX()), (int) (this.me.getY() + vector.getY()));
         }
@@ -113,26 +113,40 @@ public abstract class BasicPolice extends TacticsPolice implements RouteSearcher
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if(this.beforeMove && (PositionUtil.equalsPoint(this.agentPoint[0], this.agentPoint[1], 2.0D))) {
+            this.beforeMove = false;
             if(this.location instanceof Building) {
-                this.beforeMove = false;
-                List<EntityID> roads = ((Area)this.location).getNeighbours();
-                if(roads.isEmpty()) {
+                List<EntityID> neighbours = ((Area)this.location).getNeighbours();
+                if(neighbours.isEmpty()) {
                     return new ActionRest(this);
                 }
-                if(this.count <= 0) {
-                    this.count = roads.size();
+                if(this.count <= 0 || this.count > neighbours.size()) {
+                    this.count = neighbours.size();
                 }
                 this.count--;
-                Area area = (Area)this.world.getEntity(roads.get(this.count));
+                Area area = (Area)this.world.getEntity(neighbours.get(this.count));
                 Vector2D vector = (new Point2D(area.getX(), area.getY())).minus(this.agentPoint[0]).normalised().scale(1000000);
                 return new ActionClear(this, (int) (this.me.getX() + vector.getX()), (int) (this.me.getY() + vector.getY()));
             }
             List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
-            if(path != null) {
-                this.beforeMove = false;
+            if(path == null || path.size() < 2) {
+                path = this.routeSearcher.noTargetMove(currentTime);
+            }
+            if (path != null && path.size() >= 2) {
                 Road road = (Road) this.location;
-                Edge edge = road.getEdgeTo(path.get(1));
-                Vector2D vector = this.getVector(this.agentPoint[0], PositionUtil.getEdgePoint(edge), road);
+                Vector2D vector = this.getVector(this.agentPoint[0], PositionUtil.getEdgePoint(road.getEdgeTo(path.get(1))), road);
+                return new ActionClear(this, (int) (this.me.getX() + vector.getX()), (int) (this.me.getY() + vector.getY()));
+            }
+            else {
+                Road road = (Road) this.location;
+                List<EntityID> neighbours = road.getNeighbours();
+                if (neighbours.isEmpty()) {
+                    return new ActionRest(this);
+                }
+                if (this.count <= 0 || this.count > neighbours.size()) {
+                    this.count = neighbours.size();
+                }
+                this.count--;
+                Vector2D vector = this.getVector(this.agentPoint[0], PositionUtil.getEdgePoint(road.getEdgeTo(neighbours.get(1))), road);
                 return new ActionClear(this, (int) (this.me.getX() + vector.getX()), (int) (this.me.getY() + vector.getY()));
             }
         }
