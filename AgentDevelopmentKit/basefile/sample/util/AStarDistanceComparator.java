@@ -7,13 +7,13 @@ import rescuecore2.worldmodel.EntityID;
 import java.util.Comparator;
 import java.util.Map;
 
-public class SampleComparator implements Comparator<RouteNode> {
+public class AStarDistanceComparator implements Comparator<RouteNode> {
 
     private RouteNode goal;
 
     private Map<EntityID, Double> fromStart;
 
-    public SampleComparator(RouteNode target, Map<EntityID, Double> distanceFromStart) {
+    public AStarDistanceComparator(RouteNode target, Map<EntityID, Double> distanceFromStart) {
         this.goal = target;
         this.fromStart = distanceFromStart;
     }

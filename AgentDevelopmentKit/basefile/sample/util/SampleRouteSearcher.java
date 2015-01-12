@@ -83,7 +83,7 @@ public class SampleRouteSearcher implements RouteSearcher {
                     distanceFromStart.put(neighbourID, neighbourDistance);
                 }
             }
-            open.sort(new SampleComparator(goal, distanceFromStart));
+            open.sort(new AStarDistanceComparator(goal, distanceFromStart));
         }
         return null;
     }
