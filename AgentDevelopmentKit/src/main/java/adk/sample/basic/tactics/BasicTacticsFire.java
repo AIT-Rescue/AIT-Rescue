@@ -81,6 +81,9 @@ public abstract class BasicTacticsFire extends TacticsFire implements RouteSearc
         if(this.target == null) {
             return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
         }
+        if(this.world.getDistance(this.agentID, this.target) > this.maxDistance) {
+            return this.moveTarget(currentTime);
+        }
         do {
             Building building = (Building) this.world.getEntity(this.target);
             if (building.isOnFire()) {
