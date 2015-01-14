@@ -61,12 +61,12 @@ public abstract class BasicTacticsAmbulance extends TacticsAmbulance implements 
             if(this.someoneOnBoard()) {
                 return new ActionUnload(this);
             }
-            if(this.me.getHP() < 6000) {
+            if(this.me.getDamage() > 0) {
                 return new ActionRest(this);
             }
         }
         //避難所への移動条件
-        if(this.someoneOnBoard() || this.me.getHP() <= 2000) {
+        if(this.someoneOnBoard() || this.me.getDamage() >= 500) {
             return this.moveRefuge(currentTime);
         }
         //対象の選択・切り替え
