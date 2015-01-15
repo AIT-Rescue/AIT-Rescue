@@ -79,7 +79,7 @@ public class SampleTacticsAmbulance extends TacticsAmbulance implements RouteSea
             }
         }
         //避難所への移動条件
-        if(this.someoneOnBoard() || this.me.getDamage() >= 500) {
+        if(this.someoneOnBoard() || this.me.getDamage() >= 300) {
             return this.moveRefuge(currentTime);
         }
         //対象の選択・切り替え
