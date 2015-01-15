@@ -7,7 +7,7 @@ public final class ConfigKey {
     public static final String KEY_LOAD_RETRY   = "adk.team.load.retry";
     public static final String KEY_DUMMY_SYSTEM = "adk.team.dummy.run";
 
-    public static final String KEY_PRE = "adk.launcher.pre";
+    public static final String KEY_PRECOMPUTE = "adk.launcher.precompute";
 
     // Agent
     

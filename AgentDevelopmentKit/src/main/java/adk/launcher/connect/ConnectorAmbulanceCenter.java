@@ -65,7 +65,7 @@ public class ConnectorAmbulanceCenter implements Connector {
         int connectAgent = 0;
         try {
             for (int i = 0; i != count; ++i) {
-                launcher.connect(new AmbulanceTeamStation(team.getAmbulanceCentreControl(), config.getBooleanValue(ConfigKey.KEY_PRE, false)));
+                launcher.connect(new AmbulanceTeamStation(team.getAmbulanceCentreControl(), config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)));
                 System.out.println(name);
                 connectAgent++;
             }
