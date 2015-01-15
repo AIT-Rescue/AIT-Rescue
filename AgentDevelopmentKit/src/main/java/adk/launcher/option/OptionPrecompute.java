@@ -6,7 +6,7 @@ import rescuecore2.config.Config;
 public class OptionPrecompute extends Option {
     @Override
     public String getKey() {
-        return "-precompute";
+        return "-pre";
     }
 
     @Override
