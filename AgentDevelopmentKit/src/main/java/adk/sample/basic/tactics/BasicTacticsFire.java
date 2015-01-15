@@ -68,14 +68,14 @@ public abstract class BasicTacticsFire extends TacticsFire implements RouteSearc
             }
             return new ActionRest(this);
         }
+        if(this.location instanceof Refuge && (this.me.getWater() < this.maxWater)) {
+            this.target = null;
+            return new ActionRest(this);
+        }
         int waterLimit = 2;
         if (this.me.getWater() <= ((this.maxWater / 10) * waterLimit)) {
             this.target = null;
             return this.moveRefuge(currentTime);
-        }
-        if(this.location instanceof Refuge && (this.me.getWater() < this.maxWater)) {
-            this.target = null;
-            return new ActionRest(this);
         }
         this.target = this.target == null ? this.buildingSelector.getNewTarget(currentTime) : this.buildingSelector.updateTarget(currentTime, this.target);
         if(this.target == null) {
