@@ -23,6 +23,7 @@ public abstract class ControllingStation<E extends Building> extends Communicati
         this.control.pre = pre;
     }
 
+		@SuppressWarnings("unchecked")
     @Override
     public void postConnect() {
         super.postConnect();

@@ -25,7 +25,8 @@ public abstract class TacticsAgent<E extends StandardEntity> extends Communicati
         this.tactics = t;
         this.tactics.pre = pre;
     }
-    
+
+		@SuppressWarnings("unchecked")
     @Override
     public void postConnect() {
         super.postConnect();
