@@ -15,8 +15,8 @@ public class FireBrigadeAgent extends TacticsAgent<FireBrigade> {
     
     private TacticsFire tf;
     
-    public FireBrigadeAgent(TacticsFire tacticsFire) {
-        super(tacticsFire);
+    public FireBrigadeAgent(TacticsFire tacticsFire, boolean pre) {
+        super(tacticsFire, pre);
         this.tf = tacticsFire;
     }
     

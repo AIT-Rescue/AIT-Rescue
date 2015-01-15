@@ -13,6 +13,8 @@ import java.util.List;
 
 public abstract class Control<E extends Building> implements WorldProvider<E> {
 
+    public boolean pre;
+
     public StandardWorldModel world;
     public StandardWorldModel model;
     public int time;

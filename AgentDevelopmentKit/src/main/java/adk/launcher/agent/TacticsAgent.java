@@ -20,9 +20,10 @@ public abstract class TacticsAgent<E extends StandardEntity> extends Communicati
     protected Tactics tactics;
     public int ignoreTime;
 
-    public TacticsAgent(Tactics t) {
+    public TacticsAgent(Tactics t, boolean pre) {
         super();
         this.tactics = t;
+        this.tactics.pre = pre;
     }
     
     @Override

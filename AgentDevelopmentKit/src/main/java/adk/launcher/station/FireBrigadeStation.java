@@ -10,8 +10,8 @@ import java.util.EnumSet;
 public class FireBrigadeStation extends ControllingStation<FireStation> {
     private ControlFire cf;
 
-    public FireBrigadeStation(ControlFire controlFire) {
-        super(controlFire);
+    public FireBrigadeStation(ControlFire controlFire, boolean pre) {
+        super(controlFire, pre);
         this.cf = controlFire;
     }
 

@@ -10,8 +10,8 @@ import java.util.EnumSet;
 public class PoliceForceStation extends ControllingStation<PoliceOffice> {
     private ControlPolice cp;
 
-    public PoliceForceStation(ControlPolice controlPolice) {
-        super(controlPolice);
+    public PoliceForceStation(ControlPolice controlPolice, boolean pre) {
+        super(controlPolice, pre);
         this.cp = controlPolice;
     }
 

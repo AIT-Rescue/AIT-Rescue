@@ -13,8 +13,8 @@ public class PoliceForceAgent extends TacticsAgent<PoliceForce> {
     
     private TacticsPolice tp;
     
-    public PoliceForceAgent(TacticsPolice tacticsPolice) {
-        super(tacticsPolice);
+    public PoliceForceAgent(TacticsPolice tacticsPolice, boolean pre) {
+        super(tacticsPolice, pre);
         this.tp = tacticsPolice;
     }
     

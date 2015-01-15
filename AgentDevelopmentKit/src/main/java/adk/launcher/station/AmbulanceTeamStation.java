@@ -11,8 +11,8 @@ public class AmbulanceTeamStation extends ControllingStation<AmbulanceCentre> {
 
     private ControlAmbulance ca;
 
-    public AmbulanceTeamStation(ControlAmbulance controlAmbulance) {
-        super(controlAmbulance);
+    public AmbulanceTeamStation(ControlAmbulance controlAmbulance, boolean pre) {
+        super(controlAmbulance, pre);
         this.ca = controlAmbulance;
     }
 

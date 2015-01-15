@@ -17,9 +17,10 @@ public abstract class ControllingStation<E extends Building> extends Communicati
     protected Control control;
     public int ignoreTime;
 
-    public ControllingStation(Control i) {
+    public ControllingStation(Control i, boolean pre) {
         super();
         this.control = i;
+        this.control.pre = pre;
     }
 
     @Override

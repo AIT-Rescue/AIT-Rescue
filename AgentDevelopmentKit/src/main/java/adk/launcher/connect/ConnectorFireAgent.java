@@ -65,7 +65,7 @@ public class ConnectorFireAgent implements Connector {
         int connectAgent = 0;
         try {
             for (int i = 0; i != count; ++i) {
-                launcher.connect(new FireBrigadeAgent(team.getFireBrigadeTactics()));
+                launcher.connect(new FireBrigadeAgent(team.getFireBrigadeTactics(), config.getBooleanValue(ConfigKey.KEY_PRE, false)));
                 System.out.println(name);
                 connectAgent++;
             }

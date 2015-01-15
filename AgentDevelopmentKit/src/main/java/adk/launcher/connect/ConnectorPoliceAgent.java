@@ -65,7 +65,7 @@ public class ConnectorPoliceAgent implements Connector {
         int connectAgent = 0;
         try {
             for (int i = 0; i != count; ++i) {
-                launcher.connect(new PoliceForceAgent(team.getPoliceForceTactics()));
+                launcher.connect(new PoliceForceAgent(team.getPoliceForceTactics(), config.getBooleanValue(ConfigKey.KEY_PRE, false)));
                 System.out.println(name);
                 connectAgent++;
             }

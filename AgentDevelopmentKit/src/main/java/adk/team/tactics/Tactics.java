@@ -14,6 +14,8 @@ import java.util.List;
 
 public abstract class Tactics<E extends StandardEntity> implements WorldProvider<E> {
 
+    public boolean pre;
+
     public StandardWorldModel world;
     public StandardWorldModel model;
     public int time;
