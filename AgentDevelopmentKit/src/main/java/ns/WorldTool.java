@@ -12,8 +12,8 @@ public class WorldTool {
         this.world = standardWorldModel;
     }
 
-    public <E extends StandardEntity> void getEntity(StandardEntityURN type, WorldEvent<E> event) {
-        for(StandardEntity entity : this.world.getEntitiesOfType(type)) {
+    public <E extends StandardEntity> void getEntity(WorldEvent<E> event) {
+        for(StandardEntity entity : this.world.getEntitiesOfType(event.getType())) {
             try {
                 event.event((E)entity);
             }
