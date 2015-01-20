@@ -12,6 +12,7 @@ public class WorldTool {
         this.world = standardWorldModel;
     }
 
+    @SuppressWarnings("unchecked")
     public <E extends StandardEntity> void getEntity(WorldEvent<E> event) {
         for(StandardEntity entity : this.world.getEntitiesOfType(event.getType())) {
             try {
