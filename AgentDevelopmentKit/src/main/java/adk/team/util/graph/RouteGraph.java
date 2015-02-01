@@ -111,6 +111,8 @@ public class RouteGraph {
             RouteEdge edge = this.edgeMap.get(areaID);
             RouteNode node = RouteNode.getInstance(world, areaID);
             List<EntityID> element = edge.element;
+            node.addNeighbour(element.get(0));
+            node.addNeighbour(element.get(element.size() - 1));
             int index = element.indexOf(areaID);
             List<EntityID> firstPath = Arrays.asList(Arrays.copyOfRange(element.toArray(new EntityID[element.size()]), 0, index + 1));
             //List<EntityID> firstPath = subList(element, 0, index + 1);
