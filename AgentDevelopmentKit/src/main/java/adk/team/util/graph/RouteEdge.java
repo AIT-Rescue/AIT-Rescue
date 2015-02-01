@@ -187,6 +187,8 @@ public class RouteEdge {
     private void initDistanceToSecond() {
         this.routeDistance = HashBasedTable.create();
         double result = 0.0D;
+        //fix
+        this.routeDistance.put(this.secondNodeID, this.secondNodeID, 0.0D);
         for(int i = this.element.size() - 2; i >= 0; i--) {
             EntityID areaID = this.element.get(i);
             this.routeDistance.put(areaID, this.secondNodeID, result);
