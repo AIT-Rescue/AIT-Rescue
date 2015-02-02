@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class TacticsAgent<E extends StandardEntity> extends CommunicationAgent<E> {
+	
+    public static final String LOS_MAX_DISTANCE_KEY = "perception.los.max-distance";
     
     protected Tactics tactics;
     public int ignoreTime;
@@ -31,6 +33,7 @@ public abstract class TacticsAgent<E extends StandardEntity> extends Communicati
     public void postConnect() {
         super.postConnect();
         this.ignoreTime = this.config.getIntValue(kernel.KernelConstants.IGNORE_AGENT_COMMANDS_KEY);
+        this.tactics.sightDistance = this.config.getIntValue(this.LOS_MAX_DISTANCE_KEY);
         this.tactics.world = this.getWorld();
         this.tactics.model = this.getWorld();
         this.tactics.agentID = this.getID();
