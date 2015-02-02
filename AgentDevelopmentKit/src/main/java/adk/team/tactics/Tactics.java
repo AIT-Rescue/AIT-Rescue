@@ -21,7 +21,7 @@ public abstract class Tactics<E extends StandardEntity> implements WorldProvider
     public int time;
     public ChangeSet changed;
     
-    public int sightDistance
+    public int sightDistance;
 
     public EntityID agentID;
     public StandardEntity location;
