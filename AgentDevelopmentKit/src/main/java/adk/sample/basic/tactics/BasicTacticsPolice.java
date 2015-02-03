@@ -37,7 +37,7 @@ public abstract class BasicTacticsPolice extends TacticsPolice implements RouteS
     @Override
     public void preparation(Config config) {
         this.routeSearcher = this.initRouteSearcher();
-        this.impassableSelector = this.initDebrisRemovalSelector();
+        this.impassableSelector = this.initImpassableSelector();
         this.agentPoint = new Point2D[2];
         this.beforeMove = false;
         this.neighbourEdgesMap = new HashMap<>();
@@ -47,7 +47,7 @@ public abstract class BasicTacticsPolice extends TacticsPolice implements RouteS
         this.count = -1;
     }
 
-    public abstract ImpassableSelector initDebrisRemovalSelector();
+    public abstract ImpassableSelector initImpassableSelector();
 
     public abstract RouteSearcher initRouteSearcher();
 

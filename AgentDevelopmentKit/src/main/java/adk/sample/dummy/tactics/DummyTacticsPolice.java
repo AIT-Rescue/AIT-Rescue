@@ -30,7 +30,7 @@ public class DummyTacticsPolice extends BasicTacticsPolice {
 
 
     @Override
-    public ImpassableSelector initDebrisRemovalSelector() {
+    public ImpassableSelector initImpassableSelector() {
         return new BasicImpassableSelector(this);
     }
 
