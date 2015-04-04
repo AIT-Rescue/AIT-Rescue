@@ -133,7 +133,7 @@ public abstract class BasicTacticsPolice extends TacticsPolice implements RouteS
             }
             if (path != null && path.size() >= 2) {
                 Road road = (Road) this.location;
-                Vector2D vector = this.getVector(this.agentPoint[0], PositionUtil.getEdgePoint(road.getEdgeTo(path.get(1))), road);
+                Vector2D vector = this.getVector(this.agentPoint[0], PositionUtil.getEdgePoint(road.getEdgeTo(path.get(1))), road);//Edgeが取得できていない
                 return new ActionClear(this, (int) (this.me.getX() + vector.getX()), (int) (this.me.getY() + vector.getY()));
             }
             else {
@@ -172,12 +172,24 @@ public abstract class BasicTacticsPolice extends TacticsPolice implements RouteS
 
         //対象の確定
         Road road = (Road)this.world.getEntity(this.target);
+        List<Point2D> clearList = this.getClearList(road);
+        while(clearList.size() == 0) {
+            this.impassableSelector.remove(road);
+            this.target = this.impassableSelector.getNewTarget(currentTime);
+            if(this.target == null) {
+                this.beforeMove = true;
+                return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
+            }
+            road = (Road)this.world.getEntity(this.target);
+            clearList = this.getClearList(road);
+        }
+        
         //道の点の選択
         if(oldTarget != this.target.getValue()) {
-            this.mainTargetPoint = this.getClearList(road).get(0);
+            this.mainTargetPoint = clearList.get(0);
         }
         else if(this.mainTargetPoint == null) {
-            this.mainTargetPoint = this.getClearList(road).get(0);
+            this.mainTargetPoint = clearList.get(0);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //移動した直後か，Clear後の移動を行った場合

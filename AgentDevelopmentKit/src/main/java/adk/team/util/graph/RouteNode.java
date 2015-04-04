@@ -21,26 +21,26 @@ public class RouteNode {
     private Set<EntityID> neighbours;
 
     private RouteNode(StandardWorldModel world, Road road) {
-        this.nodeID = road.getID();
-        this.position = road.getLocation(world);
-        this.isRoad = Boolean.TRUE;
-        this.passable = true;
+        this.nodeID     = road.getID();
+        this.position   = road.getLocation(world);
+        this.isRoad     = Boolean.TRUE;
+        this.passable   = true;
         this.neighbours = new HashSet<>();
     }
 
     private RouteNode(StandardWorldModel world, Building building) {
-        this.nodeID = building.getID();
-        this.position = building.getLocation(world);
-        this.isRoad = Boolean.FALSE;
-        this.passable = true;
+        this.nodeID     = building.getID();
+        this.position   = building.getLocation(world);
+        this.isRoad     = Boolean.FALSE;
+        this.passable   = true;
         this.neighbours = new HashSet<>();
     }
 
     private RouteNode(RouteNode original) {
-        this.nodeID = original.nodeID;
-        this.position = original.position;
-        this.isRoad = original.isRoad;
-        this.passable = original.passable;
+        this.nodeID     = original.nodeID;
+        this.position   = original.position;
+        this.isRoad     = original.isRoad;
+        this.passable   = original.passable;
         this.neighbours = new HashSet<>(original.getNeighbours());
     }
 
@@ -131,10 +131,6 @@ public class RouteNode {
         return true;
     }
 
-    public boolean passable() {
-        return this.passable;
-    }
-
     @Override
     public int hashCode() {
         return this.nodeID.getValue();
@@ -160,16 +156,4 @@ public class RouteNode {
                 .add("neighbours", this.neighbours)
                 .toString();
     }
-
-    /*public static RouteNode getInstance(StandardWorldModel world, Road road) {
-        return world != null && road != null ? new RouteNode(world, road) : null;
-    }
-
-    public static RouteNode getInstance(StandardWorldModel world, Building building) {
-        return world != null && building != null ? new RouteNode(world, building) : null;
-    }*/
-
-    /*public static RouteNode copy(RouteNode original) {
-        return original != null ? new RouteNode(original) : null;
-    }*/
 }
