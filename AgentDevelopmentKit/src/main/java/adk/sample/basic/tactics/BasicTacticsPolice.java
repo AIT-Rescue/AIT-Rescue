@@ -173,7 +173,7 @@ public abstract class BasicTacticsPolice extends TacticsPolice implements RouteS
         //対象の確定
         Road road = (Road)this.world.getEntity(this.target);
         List<Point2D> clearList = this.getClearList(road);
-        while(clearList.size() == 0) {
+        while(clearList == null || clearList.isEmpty()) {
             this.impassableSelector.remove(road);
             this.target = this.impassableSelector.getNewTarget(currentTime);
             if(this.target == null) {
@@ -199,7 +199,7 @@ public abstract class BasicTacticsPolice extends TacticsPolice implements RouteS
                 this.mainTargetPoint = null;
                 List<Point2D> clearPoint = this.clearListMap.get(this.target);
                 this.beforeMove = true;
-                if(!clearPoint.isEmpty()) {
+                if(clearPoint != null && clearPoint.size() > 0) {
                     this.mainTargetPoint = clearPoint.get(0);
                     return new ActionMove(this, Lists.newArrayList(this.target), (int) this.mainTargetPoint.getX(), (int) this.mainTargetPoint.getY());
                 }

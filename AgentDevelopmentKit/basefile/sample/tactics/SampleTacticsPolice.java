@@ -173,13 +173,24 @@ public class SampleTacticsPolice extends TacticsPolice implements RouteSearcherP
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         //対象の確定
-        Road road = (Road)this.world.getEntity(this.target);
+        List<Point2D> clearList = this.getClearList(road);
+        while(clearList == null || clearList.isEmpty()) {
+            this.impassableSelector.remove(road);
+            this.target = this.impassableSelector.getNewTarget(currentTime);
+            if(this.target == null) {
+                this.beforeMove = true;
+                return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
+            }
+            road = (Road)this.world.getEntity(this.target);
+            clearList = this.getClearList(road);
+        }
+
         //道の点の選択
         if(oldTarget != this.target.getValue()) {
-            this.mainTargetPoint = this.getClearList(road).get(0);
+            this.mainTargetPoint = clearList.get(0);
         }
         else if(this.mainTargetPoint == null) {
-            this.mainTargetPoint = this.getClearList(road).get(0);
+            this.mainTargetPoint = clearList.get(0);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //移動した直後か，Clear後の移動を行った場合
