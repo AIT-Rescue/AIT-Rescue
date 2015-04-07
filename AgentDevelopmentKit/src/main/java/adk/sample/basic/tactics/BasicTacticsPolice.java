@@ -109,7 +109,7 @@ public abstract class BasicTacticsPolice extends TacticsPolice implements RouteS
         }
         if(this.target == null) {
             this.beforeMove = true;
-            return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
+            return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime, this.me));
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if(this.beforeMove && (PositionUtil.equalsPoint(this.agentPoint[0], this.agentPoint[1], 2.0D))) {
@@ -129,7 +129,7 @@ public abstract class BasicTacticsPolice extends TacticsPolice implements RouteS
             }
             List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
             if(path == null || path.size() < 2) {
-                path = this.routeSearcher.noTargetMove(currentTime);
+                path = this.routeSearcher.noTargetMove(currentTime, this.me);
             }
             if (path != null && path.size() >= 2) {
                 Road road = (Road) this.location;
@@ -166,7 +166,7 @@ public abstract class BasicTacticsPolice extends TacticsPolice implements RouteS
             //this.target = this.location.getID();
             this.beforeMove = true;
             List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, this.target);
-            return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
+            return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime, this.me));
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -178,7 +178,7 @@ public abstract class BasicTacticsPolice extends TacticsPolice implements RouteS
             this.target = this.impassableSelector.getNewTarget(currentTime);
             if(this.target == null) {
                 this.beforeMove = true;
-                return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
+                return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime, this.me));
             }
             road = (Road)this.world.getEntity(this.target);
             clearList = this.getClearList(road);
@@ -209,7 +209,7 @@ public abstract class BasicTacticsPolice extends TacticsPolice implements RouteS
                     if(this.target != null) {
                         path = this.routeSearcher.getPath(currentTime, this.getID(), this.target);
                     }
-                    return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
+                    return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime ,this.me));
                 }
             }
             else {
@@ -277,10 +277,6 @@ public abstract class BasicTacticsPolice extends TacticsPolice implements RouteS
             this.analysisRoad(road);
         }
         return this.clearListMap.get(roadID);
-    }
-
-    public boolean passable(Road road) {
-        return this.getClearList(road).isEmpty();
     }
 
     public void removeTargetPoint(Road road, Point2D point) {

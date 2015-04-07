@@ -9,9 +9,13 @@ import java.util.List;
 
 public interface RouteSearcher {
     
-    public List<EntityID> noTargetMove(int time);
+    List<EntityID> noTargetMove(int time, EntityID from);
+
+    default List<EntityID> noTargetMove(int time, Human from) {
+        return this.noTargetMove(time, from.getPosition());
+    }
     
-    public List<EntityID> getPath(int time, EntityID from, EntityID to);
+    List<EntityID> getPath(int time, EntityID from, EntityID to);
     
     default List<EntityID> getPath(int time, Human from, EntityID to) {
         return this.getPath(time, from.getPosition(), to);

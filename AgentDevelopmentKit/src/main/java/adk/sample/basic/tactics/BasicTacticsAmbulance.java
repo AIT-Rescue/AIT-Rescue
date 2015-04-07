@@ -72,7 +72,7 @@ public abstract class BasicTacticsAmbulance extends TacticsAmbulance implements 
         //対象の選択・切り替え
         this.target = this.target == null ? this.victimSelector.getNewTarget(currentTime) : this.victimSelector.updateTarget(currentTime, this.target);
         if(this.target == null) {
-            return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
+            return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime, this.me));
         }
         //救助開始
         do {
@@ -108,7 +108,7 @@ public abstract class BasicTacticsAmbulance extends TacticsAmbulance implements 
             //対象が救助済み．または対象外の場合
             this.target = this.victimSelector.getNewTarget(currentTime);
         }while (this.target != null);
-        return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime));
+        return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime, this.me));
     }
 
     public boolean someoneOnBoard() {
@@ -118,7 +118,7 @@ public abstract class BasicTacticsAmbulance extends TacticsAmbulance implements 
     public Action moveRefuge(int currentTime) {
         Refuge result = PositionUtil.getNearTarget(this.world, this.me, this.getRefuges());
         List<EntityID> path = this.routeSearcher.getPath(currentTime, this.me, result);
-        return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
+        return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime, this.me));
     }
 
     public Action moveTarget(int currentTime) {
@@ -126,6 +126,6 @@ public abstract class BasicTacticsAmbulance extends TacticsAmbulance implements 
         if(this.target != null) {
             path = this.routeSearcher.getPath(currentTime, this.me, this.target);
         }
-        return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime));
+        return new ActionMove(this, path != null ? path : this.routeSearcher.noTargetMove(currentTime, this.me));
     }
 }

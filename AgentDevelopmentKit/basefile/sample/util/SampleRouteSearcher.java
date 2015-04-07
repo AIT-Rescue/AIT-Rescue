@@ -89,10 +89,10 @@ public class SampleRouteSearcher implements RouteSearcher {
     }
 
     @Override
-    public List<EntityID> noTargetMove(int time) {
+    public List<EntityID> noTargetMove(int time, EntityID from) {
         StandardWorldModel world = this.provider.getWorld();
         RouteGraph graph = this.routeManager.getPassableGraph();
-        EntityID current = this.provider.getOwnerLocation().getID();
+        EntityID current = from;//this.provider.getOwnerLocation().getID();
         if(!graph.createPositionNode(world, current)) {
             return Lists.newArrayList(current);
         }

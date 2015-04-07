@@ -48,10 +48,10 @@ public class BasicRouteSearcher implements RouteSearcher {
     }
 
     @Override
-    public List<EntityID> noTargetMove(int time) {
+    public List<EntityID> noTargetMove(int time, EntityID from) {
         List<EntityID> result = new ArrayList<>(50);
         Set<EntityID> seen = new HashSet<>();
-        EntityID current = this.provider.getOwner().getPosition();
+        EntityID current = from;//this.provider.getOwner().getPosition();
         for (int i = 0; i < 50; ++i) {
             result.add(current);
             seen.add(current);
