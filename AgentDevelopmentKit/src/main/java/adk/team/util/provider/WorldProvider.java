@@ -1,6 +1,7 @@
 package adk.team.util.provider;
 
 import comlib.message.information.*;
+import rescuecore2.config.Config;
 import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.ChangeSet;
 import rescuecore2.worldmodel.EntityID;
@@ -8,6 +9,8 @@ import rescuecore2.worldmodel.EntityID;
 import java.util.List;
 
 public interface WorldProvider<E extends StandardEntity> {
+
+    public Config getConfig();
 
     public int getCurrentTime();
 

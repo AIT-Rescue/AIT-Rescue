@@ -45,6 +45,11 @@ public abstract class Tactics<E extends StandardEntity> implements WorldProvider
     }
 
     @Override
+    public Config getConfig() {
+        return this.config;
+    }
+
+    @Override
     public int getCurrentTime() {
         return this.time;
     }

@@ -15,6 +15,8 @@ public abstract class Control<E extends Building> implements WorldProvider<E> {
 
     public boolean pre;
 
+    public Config config;
+
     public StandardWorldModel world;
     public StandardWorldModel model;
     public int time;
@@ -36,6 +38,11 @@ public abstract class Control<E extends Building> implements WorldProvider<E> {
     }
 
     public void registerProvider(MessageManager manager) {
+    }
+
+    @Override
+    public Config getConfig() {
+        return this.config;
     }
 
     @Override

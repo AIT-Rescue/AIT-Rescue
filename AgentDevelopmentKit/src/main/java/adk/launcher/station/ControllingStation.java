@@ -23,7 +23,7 @@ public abstract class ControllingStation<E extends Building> extends Communicati
         this.control.pre = pre;
     }
 
-		@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     @Override
     public void postConnect() {
         super.postConnect();
@@ -32,6 +32,7 @@ public abstract class ControllingStation<E extends Building> extends Communicati
         this.control.model = this.getWorld();
         this.control.stationID = this.getID();
         this.control.refugeList = this.getRefuges();
+        this.control.config = this.config;
         this.setCenterUniqueValue();
         this.setCenterEntity();
         this.control.preparation(this.config);
@@ -65,6 +66,7 @@ public abstract class ControllingStation<E extends Building> extends Communicati
     public void receiveBeforeEvent(int time, ChangeSet changed) {
         this.control.time = time;
         this.control.changed = changed;
+        this.control.config = this.config;
         this.setCenterEntity();
     }
 
