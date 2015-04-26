@@ -28,7 +28,7 @@ public abstract class TacticsAgent<E extends StandardEntity> extends Communicati
         this.tactics.pre = pre;
     }
 
-		@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     @Override
     public void postConnect() {
         super.postConnect();
@@ -38,6 +38,7 @@ public abstract class TacticsAgent<E extends StandardEntity> extends Communicati
         this.tactics.model = this.getWorld();
         this.tactics.agentID = this.getID();
         this.tactics.refugeList = this.getRefuges();
+        this.tactics.config = this.config;
         //this.tactics.setWorldInfo(this);
         this.setAgentUniqueValue();
         this.setAgentEntity();
@@ -75,6 +76,7 @@ public abstract class TacticsAgent<E extends StandardEntity> extends Communicati
     public void receiveBeforeEvent(int time, ChangeSet changed) {
         this.tactics.time = time;
         this.tactics.changed = changed;
+        this.tactics.config = this.config;
         //this.tactics.world = this.getWorld();
         this.setAgentEntity();
     }

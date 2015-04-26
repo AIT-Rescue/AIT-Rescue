@@ -18,6 +18,7 @@ public abstract class Tactics<E extends StandardEntity> implements WorldProvider
 
     public StandardWorldModel world;
     public StandardWorldModel model;
+    public Config config;
     public int time;
     public ChangeSet changed;
     
