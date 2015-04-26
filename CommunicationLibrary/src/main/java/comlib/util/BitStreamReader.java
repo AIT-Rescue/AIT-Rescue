@@ -17,7 +17,8 @@ public class BitStreamReader {
 	//先頭から指定されたビット数を取り出す
 	public synchronized int getBits(int len) throws ArrayIndexOutOfBoundsException {
 		//ストリーム長を超える読み取りかどうか
-		if (stream.length * 8 < index + len) {
+//		System.out.println(stream.length +"/"+ index +"/"+ len);
+        if (stream.length * 8 < index + len) {
 			throw new ArrayIndexOutOfBoundsException();
 		}
 

@@ -54,6 +54,9 @@ public abstract class BasicTacticsFire extends TacticsFire implements RouteSearc
         //情報の整理
         this.organizeUpdateInfo(currentTime, updateWorldData, manager);
         //状態の確認
+
+        manager.addSendMessage(new MessageFireBrigade(this.me, MessageFireBrigade.ACTION_REST, this.agentID));
+
         if(this.me.getBuriedness() > 0) {
             manager.addSendMessage(new MessageFireBrigade(this.me, MessageFireBrigade.ACTION_REST, this.agentID));
             for(StandardEntity entity : this.world.getObjectsInRange(this.me, this.maxDistance)) {

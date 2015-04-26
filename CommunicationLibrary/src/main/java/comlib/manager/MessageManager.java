@@ -107,6 +107,10 @@ public class MessageManager
 			{
 				byte[] data = ((AKSpeak)command).getContent();
 				String voice = new String(data);
+
+				if (data.length <= 0)
+				{ continue; }
+
 				if ("Help".equalsIgnoreCase(voice) || "Ouch".equalsIgnoreCase(voice))
 				{ continue; }
 
@@ -114,7 +118,9 @@ public class MessageManager
 				if (this.voiceConfig.getKeyword().equals(voiceData[0]))
 				{ this.receiveVoiceMessage(Arrays.copyOfRange(voiceData, 1, voiceData.length - 1), this.receivedMessages); }
 				else
-				{ this.receiveRadioMessage(data, this.receivedMessages); }
+				{
+					this.receiveRadioMessage(data, this.receivedMessages);
+				}
 			}
 		}
 	}
@@ -124,7 +130,10 @@ public class MessageManager
 		if (data == null || list == null)
 		{ return; }
 		BitStreamReader bsr = new BitStreamReader(data);
-		MessageProvider provider = this.providerList[bsr.getBits(this.radioConfig.getSizeOfMessageID())];
+		int msgID = bsr.getBits(this.radioConfig.getSizeOfMessageID());
+//		MessageProvider provider = this.providerList[bsr.getBits(this.radioConfig.getSizeOfMessageID())];
+		MessageProvider provider = this.providerList[msgID];
+		System.out.println("MSGID: " + msgID);
 		while(bsr.getRemainBuffer() > 0)
 		{
 			try
@@ -178,9 +187,10 @@ public class MessageManager
 				ch = 1;
 				bosNum = 0;
 			}
-			// System.out.println("@MSG:" + sentMessageSize);
+//			System.out.println("@MSG:" + sentMessageSize);
 		}
 
+//		messages.add(new AKSpeak(agentID, this.getTime(), 1, ("TEST").getBytes()));
 		// StringBuilder sb = new StringBuilder();
 		// for (CommunicationMessage msg : this.sendMessages)
 		// { this.providerList[msg.getMessageID()].write(this, sb, msg); }
@@ -197,6 +207,7 @@ public class MessageManager
 	{
 		this.sendMessages.add(msg);
 		int msgID = msg.getMessageID();
+//		System.out.println("msgID:" + msgID);
 		// TODO: need cutting data
 		this.providerList[msgID].write(this, bitOutputStreamList[msgID], msg);
 	}

@@ -7,6 +7,7 @@ import rescuecore2.messages.Command;
 import rescuecore2.messages.Message;
 import rescuecore2.standard.components.StandardAgent;
 import rescuecore2.standard.entities.StandardEntity;
+import rescuecore2.standard.messages.AKSubscribe;
 import rescuecore2.worldmodel.ChangeSet;
 
 import java.util.Collection;
@@ -51,11 +52,13 @@ public abstract class CommunicationAgent<E extends StandardEntity> extends Stand
     @Override
     protected final void think(int time, ChangeSet changed, Collection<Command> heard)
     {
+        send(new AKSubscribe(getID(), time, 1));
+
         this.receiveBeforeEvent(time, changed);
-        try
-        {
+//        try
+//        {
             this.manager.receiveMessage(time, heard);
-        } catch (Exception s) { System.out.println("'");}
+//        } catch (Exception s) { System.out.println("'");}
         this.think(time, changed);
         this.send(this.manager.createSendMessage(super.getID()));
         this.sendAfterEvent(time, changed);
