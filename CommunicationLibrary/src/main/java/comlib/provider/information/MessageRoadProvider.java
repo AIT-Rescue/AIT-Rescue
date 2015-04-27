@@ -1,5 +1,7 @@
 package comlib.provider.information;
 
+import comlib.event.MessageDummyEvent;
+import comlib.event.MessageEvent;
 import comlib.event.information.MessageRoadEvent;
 import comlib.manager.RadioConfig;
 import comlib.manager.VoiceConfig;
@@ -44,6 +46,17 @@ public class MessageRoadProvider extends MapMessageProvider<MessageRoad, Message
 	{
 		return null;
 		// return new MessageCivilian(time, ttl, Integer.parseInt(data[next]));
+	}
+
+//	@Override
+//	public void trySetEvent(MessageRoadEvent ev) {
+//		if (ev instanceof MessageRoadEvent) { this.event = ev; }
+//
+//	}
+
+	@Override
+	public Class<? extends MessageEvent> getEventClass() {
+		return MessageRoadEvent.class;
 	}
 }
 

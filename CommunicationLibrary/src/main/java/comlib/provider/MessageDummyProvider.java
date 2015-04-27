@@ -1,6 +1,7 @@
 package comlib.provider;
 
 import comlib.event.MessageDummyEvent;
+import comlib.event.MessageEvent;
 import comlib.message.MessageDummy;
 import comlib.manager.RadioConfig;
 import comlib.manager.VoiceConfig;
@@ -38,6 +39,16 @@ public class MessageDummyProvider extends MessageProvider<MessageDummy, MessageD
 				time, ttl,
 				Integer.parseInt(data[next])
 				);
+	}
+
+	/*@Override
+	public void trySetEvent(MessageEvent ev)
+	{
+		if (ev instanceof MessageDummyEvent) { this.event = ev; }
+	}*/
+	@Override
+	public Class<? extends MessageEvent> getEventClass() {
+		return MessageDummyEvent.class;
 	}
 
 }

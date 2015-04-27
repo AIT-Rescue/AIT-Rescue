@@ -1,5 +1,6 @@
 package comlib.provider.topdown;
 
+import comlib.event.MessageEvent;
 import comlib.provider.CommandMessageProvider;
 
 import comlib.event.topdown.CommandScoutEvent;
@@ -46,4 +47,14 @@ public class CommandScoutProvider extends CommandMessageProvider<CommandScout, C
 		// 		);
 	}
 
+//	@Override
+//	public void trySetEvent(CommandScoutEvent ev) {
+//
+//		if (ev instanceof CommandScoutEvent) { this.event = ev; }
+//	}
+
+	@Override
+	public Class<? extends MessageEvent> getEventClass() {
+		return CommandScoutEvent.class;
+	}
 }

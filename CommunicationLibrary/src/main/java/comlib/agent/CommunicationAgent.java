@@ -52,16 +52,24 @@ public abstract class CommunicationAgent<E extends StandardEntity> extends Stand
     @Override
     protected final void think(int time, ChangeSet changed, Collection<Command> heard)
     {
-        send(new AKSubscribe(getID(), time, 1));
 
-        this.receiveBeforeEvent(time, changed);
+        if (time <= config.getIntValue(kernel.KernelConstants.IGNORE_AGENT_COMMANDS_KEY))
+        {
+            send(new AKSubscribe(getID(), time, 1));
+        }
+        else {
+            this.receiveBeforeEvent(time, changed);
 //        try
 //        {
             this.manager.receiveMessage(time, heard);
 //        } catch (Exception s) { System.out.println("'");}
+        }
         this.think(time, changed);
-        this.send(this.manager.createSendMessage(super.getID()));
-        this.sendAfterEvent(time, changed);
+
+        if (time > config.getIntValue(kernel.KernelConstants.IGNORE_AGENT_COMMANDS_KEY)) {
+            this.send(this.manager.createSendMessage(super.getID()));
+            this.sendAfterEvent(time, changed);
+        }
     }
 
     public void receiveBeforeEvent(int time, ChangeSet changed) {

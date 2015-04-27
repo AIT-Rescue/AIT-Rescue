@@ -39,6 +39,7 @@ public class MessageManager
 
 	private MessageProvider[] providerList;
 	private List<MessageEvent> eventList;
+//	private MessageEvent[] eventList;
 
 	private List<CommunicationMessage> receivedMessages; // FOR-COMPATIBLE
 	private List<CommunicationMessage> sendMessages;
@@ -133,7 +134,8 @@ public class MessageManager
 		int msgID = bsr.getBits(this.radioConfig.getSizeOfMessageID());
 //		MessageProvider provider = this.providerList[bsr.getBits(this.radioConfig.getSizeOfMessageID())];
 		MessageProvider provider = this.providerList[msgID];
-		System.out.println("MSGID: " + msgID);
+//		System.out.println("MSGID: " + msgID);
+		int lastRemainBufferSize = bsr.getRemainBuffer();
 		while(bsr.getRemainBuffer() > 0)
 		{
 			try
@@ -145,6 +147,12 @@ public class MessageManager
 				e.printStackTrace();
 				return;
 			}
+
+			// TODO: Check!!
+			if (bsr.getRemainBuffer() == lastRemainBufferSize)  { break; }
+			else { lastRemainBufferSize = bsr.getRemainBuffer(); }
+
+//			System.out.println("MSG : " + msgID + ", RemainBuf : " + bsr.getRemainBuffer());
 		}
 	}
 
@@ -273,7 +281,6 @@ public class MessageManager
 	{
 		if (event == null)
 		{ return false; }
-
 		this.eventList.add(event);
 		this.searchProvider(event);
 		return true;

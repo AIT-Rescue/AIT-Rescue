@@ -5,13 +5,13 @@ public interface MessageID
 {
 	int dummyMessage = 15;
 
-	int civilianMessage = 0;
-	int fireBrigadeMessage = 1;
+	int civilianMessage = 11;
+	int fireBrigadeMessage = 12;
 	int policeForceMessage = 2;
 	int ambulanceTeamMessage = 3;
 
 	int buildingMessage = 4;
-	int roadMessage = 5;
+	int roadMessage = 1;
 
 	int reportMessage = 6;
 	int policeCommand = 7;

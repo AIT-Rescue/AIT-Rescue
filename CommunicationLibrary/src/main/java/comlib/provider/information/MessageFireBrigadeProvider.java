@@ -1,5 +1,6 @@
 package comlib.provider.information;
 
+import comlib.event.MessageEvent;
 import comlib.provider.HumanMessageProvider;
 
 import comlib.event.information.MessageFireBrigadeEvent;
@@ -55,4 +56,14 @@ public class MessageFireBrigadeProvider extends HumanMessageProvider<MessageFire
 		// 		);
 	}
 
+//	@Override
+//	public void trySetEvent(MessageFireBrigadeEvent ev) {
+//		if (ev instanceof MessageFireBrigadeEvent) { this.event = ev; }
+//
+//	}
+
+	@Override
+	public Class<? extends MessageEvent> getEventClass() {
+		return MessageFireBrigadeEvent.class;
+	}
 }

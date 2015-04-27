@@ -72,7 +72,12 @@ public abstract class MessageProvider<M extends CommunicationMessage, E extends 
 		} catch (Exception e)
 		{ return null; }
 
-		this.event.receivedRadio(msg);
+		if (this.event != null)
+		{
+//			System.out.println("[INFO] MP : " + this.messageID + " : Radio event called : " + this.event.getClass());
+			this.event.receivedRadio(msg);
+		}
+
 		return msg;
 	}
 
@@ -89,15 +94,29 @@ public abstract class MessageProvider<M extends CommunicationMessage, E extends 
 					data, next);
 		} catch (Exception e)
 		{ return null; }
-		this.event.receivedVoice(msg);
+
+		if (this.event != null)
+		{
+//			System.out.println("[INFO] MP: Voice Event called : " + this.event.getClass());
+			this.event.receivedVoice(msg);
+		}
+
 		return msg;
 	}
 
-	public void trySetEvent(E ev)
-	{
+	//public abstract void trySetEvent(MessageEvent ev);
+//	{
 		// TODO: check!!
 		//if (ev instanceof E) //こうかけないからクソ
-		if (ev != null)
-		{ this.event = (E) ev; }
+
+//		if (ev != null)
+//		{ this.event = (E) ev; }
+//	}
+	public abstract Class<? extends MessageEvent> getEventClass();
+
+	public void trySetEvent(MessageEvent event) {
+		if(event != null && this.getEventClass().isInstance(event)) {
+			this.event = (E) event;
+		}
 	}
 }

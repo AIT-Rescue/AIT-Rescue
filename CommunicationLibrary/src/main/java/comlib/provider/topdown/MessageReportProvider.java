@@ -1,5 +1,7 @@
 package comlib.provider.topdown;
 
+import comlib.event.MessageEvent;
+import comlib.message.topdown.CommandAmbulance;
 import comlib.provider.MessageProvider;
 import comlib.event.topdown.MessageReportEvent;
 import comlib.message.topdown.MessageReport;
@@ -42,4 +44,8 @@ public class MessageReportProvider extends MessageProvider<MessageReport, Messag
 				);
 	}
 
+	@Override
+	public Class<? extends MessageEvent> getEventClass() {
+		return MessageReportEvent.class;
+	}
 }

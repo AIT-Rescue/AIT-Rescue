@@ -1,5 +1,6 @@
 package comlib.provider.information;
 
+import comlib.event.MessageEvent;
 import comlib.provider.MapMessageProvider;
 
 import comlib.event.information.MessageBuildingEvent;
@@ -49,4 +50,14 @@ public class MessageBuildingProvider extends MapMessageProvider<MessageBuilding,
 		// 		);
 	}
 
+//	@Override
+//	public void trySetEvent(MessageBuildingEvent ev) {
+//
+//		if (ev instanceof MessageBuildingEvent) { this.event = ev; }
+//	}
+
+	@Override
+	public Class<? extends MessageEvent> getEventClass() {
+		return MessageBuildingEvent.class;
+	}
 }

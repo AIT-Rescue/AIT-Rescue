@@ -32,6 +32,7 @@ public class BasicImpassableSelector implements ImpassableSelector {
     @Override
     public void add(Blockade blockade) {
         Road road = (Road)this.provider.getWorld().getEntity(blockade.getPosition());
+        if (road == null) return;
         if(!this.passableRoadList.contains(road.getID())) {
             this.impassableRoadList.add(road);
         }

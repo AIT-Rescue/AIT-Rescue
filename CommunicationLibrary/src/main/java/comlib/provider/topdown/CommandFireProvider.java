@@ -1,5 +1,6 @@
 package comlib.provider.topdown;
 
+import comlib.event.MessageEvent;
 import comlib.provider.CommandMessageProvider;
 
 import comlib.event.topdown.CommandFireEvent;
@@ -48,4 +49,14 @@ public class CommandFireProvider extends CommandMessageProvider<CommandFire, Com
 		// 		);
 	}
 
+//	@Override
+//	public void trySetEvent(CommandFireEvent ev) {
+//		if (ev instanceof CommandFireEvent) { this.event = ev; }
+//
+//	}
+
+	@Override
+	public Class<? extends MessageEvent> getEventClass() {
+		return CommandFireEvent.class;
+	}
 }
