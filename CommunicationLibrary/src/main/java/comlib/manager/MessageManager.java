@@ -114,7 +114,7 @@ public class MessageManager
 				byte[] data = ((AKSpeak)command).getContent();
 				if (data.length <= 0) { continue; }
 
-				if (((AKSpeak) command).getChannel() == 1) {
+				if (((AKSpeak) command).getChannel() == 0) {
 					String voice = new String(data);
 					if ("Help".equalsIgnoreCase(voice) || "Ouch".equalsIgnoreCase(voice)) {
 						continue;
