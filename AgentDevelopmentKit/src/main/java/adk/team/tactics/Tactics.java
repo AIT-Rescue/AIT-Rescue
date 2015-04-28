@@ -4,6 +4,7 @@ import adk.team.action.Action;
 import adk.team.util.provider.WorldProvider;
 import comlib.manager.MessageManager;
 import rescuecore2.config.Config;
+import rescuecore2.standard.entities.Human;
 import rescuecore2.standard.entities.Refuge;
 import rescuecore2.standard.entities.StandardEntity;
 import rescuecore2.standard.entities.StandardWorldModel;
@@ -12,7 +13,7 @@ import rescuecore2.worldmodel.EntityID;
 
 import java.util.List;
 
-public abstract class Tactics<E extends StandardEntity> implements WorldProvider<E> {
+public abstract class Tactics<E extends Human> implements WorldProvider<E> {
 
     public boolean pre;
 
