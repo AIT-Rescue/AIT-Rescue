@@ -46,9 +46,12 @@ public class MessageManager
 	private BitOutputStream[] bitOutputStreamList;
 	private int[] maxBandWidthList;
 
-	public MessageManager(Config config)
+	private EntityID agentID;
+
+	public MessageManager(Config config, EntityID agentID)
 	{
 		this.init(config);
+		this.agentID = agentID;
 	}
 
 	private void init(Config config)
@@ -106,31 +109,33 @@ public class MessageManager
 		{
 			if (command instanceof AKSpeak)
 			{
+				if (agentID == command.getAgentID()) { continue; }
+
 				byte[] data = ((AKSpeak)command).getContent();
-				String voice = new String(data);
+				if (data.length <= 0) { continue; }
 
-				if (data.length <= 0)
-				{ continue; }
-
-				if ("Help".equalsIgnoreCase(voice) || "Ouch".equalsIgnoreCase(voice))
-				{ continue; }
-
-				String[] voiceData = voice.split(this.voiceConfig.getMessageSeparator());
-				if (this.voiceConfig.getKeyword().equals(voiceData[0]))
-				{ this.receiveVoiceMessage(Arrays.copyOfRange(voiceData, 1, voiceData.length - 1), this.receivedMessages); }
+				if (((AKSpeak) command).getChannel() == 1) {
+					String voice = new String(data);
+					if ("Help".equalsIgnoreCase(voice) || "Ouch".equalsIgnoreCase(voice)) {
+						continue;
+					}
+					String[] voiceData = voice.split(this.voiceConfig.getMessageSeparator());
+					this.receiveVoiceMessage((AKSpeak)command, Arrays.copyOfRange(voiceData, 1, voiceData.length - 1), this.receivedMessages);
+					// TODO: refactoring
+				}
 				else
 				{
-					this.receiveRadioMessage(data, this.receivedMessages);
+					this.receiveRadioMessage((AKSpeak)command, this.receivedMessages);
 				}
 			}
 		}
 	}
 
-	private void receiveRadioMessage(byte[] data, List<CommunicationMessage> list)
+	private void receiveRadioMessage(AKSpeak akSpeak, List<CommunicationMessage> list)
 	{
-		if (data == null || list == null)
+		if (akSpeak.getContent() == null || list == null)
 		{ return; }
-		BitStreamReader bsr = new BitStreamReader(data);
+		BitStreamReader bsr = new BitStreamReader(akSpeak.getContent());
 		int msgID = bsr.getBits(this.radioConfig.getSizeOfMessageID());
 //		MessageProvider provider = this.providerList[bsr.getBits(this.radioConfig.getSizeOfMessageID())];
 		MessageProvider provider = this.providerList[msgID];
@@ -140,7 +145,7 @@ public class MessageManager
 		{
 			try
 			{
-				CommunicationMessage msg = provider.create(this, bsr);
+				CommunicationMessage msg = provider.create(this, bsr, akSpeak.getAgentID());
 				list.add(msg);
 			} catch(Exception e) {
 				//System.err.println("Received message is corrupt or format is different.");
@@ -156,15 +161,16 @@ public class MessageManager
 		}
 	}
 
-	private void receiveVoiceMessage(String[] data, List<CommunicationMessage> list)
+	// TODO: refactoring
+	private void receiveVoiceMessage(AKSpeak akSpeak, String[] data, List<CommunicationMessage> list)
 	{
-		if (data == null || (data.length & 0x01) == 1 || list == null)
+		if (data == null || (data.length & 0x01) == 1 || list == null) //?
 		{ return; }
 		for (int count = 0; count < data.length; count += 2)
 		{
 			int id = Integer.parseInt(data[count]);
 			String[] messageData = data[count + 1].split(this.voiceConfig.getDataSeparator());
-			list.add(this.providerList[id].create(this, messageData));
+			list.add(this.providerList[id].create(this, messageData, akSpeak.getAgentID()));
 		}
 	}
 

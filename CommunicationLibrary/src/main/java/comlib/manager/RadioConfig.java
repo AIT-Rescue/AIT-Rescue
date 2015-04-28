@@ -48,6 +48,7 @@ public class RadioConfig {
     public int getSizeOfBuildingID() { return 32; }
     public int getSizeOfBuildingBrokenness() { return 32; }
     public int getSizeOfBuildingFieryness() { return 32; }
+    public int getSizeOfBuildingTemperature() { return 32; }
 
     /*
 		public int getSizeOfEntityID(Class<? extends Building> c) {

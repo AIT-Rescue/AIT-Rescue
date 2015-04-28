@@ -25,6 +25,7 @@ public class MessageBuildingProvider extends MapMessageProvider<MessageBuilding,
 		bos.writeBits(msg.getBuildingID().getValue(), config.getSizeOfBuildingID());
 		bos.writeBits(msg.getBrokenness(), config.getSizeOfBuildingBrokenness());
 		bos.writeBits(msg.getFieryness(), config.getSizeOfBuildingFieryness());
+		bos.writeBits(msg.getFieryness(), config.getSizeOfBuildingTemperature());
 	}
 
 	protected void writeMessage(VoiceConfig config, StringBuilder sb, MessageBuilding msg)
@@ -37,7 +38,8 @@ public class MessageBuildingProvider extends MapMessageProvider<MessageBuilding,
 		return new MessageBuilding(time, -1,
 				bsr.getBits(config.getSizeOfBuildingID()),
 				bsr.getBits(config.getSizeOfBuildingBrokenness()),
-				bsr.getBits(config.getSizeOfBuildingFieryness())
+				bsr.getBits(config.getSizeOfBuildingFieryness()),
+				bsr.getBits(config.getSizeOfBuildingTemperature())
 				);
 	}
 

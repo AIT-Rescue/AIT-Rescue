@@ -8,6 +8,7 @@ import comlib.manager.RadioConfig;
 import comlib.manager.VoiceConfig;
 import comlib.util.BitOutputStream;
 import comlib.util.BitStreamReader;
+import rescuecore2.worldmodel.EntityID;
 
 
 public abstract class MessageProvider<M extends CommunicationMessage, E extends MessageEvent>
@@ -15,6 +16,9 @@ public abstract class MessageProvider<M extends CommunicationMessage, E extends 
 	protected int messageID;
 
 	protected E event;
+
+	protected EntityID fromID = null;
+
 
 	public MessageProvider(int id)
 	{
@@ -55,16 +59,18 @@ public abstract class MessageProvider<M extends CommunicationMessage, E extends 
 		if(msg.getTTL() < 0)
 		{ config.appendLimit(sb); }
 		else
-		{ config.appendData(sb, String.valueOf(msg.getTTL() -1)); }
+		{ config.appendData(sb, String.valueOf(msg.getTTL() - 1)); }
 
 		this.writeMessage(config, sb, msg);
 		config.appendMessageSeparator(sb);
 	}
 
-	public M create(MessageManager manager, BitStreamReader bsr)
+	public M create(MessageManager manager, BitStreamReader bsr, EntityID fromID)
 	{
 		RadioConfig config = manager.getRadioConfig();
 		M msg = null;
+
+		this.fromID = fromID;
 
 		try
 		{
@@ -81,10 +87,13 @@ public abstract class MessageProvider<M extends CommunicationMessage, E extends 
 		return msg;
 	}
 
-	public M create(MessageManager manager, String[] data)
+	public M create(MessageManager manager, String[] data, EntityID fromID)
 	{
 		int next = 0;
 		M msg = null;
+
+		this.fromID = fromID;
+
 		try
 		{
 			msg = this.createMessage(
@@ -102,6 +111,11 @@ public abstract class MessageProvider<M extends CommunicationMessage, E extends 
 		}
 
 		return msg;
+	}
+
+	public EntityID getFromID()
+	{
+		return this.fromID;
 	}
 
 	//public abstract void trySetEvent(MessageEvent ev);

@@ -7,6 +7,9 @@ import comlib.manager.RadioConfig;
 import comlib.manager.VoiceConfig;
 import comlib.util.BitOutputStream;
 import comlib.util.BitStreamReader;
+import rescuecore2.worldmodel.EntityID;
+
+import javax.swing.text.html.parser.Entity;
 
 
 public abstract class CommandMessageProvider<M extends MessageCommand, E extends MessageEvent> extends MessageProvider<M, E>
@@ -41,5 +44,4 @@ public abstract class CommandMessageProvider<M extends MessageCommand, E extends
 	{
 		return null;
 	}
-
 }

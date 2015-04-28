@@ -13,6 +13,7 @@ public class MessageBuilding extends MessageMap
 	protected EntityID buildingID;
 	protected int buildingBrokenness;
 	protected int buildingFieryness;
+	protected int buildingTemperature;
 
 	public MessageBuilding(Building building)
 	{
@@ -20,14 +21,16 @@ public class MessageBuilding extends MessageMap
 		this.buildingID = building.getID();
 		this.buildingBrokenness  = building.getBrokenness();
 		this.buildingFieryness  = building.getFieryness();
+		this.buildingTemperature  = building.getTemperature();
 	}
 
-	public MessageBuilding(int time, int ttl, int id, int brokenness, int fieryness)
+	public MessageBuilding(int time, int ttl, int id, int brokenness, int fieryness, int temperature)
 	{
 		super(MessageID.buildingMessage, time, ttl);
 		this.rawBuildingID = id;
 		this.buildingBrokenness = brokenness;
 		this.buildingFieryness = fieryness;
+		this.buildingTemperature  = temperature;
 	}
 
 	public EntityID getBuildingID()
@@ -43,7 +46,11 @@ public class MessageBuilding extends MessageMap
     }
 
 	public int getFieryness() {
-        return this.buildingFieryness;
+		return this.buildingFieryness;
+	}
+
+	public int getTemperature() {
+        return this.buildingTemperature;
     }
 }
 

@@ -42,7 +42,7 @@ public abstract class CommunicationAgent<E extends StandardEntity> extends Stand
     public void postConnect()
     {
         super.postConnect();
-        this.manager = new MessageManager(this.config);
+        this.manager = new MessageManager(this.config, this.me().getID());
         this.registerProvider(this.manager);
         this.registerEvent(this.manager);
     }
