@@ -35,7 +35,7 @@ public abstract class BasicTacticsPolice extends TacticsPolice implements RouteS
     public int count;
 
     @Override
-    public void preparation(Config config) {
+    public void preparation(Config config, MessageManager messageManager) {
         this.routeSearcher = this.initRouteSearcher();
         this.impassableSelector = this.initImpassableSelector();
         this.agentPoint = new Point2D[2];

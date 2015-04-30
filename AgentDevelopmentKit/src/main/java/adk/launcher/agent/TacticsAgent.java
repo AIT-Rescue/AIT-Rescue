@@ -42,7 +42,7 @@ public abstract class TacticsAgent<E extends StandardEntity> extends Communicati
         //this.tactics.setWorldInfo(this);
         this.setAgentUniqueValue();
         this.setAgentEntity();
-        this.tactics.preparation(this.config);
+        this.tactics.preparation(this.config, manager);
     }
 
     protected abstract void setAgentUniqueValue();

@@ -28,7 +28,7 @@ public abstract class BasicTacticsFire extends TacticsFire implements RouteSearc
     public RouteSearcher routeSearcher;
 
     @Override
-    public void preparation(Config config) {
+    public void preparation(Config config, MessageManager messageManager) {
         this.buildingSelector = this.initBuildingSelector();
         this.routeSearcher = this.initRouteSearcher();
     }

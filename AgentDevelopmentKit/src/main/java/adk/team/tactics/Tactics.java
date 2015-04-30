@@ -33,7 +33,7 @@ public abstract class Tactics<E extends Human> implements WorldProvider<E> {
 
     public abstract String getTacticsName();
 
-    public abstract void preparation(Config config);
+    public abstract void preparation(Config config, MessageManager messageManager);
 
     public abstract void registerEvent(MessageManager manager);
 

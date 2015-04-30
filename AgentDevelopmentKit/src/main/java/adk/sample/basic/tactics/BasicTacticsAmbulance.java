@@ -23,7 +23,7 @@ public abstract class BasicTacticsAmbulance extends TacticsAmbulance implements 
     public RouteSearcher routeSearcher;
 
     @Override
-    public void preparation(Config config) {
+    public void preparation(Config config, MessageManager messageManager) {
         this.victimSelector = this.initVictimSelector();
         this.routeSearcher = this.initRouteSearcher();
     }
