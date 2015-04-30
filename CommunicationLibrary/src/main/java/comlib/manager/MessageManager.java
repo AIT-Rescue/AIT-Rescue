@@ -48,6 +48,8 @@ public class MessageManager
 
 	private EntityID agentID;
 
+	private boolean agentCalled = false;
+
 	public MessageManager(Config config, EntityID agentID)
 	{
 		this.init(config);
@@ -97,10 +99,14 @@ public class MessageManager
 	public int getMaxBandWidth(int ch)
 	{ return this.maxBandWidthList[ch -1]; }
 
+	public boolean isAgentCalled()
+	{ return this.agentCalled; }
+
 	public void receiveMessage(int time, Collection<Command> heard)
 	{
 		this.kernelTime = time;
 		this.receivedMessages.clear();
+		this.agentCalled = false;
 
 		for (BitOutputStream bos : bitOutputStreamList)
 		{ bos.reset(); }
@@ -117,6 +123,8 @@ public class MessageManager
 				if (((AKSpeak) command).getChannel() == 0) {
 					String voice = new String(data);
 					if ("Help".equalsIgnoreCase(voice) || "Ouch".equalsIgnoreCase(voice)) {
+//						System.out.println(voice + " : " + command.getAgentID() + " : " );
+						this.agentCalled = true;
 						continue;
 					}
 					String[] voiceData = voice.split(this.voiceConfig.getMessageSeparator());
