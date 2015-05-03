@@ -12,7 +12,7 @@ public class OptionTeam extends Option {
 
     @Override
     public void setValue(Config config, String[] datas) {
-        if(datas.length == 5) {
+        if(datas.length == 8) {
             config.setValue(ConfigKey.KEY_FIRE_AGENT_NAME, datas[1]);
             config.setValue(ConfigKey.KEY_FIRE_STATION_NAME, datas[1]);
             config.setValue(ConfigKey.KEY_POLICE_AGENT_NAME, datas[1]);
