@@ -173,6 +173,7 @@ public class SampleTacticsPolice extends TacticsPolice implements RouteSearcherP
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         //対象の確定
+        Road road = this.model.getEntity(this.target);
         List<Point2D> clearList = this.getClearList(road);
         while(clearList == null || clearList.isEmpty()) {
             this.impassableSelector.remove(road);
