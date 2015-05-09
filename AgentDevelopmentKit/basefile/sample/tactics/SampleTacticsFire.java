@@ -32,7 +32,7 @@ public class SampleTacticsFire extends TacticsFire implements RouteSearcherProvi
     public RouteSearcher routeSearcher;
 
     @Override
-    public void preparation(Config config) {
+    public void preparation(Config config, MessageManager messageManager) {
         this.buildingSelector = new SampleBuildingSelector(this);
         this.routeSearcher = new SampleRouteSearcher(this, new RouteManager(this.world));
     }

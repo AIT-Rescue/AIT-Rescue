@@ -30,7 +30,7 @@ public class SampleTacticsAmbulance extends TacticsAmbulance implements RouteSea
     public RouteSearcher routeSearcher;
 
     @Override
-    public void preparation(Config config) {
+    public void preparation(Config config, MessageManager messageManager) {
         this.victimSelector = new SampleVictimSelector(this);
         this.routeSearcher = new SampleRouteSearcher(this, new RouteManager(this.world));
     }

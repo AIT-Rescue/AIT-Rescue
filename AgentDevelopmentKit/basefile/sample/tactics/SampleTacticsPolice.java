@@ -44,7 +44,7 @@ public class SampleTacticsPolice extends TacticsPolice implements RouteSearcherP
     public int count;
 
     @Override
-    public void preparation(Config config) {
+    public void preparation(Config config, MessageManager messageManager) {
         this.routeSearcher = new SampleRouteSearcher(this, new RouteManager(this.world));
         this.impassableSelector = new SampleImpassableSelector(this);
         //Police
