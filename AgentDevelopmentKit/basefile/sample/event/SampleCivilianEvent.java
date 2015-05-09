@@ -9,17 +9,17 @@ import rescuecore2.standard.entities.Civilian;
 
 public class SampleCivilianEvent implements MessageCivilianEvent {
 
-    private WorldProvider wp;
+    private WorldProvider provider;
     private VictimSelectorProvider vsp;
 
     public SampleCivilianEvent(WorldProvider worldProvider, VictimSelectorProvider victimSelectorProvider) {
-        this.wp = worldProvider;
+        this.provider = worldProvider;
         this.vsp = victimSelectorProvider;
     }
 
     @Override
     public void receivedRadio(MessageCivilian message) {
-        Civilian civilian = MessageReflectHelper.reflectedMessage(this.wp.getWorld(), message);
+        Civilian civilian = MessageReflectHelper.reflectedMessage(this.provider.getWorld(), message);
         this.vsp.getVictimSelector().add(civilian);
     }
 

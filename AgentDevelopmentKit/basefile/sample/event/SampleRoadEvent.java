@@ -9,11 +9,11 @@ import rescuecore2.standard.entities.Blockade;
 
 public class SampleRoadEvent implements MessageRoadEvent {
 
-    private WorldProvider wp;
+    private WorldProvider provider;
     private ImpassableSelectorProvider drsp;
 
     public SampleRoadEvent(WorldProvider worldProvider, ImpassableSelectorProvider impassableSelectorProvider) {
-        this.wp = worldProvider;
+        this.provider = worldProvider;
         this.drsp = impassableSelectorProvider;
     }
 
@@ -23,7 +23,7 @@ public class SampleRoadEvent implements MessageRoadEvent {
             this.drsp.getImpassableSelector().remove(message.getRoadID());
         }
         else {
-            Blockade blockade = MessageReflectHelper.reflectedMessage(this.wp.getWorld(), message);
+            Blockade blockade = MessageReflectHelper.reflectedMessage(this.provider.getWorld(), message);
             this.drsp.getImpassableSelector().add(blockade);
         }
     }

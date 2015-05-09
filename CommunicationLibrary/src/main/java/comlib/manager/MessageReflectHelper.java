@@ -70,7 +70,7 @@ public class MessageReflectHelper {
             world.addEntity(new Blockade(message.getBlockadeID()));
             blockade = (Blockade) world.getEntity(message.getBlockadeID());
         }
-        // blockade.setPosition(message.getPosition());
+        blockade.setPosition(message.getRoadID());
         blockade.setRepairCost(message.getRepairCost());
         return blockade;
     }

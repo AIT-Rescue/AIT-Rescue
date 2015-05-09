@@ -8,17 +8,17 @@ import comlib.message.information.MessageBuilding;
 
 public class BasicBuildingEvent implements MessageBuildingEvent{
 
-    private WorldProvider wp;
+    private WorldProvider provider;
     private BuildingSelectorProvider bsp;
 
     public BasicBuildingEvent(WorldProvider worldProvider, BuildingSelectorProvider buildingSelectorProvider) {
-        this.wp = worldProvider;
+        this.provider = worldProvider;
         this.bsp = buildingSelectorProvider;
     }
 
     @Override
     public void receivedRadio(MessageBuilding message) {
-        this.bsp.getBuildingSelector().add(MessageReflectHelper.reflectedMessage(this.wp.getWorld(), message));
+        this.bsp.getBuildingSelector().add(MessageReflectHelper.reflectedMessage(this.provider.getWorld(), message));
     }
 
     @Override

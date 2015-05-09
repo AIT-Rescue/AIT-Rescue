@@ -9,18 +9,18 @@ import rescuecore2.standard.entities.AmbulanceTeam;
 
 public class SampleAmbulanceEvent implements MessageAmbulanceTeamEvent {
 
-    private WorldProvider wp;
+    private WorldProvider provider;
     private VictimSelectorProvider vsp;
 
     public SampleAmbulanceEvent(WorldProvider worldProvider, VictimSelectorProvider victimSelectorProvider) {
-        this.wp = worldProvider;
+        this.provider = worldProvider;
         this.vsp = victimSelectorProvider;
     }
 
     @Override
     public void receivedRadio(MessageAmbulanceTeam message) {
-        if(message.getHumanID().getValue() != this.wp.getOwnerID().getValue() ) {
-            AmbulanceTeam ambulanceTeam = MessageReflectHelper.reflectedMessage(this.wp.getWorld(), message);
+        if(message.getHumanID().getValue() != this.provider.getOwnerID().getValue() ) {
+            AmbulanceTeam ambulanceTeam = MessageReflectHelper.reflectedMessage(this.provider.getWorld(), message);
             this.vsp.getVictimSelector().add(ambulanceTeam);
         }
     }

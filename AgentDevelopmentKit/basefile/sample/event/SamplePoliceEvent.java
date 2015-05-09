@@ -9,17 +9,17 @@ import rescuecore2.standard.entities.PoliceForce;
 
 public class SamplePoliceEvent implements MessagePoliceForceEvent {
 
-    private WorldProvider wp;
+    private WorldProvider provider;
     private VictimSelectorProvider vsp;
 
     public SamplePoliceEvent(WorldProvider worldProvider, VictimSelectorProvider victimSelectorProvider) {
-        this.wp = worldProvider;
+        this.provider = worldProvider;
         this.vsp = victimSelectorProvider;
     }
 
     @Override
     public void receivedRadio(MessagePoliceForce message) {
-        PoliceForce policeForce = MessageReflectHelper.reflectedMessage(this.wp.getWorld(), message);
+        PoliceForce policeForce = MessageReflectHelper.reflectedMessage(this.provider.getWorld(), message);
         this.vsp.getVictimSelector().add(policeForce);
     }
 

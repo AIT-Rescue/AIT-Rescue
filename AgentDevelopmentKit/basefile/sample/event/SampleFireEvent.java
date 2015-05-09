@@ -9,17 +9,17 @@ import rescuecore2.standard.entities.FireBrigade;
 
 public class SampleFireEvent implements MessageFireBrigadeEvent {
 
-    private WorldProvider wp;
+    private WorldProvider provider;
     private VictimSelectorProvider vsp;
 
     public SampleFireEvent(WorldProvider worldProvider, VictimSelectorProvider victimSelectorProvider) {
-        this.wp = worldProvider;
+        this.provider = worldProvider;
         this.vsp = victimSelectorProvider;
     }
 
     @Override
     public void receivedRadio(MessageFireBrigade message) {
-        FireBrigade fireBrigade = MessageReflectHelper.reflectedMessage(this.wp.getWorld(), message);
+        FireBrigade fireBrigade = MessageReflectHelper.reflectedMessage(this.provider.getWorld(), message);
         this.vsp.getVictimSelector().add(fireBrigade);
     }
 
