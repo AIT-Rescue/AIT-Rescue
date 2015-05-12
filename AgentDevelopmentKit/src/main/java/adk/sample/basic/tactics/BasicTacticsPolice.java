@@ -91,7 +91,7 @@ public abstract class BasicTacticsPolice extends TacticsPolice implements RouteS
         //mainTargetPointと現在の地点が誤差含め同じか
         //同じならばoldTargetのデータから地点の削除
         if(this.mainTargetPoint != null) {
-            if(PositionUtil.equalsPoint(this.agentPoint[0], this.mainTargetPoint, 2.0D)) {
+            if(PositionUtil.equalsPoint(this.agentPoint[0], this.mainTargetPoint, 2000.0D)) {
                 this.removeTargetPoint((Road)this.world.getEntity(this.target), this.mainTargetPoint);
                 this.mainTargetPoint = null;
             }
