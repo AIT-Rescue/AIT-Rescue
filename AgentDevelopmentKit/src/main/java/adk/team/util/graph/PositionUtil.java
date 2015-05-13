@@ -74,10 +74,17 @@ public class PositionUtil {
         return Math.hypot(dx, dy);
     }
 
-    public static double getDistance(Pair<Integer, Integer> position, Pair<Integer, Integer> another) {
-        double dx = (double)(position.first() - another.first());
-        double dy = (double)(position.second() - another.second());
+    public static double getDistance(double fromX, double fromY, double toX, double toY) {
+        double dx = fromX - toX;
+        double dy = fromY - toY;
         return Math.hypot(dx, dy);
+    }
+
+    public static double getDistance(Pair<Integer, Integer> position, Pair<Integer, Integer> another) {
+        /*double dx = (double)(position.first() - another.first());
+        double dy = (double)(position.second() - another.second());
+        return Math.hypot(dx, dy);*/
+        return getDistance(position.first(), position.second(), another.first(), another.second());
     }
 
     public static double getDistance(Edge from, Edge to) {
@@ -89,15 +96,17 @@ public class PositionUtil {
     }
 
     public static double getDistance(Pair<Integer, Integer> from, Point2D to) {
-        double dx = from.first() - to.getX();
+        /*double dx = from.first() - to.getX();
         double dy = from.second() - to.getY();
-        return Math.hypot(dx, dy);
+        return Math.hypot(dx, dy);*/
+        return getDistance(from.first(), from.second(), to.getX(), to.getY());
     }
 
     public static double getDistance(Point2D from, Point2D to) {
-        double dx = from.getX() - to.getX();
+        /*double dx = from.getX() - to.getX();
         double dy = from.getY() - to.getY();
-        return Math.hypot(dx, dy);
+        return Math.hypot(dx, dy);*/
+        return getDistance(from.getX(), from.getY(), to.getX(), to.getY());
     }
 
     public static long valueOfCompare(Pair<Integer, Integer> position, Pair<Integer, Integer> another) {
