@@ -78,6 +78,7 @@ public abstract class TacticsAgent<E extends StandardEntity> extends Communicati
         this.tactics.changed = changed;
         this.tactics.config = this.config;
         //this.tactics.world = this.getWorld();
+        this.tactics.startProcessTime = this.startProcessTime;
         this.setAgentEntity();
     }
 

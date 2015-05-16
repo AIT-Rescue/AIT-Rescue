@@ -25,6 +25,8 @@ public abstract class Tactics<E extends Human> implements WorldProvider<E> {
     
     public int sightDistance;
 
+    public long startProcessTime;
+
     public EntityID agentID;
     public StandardEntity location;
 

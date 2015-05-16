@@ -18,6 +18,10 @@ public abstract class CommunicationAgent<E extends StandardEntity> extends Stand
 
     public MessageManager manager;
 
+    public int ignoreTime;
+
+    public long startProcessTime;
+
     public CommunicationAgent()
     {
         super();
@@ -26,7 +30,6 @@ public abstract class CommunicationAgent<E extends StandardEntity> extends Stand
     public abstract void registerEvent(MessageManager manager);
 
     public abstract void think(int time, ChangeSet changed);
-
 
     public void sendSpeak(CommunicationMessage msg)
     {
@@ -45,6 +48,7 @@ public abstract class CommunicationAgent<E extends StandardEntity> extends Stand
         this.manager = new MessageManager(this.config, this.me().getID());
         this.registerProvider(this.manager);
         this.registerEvent(this.manager);
+        this.ignoreTime = config.getIntValue(kernel.KernelConstants.IGNORE_AGENT_COMMANDS_KEY);
     }
 
     public void registerProvider(MessageManager manager){}
@@ -52,8 +56,8 @@ public abstract class CommunicationAgent<E extends StandardEntity> extends Stand
     @Override
     protected final void think(int time, ChangeSet changed, Collection<Command> heard)
     {
-
-        if (time <= config.getIntValue(kernel.KernelConstants.IGNORE_AGENT_COMMANDS_KEY))
+        this.startProcessTime = System.currentTimeMillis();
+        if (time <= this.ignoreTime)
         {
             send(new AKSubscribe(getID(), time, 1));
         }
@@ -66,7 +70,7 @@ public abstract class CommunicationAgent<E extends StandardEntity> extends Stand
         }
         this.think(time, changed);
 
-        if (time > config.getIntValue(kernel.KernelConstants.IGNORE_AGENT_COMMANDS_KEY)) {
+        if (time > this.ignoreTime) {
             this.send(this.manager.createSendMessage(super.getID()));
             this.sendAfterEvent(time, changed);
         }
