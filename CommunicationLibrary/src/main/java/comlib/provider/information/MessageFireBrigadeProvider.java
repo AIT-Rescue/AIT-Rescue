@@ -1,15 +1,13 @@
 package comlib.provider.information;
 
 import comlib.event.MessageEvent;
-import comlib.provider.HumanMessageProvider;
-
 import comlib.event.information.MessageFireBrigadeEvent;
-import comlib.message.information.MessageFireBrigade;
 import comlib.manager.RadioConfig;
 import comlib.manager.VoiceConfig;
+import comlib.message.information.MessageFireBrigade;
+import comlib.provider.HumanMessageProvider;
 import comlib.util.BitOutputStream;
 import comlib.util.BitStreamReader;
-import rescuecore2.worldmodel.EntityID;
 
 
 public class MessageFireBrigadeProvider extends HumanMessageProvider<MessageFireBrigade, MessageFireBrigadeEvent>
