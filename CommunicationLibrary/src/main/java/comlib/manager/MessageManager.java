@@ -99,7 +99,7 @@ public class MessageManager
 	{ return this.maxBandWidthList[ch -1]; }
 
 	public boolean isHeardAgentHelp()
-	{ return this.agentCalled; }
+	{ return this.heardAgentHelp; }
 
 	public void receiveMessage(int time, Collection<Command> heard)
 	{
@@ -183,7 +183,7 @@ public class MessageManager
 
 	public List<Message> createSendMessage(EntityID agentID)
 	{
-		List<Message> messages = new ArrayList<Message>()
+		List<Message> messages = new ArrayList<Message>();
 
 			int bosNum = 0;
 		boolean isFirstLoop = true;
