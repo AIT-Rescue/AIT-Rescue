@@ -39,7 +39,7 @@ public class MessageManager
 
 	private MessageProvider[] providerList;
 	private List<MessageEvent> eventList;
-//	private MessageEvent[] eventList;
+	//	private MessageEvent[] eventList;
 
 	private List<CommunicationMessage> receivedMessages; // FOR-COMPATIBLE
 	private List<CommunicationMessage> sendMessages;
@@ -48,7 +48,7 @@ public class MessageManager
 
 	private EntityID agentID;
 
-	private boolean agentCalled = false;
+	private boolean heardAgentHelp = false;
 
 	public MessageManager(Config config, EntityID agentID)
 	{
@@ -74,9 +74,8 @@ public class MessageManager
 		this.receivedMessages = new ArrayList<>();
 		this.sendMessages = new ArrayList<>();
 
-        for(int bosl = 0; bosl < this.bitOutputStreamList.length; bosl++) {
-            this.bitOutputStreamList[bosl] = new BitOutputStream();
-        }
+		for(int bosl = 0; bosl < this.bitOutputStreamList.length; bosl++)
+		{ this.bitOutputStreamList[bosl] = new BitOutputStream(); }
 
 		for (int ch = 1; ch <= numRadio; ch++)
 		{ maxBandWidthList[ch -1] = config.getIntValue("comms.channels." + ch + ".bandwidth"); }
@@ -99,14 +98,14 @@ public class MessageManager
 	public int getMaxBandWidth(int ch)
 	{ return this.maxBandWidthList[ch -1]; }
 
-	public boolean isAgentCalled()
+	public boolean isHeardAgentHelp()
 	{ return this.agentCalled; }
 
 	public void receiveMessage(int time, Collection<Command> heard)
 	{
 		this.kernelTime = time;
 		this.receivedMessages.clear();
-		this.agentCalled = false;
+		this.heardAgentHelp = false;
 
 		for (BitOutputStream bos : bitOutputStreamList)
 		{ bos.reset(); }
@@ -123,8 +122,8 @@ public class MessageManager
 				if (((AKSpeak) command).getChannel() == 0) {
 					String voice = new String(data);
 					if ("Help".equalsIgnoreCase(voice) || "Ouch".equalsIgnoreCase(voice)) {
-//						System.out.println(voice + " : " + command.getAgentID() + " : " );
-						this.agentCalled = true;
+						//						System.out.println(voice + " : " + command.getAgentID() + " : " );
+						this.heardAgentHelp = true;
 						continue;
 					}
 					String[] voiceData = voice.split(this.voiceConfig.getMessageSeparator());
@@ -145,9 +144,9 @@ public class MessageManager
 		{ return; }
 		BitStreamReader bsr = new BitStreamReader(akSpeak.getContent());
 		int msgID = bsr.getBits(this.radioConfig.getSizeOfMessageID());
-//		MessageProvider provider = this.providerList[bsr.getBits(this.radioConfig.getSizeOfMessageID())];
+		//		MessageProvider provider = this.providerList[bsr.getBits(this.radioConfig.getSizeOfMessageID())];
 		MessageProvider provider = this.providerList[msgID];
-//		System.out.println("MSGID: " + msgID);
+		//		System.out.println("MSGID: " + msgID);
 		int lastRemainBufferSize = bsr.getRemainBuffer();
 		while(bsr.getRemainBuffer() > 0)
 		{
@@ -165,7 +164,7 @@ public class MessageManager
 			if (bsr.getRemainBuffer() == lastRemainBufferSize)  { break; }
 			else { lastRemainBufferSize = bsr.getRemainBuffer(); }
 
-//			System.out.println("MSG : " + msgID + ", RemainBuf : " + bsr.getRemainBuffer());
+			//			System.out.println("MSG : " + msgID + ", RemainBuf : " + bsr.getRemainBuffer());
 		}
 	}
 
@@ -184,9 +183,9 @@ public class MessageManager
 
 	public List<Message> createSendMessage(EntityID agentID)
 	{
-		List<Message> messages = new ArrayList<Message>();
+		List<Message> messages = new ArrayList<Message>()
 
-		int bosNum = 0;
+			int bosNum = 0;
 		boolean isFirstLoop = true;
 		for (int ch = 1; ch <= numRadio; ch++)
 		{
@@ -209,10 +208,10 @@ public class MessageManager
 				ch = 1;
 				bosNum = 0;
 			}
-//			System.out.println("@MSG:" + sentMessageSize);
+			//			System.out.println("@MSG:" + sentMessageSize);
 		}
 
-//		messages.add(new AKSpeak(agentID, this.getTime(), 1, ("TEST").getBytes()));
+		//		messages.add(new AKSpeak(agentID, this.getTime(), 1, ("TEST").getBytes()));
 		// StringBuilder sb = new StringBuilder();
 		// for (CommunicationMessage msg : this.sendMessages)
 		// { this.providerList[msg.getMessageID()].write(this, sb, msg); }
@@ -229,7 +228,7 @@ public class MessageManager
 	{
 		this.sendMessages.add(msg);
 		int msgID = msg.getMessageID();
-//		System.out.println("msgID:" + msgID);
+		//		System.out.println("msgID:" + msgID);
 		// TODO: need cutting data
 		this.providerList[msgID].write(this, bitOutputStreamList[msgID], msg);
 	}
@@ -302,10 +301,9 @@ public class MessageManager
 
 	private void searchProvider(MessageEvent event)
 	{
-		for (MessageProvider provider : this.providerList) {
-			if(provider != null) {
-				provider.trySetEvent(event);
-			}
+		for (MessageProvider provider : this.providerList)
+		{
+			if(provider != null) { provider.trySetEvent(event); }
 		}
 	}
 
@@ -314,8 +312,7 @@ public class MessageManager
 		// if (this.eventList.size() < 1)
 		// {	return; }
 
-		for (MessageEvent event : this.eventList) {
-			provider.trySetEvent(event);
-		}
+		for (MessageEvent event : this.eventList)
+		{ provider.trySetEvent(event); }
 	}
 }
