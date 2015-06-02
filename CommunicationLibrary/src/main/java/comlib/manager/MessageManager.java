@@ -26,6 +26,9 @@ import java.util.List;
 
 public class MessageManager
 {
+	private final int PRIORITY_DEPTH = 16;
+	private final int NORMAL_PRIORITY = 8;
+
 	private boolean developerMode;
 
 	private RadioConfig radioConfig;
@@ -50,6 +53,11 @@ public class MessageManager
 
 	private boolean heardAgentHelp = false;
 
+	private int getBitOutputStreamNumber(int priority, int kind)
+	{
+		return (PRIORITY_DEPTH * kind) + priority;
+	}
+
 	public MessageManager(Config config, EntityID agentID)
 	{
 		this.init(config);
@@ -70,9 +78,15 @@ public class MessageManager
 		this.useRadio = ( this.numRadio >= 1 );
 
 		this.providerList =
-			new MessageProvider[config.getIntValue("comlib.default.messageID", 16)];
+			new MessageProvider[this.getBitOutputStreamNumber(
+					config.getIntValue("comlib.default.messageID", 16) -1,
+					PRIORITY_DEPTH
+					)];
 		this.bitOutputStreamList =
-			new BitOutputStream[config.getIntValue("comlib.default.messageID", 16)];
+			new BitOutputStream[this.getBitOutputStreamNumber(
+					config.getIntValue("comlib.default.messageID", 16) -1,
+					PRIORITY_DEPTH
+					)];
 		this.maxBandWidthList = new int[numRadio];
 		this.eventList = new ArrayList<>();
 		this.receivedMessages = new ArrayList<>();
@@ -126,7 +140,8 @@ public class MessageManager
 				byte[] data = ((AKSpeak)command).getContent();
 				if (data.length <= 0) { continue; }
 
-				if (((AKSpeak) command).getChannel() == 0) {
+				if (((AKSpeak) command).getChannel() == 0)
+				{
 					String voice = new String(data);
 					if ("Help".equalsIgnoreCase(voice) || "Ouch".equalsIgnoreCase(voice))
 					{
@@ -203,22 +218,38 @@ public class MessageManager
 	{
 		List<Message> messages = new ArrayList<Message>();
 
-			int bosNum = 0;
+		int bosNum = 0;
 		boolean isFirstLoop = true;
 		for (int ch = 1; ch <= numRadio; ch++)
 		{
 			int sentMessageSize = 0;
 
-			for (; bosNum < bitOutputStreamList.length; bosNum++)
+			// for (; bosNum < bitOutputStreamList.length; bosNum++)
+			// {
+			// 	BitOutputStream bos = bitOutputStreamList[bosNum];
+			// 	if (bos.size() <= 0)
+			// 	{ continue; }
+			// 	if ((sentMessageSize + bos.size()) > getMaxBandWidth(ch))
+			// 	{ continue; }
+			// 	sentMessageSize += bos.size();
+			// 	messages.add(
+			// 			new AKSpeak(agentID, this.getTime(), ch, bos.toByteArray()));
+			// }
+			for (int priority = 0; priority < PRIORITY_DEPTH; priority++)
 			{
-				BitOutputStream bos = bitOutputStreamList[bosNum];
-				if (bos.size() <= 0)
-				{ continue; }
-				if ((sentMessageSize + bos.size()) > getMaxBandWidth(ch))
-				{ continue; }
-				sentMessageSize += bos.size();
-				messages.add(
-						new AKSpeak(agentID, this.getTime(), ch, bos.toByteArray()));
+				for (int kind = 0; kind < providerList.length; kind++)
+				{
+					BitOutputStream bos =
+						bitOutputStreamList[this.getBitOutputStreamNumber(priority, kind)];
+					if (bos.size() <= 0)
+					{ continue; }
+					if ((sentMessageSize + bos.size()) > getMaxBandWidth(ch))
+					{ continue; }
+					sentMessageSize += bos.size();
+					messages.add(
+							new AKSpeak(agentID, this.getTime(), ch, bos.toByteArray())
+							);
+				}
 			}
 
 			if (ch == numRadio && isFirstLoop)
@@ -243,13 +274,21 @@ public class MessageManager
 		return this.receivedMessages;
 	}
 
-	public <M extends CommunicationMessage> void addSendMessage(M msg)
+	public <M extends CommunicationMessage> void addSendMessage(M msg, int priority)
 	{
+		if (priority < 0 || PRIORITY_DEPTH <= priority)
+		{ throw new IllegalArgumentException(); }
+
 		this.sendMessages.add(msg);
 		int msgID = msg.getMessageID();
 		//		System.out.println("msgID:" + msgID);
 		// TODO: need cutting data
 		this.providerList[msgID].write(this, bitOutputStreamList[msgID], msg);
+	}
+
+	public <M extends CommunicationMessage> void addSendMessage(M msg)
+	{
+		this.addSendMessage(msg, NORMAL_PRIORITY);
 	}
 
 	// public void old_addSendMessage(CommunicationMessage msg)
@@ -307,14 +346,20 @@ public class MessageManager
 		if (
 				!this.developerMode || this.kernelTime != -1
 				|| provider == null || messageID < 0
-				)
+			 )
 		{ return false; }
 
 		if (messageID >= this.providerList.length)
 		{
 			this.providerList = Arrays.copyOf(this.providerList, messageID +1);
-			this.bitOutputStreamList =
-				Arrays.copyOf(this.bitOutputStreamList, messageID +1);
+			// this.bitOutputStreamList =
+			// 	Arrays.copyOf(this.bitOutputStreamList,
+			// 			this.getBitOutputStreamNumber(messageID -1, PRIORITY_DEPTH)
+			// 			);
+
+			//TODO: refactoring
+			for(int bosl = 0; bosl < this.bitOutputStreamList.length; bosl++)
+			{ this.bitOutputStreamList[bosl] = new BitOutputStream(); }
 		}
 		else if (this.providerList[messageID] != null)
 		{ return false; }
