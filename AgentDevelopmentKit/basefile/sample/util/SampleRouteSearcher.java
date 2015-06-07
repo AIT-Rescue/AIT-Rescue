@@ -35,22 +35,36 @@ public class SampleRouteSearcher implements RouteSearcher {
         if(startID.getValue() == goalID.getValue()) {
             return Lists.newArrayList(startID);
         }
+        // init
+        Set<EntityID> closed = new HashSet<>();
+        List<RouteNode> open = new ArrayList<>();
+        Map<EntityID, EntityID> previousNodeMap = new HashMap<>();
+        Map<EntityID, Double> distanceFromStart = new HashMap<>();
+        if(graph.containsEdge(startID)) {
+            RouteEdge edge = graph.getEdge(startID);
+            RouteNode node = graph.getNode(edge.firstNodeID);
+            if(node.getNeighbours().size() <= 1 && (goalID.getValue() != edge.firstNodeID.getValue())) {
+                closed.add(edge.firstNodeID);
+            }
+            node = graph.getNode(edge.secondNodeID);
+            if(node.getNeighbours().size() <= 1 && (goalID.getValue() != edge.secondNodeID.getValue())) {
+                closed.add(edge.secondNodeID);
+            }
+
+        }
+
         if(!graph.createPositionNode(world, startID) || !graph.createPositionNode(world, goalID)) {
             return null;
         }
         RouteNode start = graph.getNode(startID);
         if(start.isSingleNode()) {
-            return Lists.newArrayList(startID);
+            return null;
         }
         RouteNode goal = graph.getNode(goalID);
         if(goal.isSingleNode()) {
             return null;
         }
-        // init
-        Set<EntityID> closed = new HashSet<>();
-        List<RouteNode> open = Lists.newArrayList(start);
-        Map<EntityID, EntityID> previousNodeMap = new HashMap<>();
-        Map<EntityID, Double> distanceFromStart = new HashMap<>();
+        open.add(start);
         // process
         while(open.size() != 0) {
             RouteNode current = open.get(0); //sort
@@ -87,6 +101,7 @@ public class SampleRouteSearcher implements RouteSearcher {
         }
         return null;
     }
+
 
     @Override
     public List<EntityID> noTargetMove(int time, EntityID from) {
