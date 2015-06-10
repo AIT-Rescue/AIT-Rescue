@@ -16,7 +16,7 @@ public class ReservoirSelector {
 
     public double averageDistance;
     private boolean firstUpdate;
-    public static final double DEFAULT_AVERAGE = 37.615D;
+    public static final double DEFAULT_AVERAGE = 37615.0D;
     public static final int DEFAULT_COUNT = 3;
     public int count;
 
