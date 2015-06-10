@@ -84,6 +84,12 @@ public abstract class MessageProvider<M extends CommunicationMessage, E extends 
 			this.event.receivedRadio(msg);
 		}
 
+		/*try {
+			this.event.receivedRadio(msg);
+		}
+		catch(Exception e) {
+		}*/
+
 		return msg;
 	}
 
@@ -109,6 +115,12 @@ public abstract class MessageProvider<M extends CommunicationMessage, E extends 
 //			System.out.println("[INFO] MP: Voice Event called : " + this.event.getClass());
 			this.event.receivedVoice(msg);
 		}
+
+		/*try {
+			this.event.receivedVoice(msg);
+		}
+		catch (Exception e) {
+		}*/
 
 		return msg;
 	}

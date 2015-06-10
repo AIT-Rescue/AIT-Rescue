@@ -1,15 +1,13 @@
 package comlib.provider.information;
 
 import comlib.event.MessageEvent;
-import comlib.provider.MapMessageProvider;
-
 import comlib.event.information.MessageBuildingEvent;
-import comlib.message.information.MessageBuilding;
 import comlib.manager.RadioConfig;
 import comlib.manager.VoiceConfig;
+import comlib.message.information.MessageBuilding;
+import comlib.provider.MapMessageProvider;
 import comlib.util.BitOutputStream;
 import comlib.util.BitStreamReader;
-import rescuecore2.worldmodel.EntityID;
 
 
 public class MessageBuildingProvider extends MapMessageProvider<MessageBuilding, MessageBuildingEvent>

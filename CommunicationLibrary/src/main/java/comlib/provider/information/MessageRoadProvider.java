@@ -1,6 +1,5 @@
 package comlib.provider.information;
 
-import comlib.event.MessageDummyEvent;
 import comlib.event.MessageEvent;
 import comlib.event.information.MessageRoadEvent;
 import comlib.manager.RadioConfig;

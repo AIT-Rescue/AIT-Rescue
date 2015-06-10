@@ -1,15 +1,13 @@
 package comlib.provider.information;
 
 import comlib.event.MessageEvent;
-import comlib.provider.HumanMessageProvider;
-
 import comlib.event.information.MessageAmbulanceTeamEvent;
-import comlib.message.information.MessageAmbulanceTeam;
 import comlib.manager.RadioConfig;
 import comlib.manager.VoiceConfig;
+import comlib.message.information.MessageAmbulanceTeam;
+import comlib.provider.HumanMessageProvider;
 import comlib.util.BitOutputStream;
 import comlib.util.BitStreamReader;
-import rescuecore2.worldmodel.EntityID;
 
 
 public class MessageAmbulanceTeamProvider extends HumanMessageProvider<MessageAmbulanceTeam, MessageAmbulanceTeamEvent>
