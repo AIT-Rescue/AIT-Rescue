@@ -7,6 +7,7 @@ import adk.team.action.ActionRest;
 import adk.team.tactics.TacticsPolice;
 import adk.team.util.ImpassableSelector;
 import adk.team.util.RouteSearcher;
+import adk.team.util.graph.PositionUtil;
 import adk.team.util.provider.ImpassableSelectorProvider;
 import adk.team.util.provider.RouteSearcherProvider;
 import comlib.manager.MessageManager;
@@ -26,6 +27,10 @@ public abstract class NewTacticsPolice extends TacticsPolice implements RouteSea
     public ImpassableSelector impassableSelector;
     public RouteSearcher routeSearcher;
 
+    //0 -> current
+    //1 -> current - 1
+    public Point2D[] agentPoint;
+    public boolean posInit;
     public boolean beforeMove;
 
     public ClearPlanner clear;
@@ -37,7 +42,8 @@ public abstract class NewTacticsPolice extends TacticsPolice implements RouteSea
         this.routeSearcher = this.initRouteSearcher();
         this.impassableSelector = this.initImpassableSelector();
         this.beforeMove = false;
-
+        this.agentPoint = new Point2D[2];
+        this.posInit = true;
         this.clear = new ClearPlanner(this.world);
         this.beforeMovePath = new ArrayList<>();
     }
@@ -61,8 +67,18 @@ public abstract class NewTacticsPolice extends TacticsPolice implements RouteSea
     @Override
     public Action think(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
         this.organizeUpdateInfo(currentTime, updateWorldData, manager);
+
         if (this.me.getBuriedness() > 0) {
             return this.buriednessAction(manager);
+        }
+        if(posInit) {
+            this.posInit = false;
+            this.agentPoint[0] = new Point2D(this.me.getX(), this.me.getY());
+            this.agentPoint[1] = new Point2D(this.me.getX(), this.me.getY());
+        }
+        else {
+            this.agentPoint[1] = this.agentPoint[0];
+            this.agentPoint[0] = new Point2D(this.me.getX(), this.me.getY());
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         this.checkClearPath(currentTime);
@@ -80,8 +96,13 @@ public abstract class NewTacticsPolice extends TacticsPolice implements RouteSea
                 return new ActionMove(this, this.beforeMovePath);
             }
         }
-
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //before agent position == this agent position && this.beforeMove
+        if(this.beforeMove && PositionUtil.equalsPoint(this.agentPoint[1], this.agentPoint[0], 1000.0D)) {
+            //clear
+        }
+        //else
+        //clear
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         return new ActionRest(this);
     }
