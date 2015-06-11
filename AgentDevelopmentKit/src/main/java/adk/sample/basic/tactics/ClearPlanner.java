@@ -15,7 +15,7 @@ public class ClearPlanner {
     private StandardWorldModel world;
 
     public Map<EntityID, List<List<Edge>>> neighbourEdgesMap;
-    public Map<EntityID, List<Point2D>> passablePointMap;
+    public Map<EntityID, Map<EntityID, Point2D>> passablePointMap;
 
     public ClearPlanner(StandardWorldModel standardWorldModel) {
         this.world = standardWorldModel;
@@ -23,20 +23,49 @@ public class ClearPlanner {
         this.passablePointMap = new HashMap<>();
     }
 
-    public ActionClear getAction(TacticsPolice tactics, Point2D targetPos, Road road) {
-        Vector2D vector = this.getVector(tactics, targetPos, road);
-        return new ActionClear(tactics, (int) (tactics.getOwner().getX() + vector.getX()), (int) (tactics.getOwner().getY() + vector.getY()));
+    public ActionClear getAction(TacticsPolice tactics, EntityID next) {
+        return this.getAction(tactics, (Area)this.world.getEntity(next));
     }
 
-    public Vector2D getVector(TacticsPolice tactics, Point2D targetPos, Road road) {
-        return this.getVector(new Point2D(tactics.getOwner().getX(), tactics.getOwner().getY()), targetPos, road);
+    public ActionClear getAction(TacticsPolice tactics, Area next) {
+        Vector2D vector = this.getVector(tactics, next);
+        if(vector == null) {
+            return null;
+        }
+        return new ActionClear(
+                tactics,
+                (int) (tactics.getOwner().getX() + vector.getX()),
+                (int) (tactics.getOwner().getY() + vector.getY())
+        );
     }
 
-    public Vector2D getVector(Point2D agentPos, Point2D targetPos, Road road) {
-        EntityID roadID = road.getID();
-        this.analysisRoad(road);
+    public Vector2D getVector(TacticsPolice tactics, EntityID next) {
+        return this.getVector(tactics, (Area)this.world.getEntity(next));
+    }
 
-        List<Edge> edges = road.getEdges();
+    public Vector2D getVector(TacticsPolice tactics, Area next) {
+        return this.getVector(new Point2D(tactics.getOwner().getX(), tactics.getOwner().getY()), (Area)tactics.location, next);
+    }
+
+    public Vector2D getVector(Point2D agentPos, EntityID location, EntityID next) {
+        return this.getVector(agentPos, (Area)this.world.getEntity(location), (Area)this.world.getEntity(next));
+    }
+
+    public Vector2D getVector(Point2D agentPos, Area location, Area next) {
+        this.analysisArea(location);
+        Point2D nextPoint = this.passablePointMap.get(location.getID()).get(next.getID());
+        return this.getVector(agentPos, location, nextPoint);
+    }
+
+    public Vector2D getVector(TacticsPolice tactics, Point2D targetPos) {
+        return this.getVector(new Point2D(tactics.getOwner().getX(), tactics.getOwner().getY()), (Area)tactics.location, targetPos);
+    }
+
+    public Vector2D getVector(Point2D agentPos, Area location, Point2D targetPos) {
+        EntityID roadID = location.getID();
+        this.analysisArea(location);
+
+        List<Edge> edges = location.getEdges();
         if (this.canStraightForward(agentPos, targetPos, roadID, edges)) {
             return targetPos.minus(agentPos).normalised().scale(1000000);
         } else {
@@ -52,18 +81,18 @@ public class ClearPlanner {
         }
     }
 
-    public void analysisRoad(Road road) {
-        EntityID roadID = road.getID();
+    public void analysisArea(Area area) {
+        EntityID roadID = area.getID();
         if (this.passablePointMap.containsKey(roadID)) {
             return;
         }
         List<List<Edge>> neighbourEdges = new ArrayList<>();
-        List<Point2D> passablePoint = new ArrayList<>();
-        road.getEdges().stream().filter(Edge::isPassable).forEach(edge -> {
+        Map<EntityID, Point2D> passablePoint = new HashMap<>();
+        area.getEdges().stream().filter(Edge::isPassable).forEach(edge -> {
             List<Edge> edges = new ArrayList<>(((Area) world.getEntity(edge.getNeighbour())).getEdges());
             edges.remove(edge);
             neighbourEdges.add(edges);
-            passablePoint.add(PositionUtil.getEdgePoint(edge));
+            passablePoint.put(edge.getNeighbour(), PositionUtil.getEdgePoint(edge));
         });
         this.neighbourEdgesMap.put(roadID, neighbourEdges);
         this.passablePointMap.put(roadID, passablePoint);
