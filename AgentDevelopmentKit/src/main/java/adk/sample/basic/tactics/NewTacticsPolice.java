@@ -19,7 +19,6 @@ import rescuecore2.standard.entities.Area;
 import rescuecore2.worldmodel.ChangeSet;
 import rescuecore2.worldmodel.EntityID;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class NewTacticsPolice extends TacticsPolice implements RouteSearcherProvider, ImpassableSelectorProvider {
@@ -35,7 +34,6 @@ public abstract class NewTacticsPolice extends TacticsPolice implements RouteSea
 
     public ClearPlanner clear;
     private List<EntityID> clearPath;
-    private List<EntityID> beforeMovePath;
 
     @Override
     public void preparation(Config config, MessageManager messageManager) {
@@ -45,7 +43,6 @@ public abstract class NewTacticsPolice extends TacticsPolice implements RouteSea
         this.agentPoint = new Point2D[2];
         this.posInit = true;
         this.clear = new ClearPlanner(this.world);
-        this.beforeMovePath = new ArrayList<>();
     }
 
     public abstract ImpassableSelector initImpassableSelector();
@@ -86,25 +83,27 @@ public abstract class NewTacticsPolice extends TacticsPolice implements RouteSea
             this.target = this.impassableSelector.getNewTarget(currentTime);
             if(this.target == null) {
                 this.beforeMove = true;
-                this.beforeMovePath = this.routeSearcher.noTargetMove(currentTime, this.me);
-                return new ActionMove(this, this.beforeMovePath);
+                return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime, this.me));
             }
             this.clearPath = this.routeSearcher.getPath(currentTime, this.me(), this.target);
             if(this.clearPath == null || this.clearPath.isEmpty()) {
                 this.beforeMove = true;
-                this.beforeMovePath = this.routeSearcher.noTargetMove(currentTime, this.me);
-                return new ActionMove(this, this.beforeMovePath);
+                return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime, this.me));
             }
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //before agent position == this agent position && this.beforeMove
-        if(this.beforeMove && PositionUtil.equalsPoint(this.agentPoint[1], this.agentPoint[0], 1000.0D)) {
+        if(this.beforeMove) {
             //clear
+            if(PositionUtil.equalsPoint(this.agentPoint[1], this.agentPoint[0], 1000.0D)) {
+                this.beforeMove = false;
+                return this.clear.getAction(this, this.clearPath.get(this.clearPath.indexOf(this.me.getPosition()) + 1));
+            }
         }
+        this.beforeMove = true;
+        return new ActionMove(this, this.clearPath);
         //else
-        //clear
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        return new ActionRest(this);
     }
 
     private void checkClearPath(int time) {
@@ -131,61 +130,6 @@ public abstract class NewTacticsPolice extends TacticsPolice implements RouteSea
                 }
             }
         }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public Action oldTthink(int currentTime, ChangeSet updateWorldData, MessageManager manager) {
-        if(beforeMove) {
-            int index = this.beforeMovePath.indexOf(this.me().getPosition());
-            if (index != -1) {
-                for (int i = 0; i < index; i++) {
-                    this.impassableSelector.remove(this.beforeMovePath.get(i));
-                }
-            }
-        }
-        else {
-            if(clearPath != null) {
-                int index = this.clearPath.indexOf(this.me().getPosition());
-                if (index != -1) {
-                    for (int i = 0; i < index; i++) {
-                        this.clearPath.remove(i);
-                    }
-                }
-            }
-        }
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        if(target == null || clearPath == null || clearPath.isEmpty()) {
-            this.target = this.impassableSelector.getNewTarget(currentTime);
-            if(this.target != null) {
-                this.clearPath = this.routeSearcher.getPath(currentTime, this.me, this.target);
-                if(this.clearPath == null || this.clearPath.isEmpty()) {
-                    this.beforeMove = true;
-                    this.beforeMovePath = this.routeSearcher.noTargetMove(currentTime, this.me);
-                    return new ActionMove(this, this.beforeMovePath);
-                }
-            }
-            else {
-                this.beforeMove = true;
-                this.beforeMovePath = this.routeSearcher.noTargetMove(currentTime, this.me);
-                return new ActionMove(this, this.beforeMovePath);
-            }
-
-        }
-
-        this.beforeMovePath = this.routeSearcher.noTargetMove(currentTime, this.me);
-        return new ActionMove(this, this.beforeMovePath);
     }
 
     public int count;
