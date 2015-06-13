@@ -10,10 +10,12 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.guava:guava:18.0'
+    //compile 'com.google.guava:guava:18.0'
+    compile fileTree(dir: new File(rootDir, 'library'), include: '*.jar')
     compile fileTree(dir: new File(rootDir, 'library/util'), include: '*.jar')
+    compile fileTree(dir: new File(rootDir, 'library/util/default'), include: '*.jar')
     compile fileTree(dir: new File(rootDir, 'library/rescue/core'), include: '*.jar')
-    testCompile 'junit:junit:4.11'
+    //testCompile 'junit:junit:4.11'
 }
 
 [compileJava, compileTestJava].each {
