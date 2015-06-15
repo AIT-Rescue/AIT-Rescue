@@ -71,7 +71,11 @@ public abstract class CommunicationAgent<E extends StandardEntity> extends Stand
         this.think(time, changed);
 
         if (time > this.ignoreTime) {
-            this.send(this.manager.createSendMessage(super.getID()));
+            try {
+                this.send(this.manager.createSendMessage(super.getID()));
+            }catch (Exception e) {
+
+            }
             this.sendAfterEvent(time, changed);
         }
     }

@@ -81,6 +81,10 @@ public abstract class NewTacticsPolice extends TacticsPolice implements RouteSea
         this.checkClearPath(currentTime);
         if(this.target == null || this.clearPath == null || this.clearPath.isEmpty()) {
             this.target = this.impassableSelector.getNewTarget(currentTime);
+            if(this.target != null && this.target.getValue() == this.me.getPosition().getValue()) {
+                this.impassableSelector.remove(this.target);
+                this.target = this.impassableSelector.getNewTarget(currentTime);
+            }
             if(this.target == null) {
                 this.beforeMove = true;
                 return new ActionMove(this, this.routeSearcher.noTargetMove(currentTime, this.me));
@@ -95,7 +99,7 @@ public abstract class NewTacticsPolice extends TacticsPolice implements RouteSea
         //before agent position == this agent position && this.beforeMove
         if(this.beforeMove) {
             //clear
-            if(PositionUtil.equalsPoint(this.agentPoint[1], this.agentPoint[0], 1000.0D)) {
+            if(PositionUtil.equalsPoint(this.agentPoint[1 ], this.agentPoint[0], 1000.0D)) {
                 this.beforeMove = false;
                 return this.clear.getAction(this, this.clearPath.get(this.clearPath.indexOf(this.me.getPosition()) + 1));
             }
@@ -115,18 +119,19 @@ public abstract class NewTacticsPolice extends TacticsPolice implements RouteSea
             else {
                 int oldTarget = this.target.getValue();
                 this.target = this.impassableSelector.updateTarget(time, this.target);
-                if(oldTarget == this.target.getValue()) {
-                    int index = this.clearPath.indexOf(this.me().getPosition());
-                    if (index != -1) {
-                        for (int i = 0; i < index; i++) {
-                            EntityID removeID = this.clearPath.remove(i);
-                            this.impassableSelector.remove(removeID);
+                if(this.target != null) {
+                    if (oldTarget == this.target.getValue()) {
+                        int index = this.clearPath.indexOf(this.me().getPosition());
+                        if (index != -1) {
+                            for (int i = 0; i < index; i++) {
+                                EntityID removeID = this.clearPath.remove(i);
+                                this.impassableSelector.remove(removeID);
+                            }
                         }
+                    } else {
+                        //新しい対象
+                        this.clearPath = this.routeSearcher.getPath(time, this.me(), this.target);
                     }
-                }
-                else {
-                    //新しい対象
-                    this.clearPath = this.routeSearcher.getPath(time, this.me(), this.target);
                 }
             }
         }
