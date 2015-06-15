@@ -78,10 +78,7 @@ public class MessageManager
 		this.useRadio = ( this.numRadio >= 1 );
 
 		this.providerList =
-			new MessageProvider[this.getBitOutputStreamNumber(
-					config.getIntValue("comlib.default.messageID", 16) -1,
-					PRIORITY_DEPTH
-					)];
+			new MessageProvider[config.getIntValue("comlib.default.messageID", 16)];
 		this.bitOutputStreamList =
 			new BitOutputStream[this.getBitOutputStreamNumber(
 					config.getIntValue("comlib.default.messageID", 16) -1,

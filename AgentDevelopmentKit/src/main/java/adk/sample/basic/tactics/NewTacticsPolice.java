@@ -79,6 +79,10 @@ public abstract class NewTacticsPolice extends TacticsPolice implements RouteSea
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //最終目的地で全エッジに向かう処理を追加すること
+        //ClearMove
+        //ClearArea
+        //Move
+        //Rest
         this.checkClearPath(currentTime);
         if(this.target == null || this.clearPath == null || this.clearPath.isEmpty()) {
             this.target = this.impassableSelector.getNewTarget(currentTime);
