@@ -78,6 +78,7 @@ public abstract class NewTacticsPolice extends TacticsPolice implements RouteSea
             this.agentPoint[0] = new Point2D(this.me.getX(), this.me.getY());
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //最終目的地で全エッジに向かう処理を追加すること
         this.checkClearPath(currentTime);
         if(this.target == null || this.clearPath == null || this.clearPath.isEmpty()) {
             this.target = this.impassableSelector.getNewTarget(currentTime);
