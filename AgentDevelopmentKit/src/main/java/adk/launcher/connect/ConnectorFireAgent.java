@@ -66,7 +66,7 @@ public class ConnectorFireAgent implements Connector {
         try {
             for (int i = 0; i != count; ++i) {
                 if(config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)) {
-                    launcher.connect(new FireBrigadeAgent(team.getPreFireBrigadeTactics(), true));
+                    launcher.connect(new FireBrigadeAgent(team.getFirePrecompute(), true));
                 }
                 else {
                     launcher.connect(new FireBrigadeAgent(team.getFireBrigadeTactics(), config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)));
