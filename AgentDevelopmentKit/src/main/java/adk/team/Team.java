@@ -6,6 +6,7 @@ import adk.sample.dummy.control.DummyControlPolice;
 import adk.team.control.ControlAmbulance;
 import adk.team.control.ControlFire;
 import adk.team.control.ControlPolice;
+import adk.team.precompute.*;
 import adk.team.tactics.TacticsAmbulance;
 import adk.team.tactics.TacticsFire;
 import adk.team.tactics.TacticsPolice;
@@ -29,7 +30,20 @@ public abstract class Team {
         return new DummyControlFire();
     }
 
-   public ControlPolice getPoliceOfficeControl() {
+    public ControlPolice getPoliceOfficeControl() {
        return new DummyControlPolice();
    }
+
+    public abstract PreTacticsAmbulance getPreAmbulanceTeamTactics();
+
+    public abstract PreTacticsFire getPreFireBrigadeTactics();
+
+    public abstract PreTacticsPolice getPrePoliceForceTactics();
+
+    public abstract PreControlAmbulance getPreAmbulanceTeamControl();
+
+    public abstract PreControlFire getPreFireBrigadeControl();
+
+    public abstract PreControlPolice getPrePoliceForceControl();
+
 }

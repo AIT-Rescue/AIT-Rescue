@@ -40,7 +40,7 @@ public class ConnectorPoliceAgent implements Connector {
             }
         }
         if(team.getPoliceForceTactics() == null) {
-            System.out.println("[ERROR] Cannot Load Police Force Tactics !!");
+            System.out.println("[ERROR] Cannot Load Police Force PreTactics !!");
             if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
                 int limit = config.getIntValue(ConfigKey.KEY_LOAD_RETRY, loader.size());
                 int i = 0;
@@ -60,12 +60,17 @@ public class ConnectorPoliceAgent implements Connector {
                 }
             }
         }
-        System.out.println("[INFO ] Police Force Tactics (teamName:" + team.getTeamName() + ")");
+        System.out.println("[INFO ] Police Force PreTactics (teamName:" + team.getTeamName() + ")");
         name = "[INFO ] Connect PoliceForceAgent (teamName:" + team.getTeamName() + ")";
         int connectAgent = 0;
         try {
             for (int i = 0; i != count; ++i) {
-                launcher.connect(new PoliceForceAgent(team.getPoliceForceTactics(), config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)));
+                if(config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)) {
+                    launcher.connect(new PoliceForceAgent(team.getPrePoliceForceTactics(), true));
+                }
+                else {
+                    launcher.connect(new PoliceForceAgent(team.getPoliceForceTactics(), config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)));
+                }
                 System.out.println(name);
                 connectAgent++;
             }

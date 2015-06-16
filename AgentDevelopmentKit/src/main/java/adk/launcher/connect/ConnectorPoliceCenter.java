@@ -40,7 +40,7 @@ public class ConnectorPoliceCenter implements Connector {
             }
         }
         if(team.getPoliceOfficeControl() == null) {
-            System.out.println("[ERROR] Cannot Load Police Office Control !!");
+            System.out.println("[ERROR] Cannot Load Police Office PreControl !!");
             if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
                 int limit = config.getIntValue(ConfigKey.KEY_LOAD_RETRY, loader.size());
                 int i = 0;
@@ -60,12 +60,17 @@ public class ConnectorPoliceCenter implements Connector {
                 }
             }
         }
-        System.out.println("[INFO ] Police Office Control (teamName:" + team.getTeamName() + ")");
+        System.out.println("[INFO ] Police Office PreControl (teamName:" + team.getTeamName() + ")");
         name = "[INFO ] Connect PoliceForceStation(teamName:" + team.getTeamName() + ")";
         int connectAgent = 0;
         try {
             for (int i = 0; i != count; ++i) {
-                launcher.connect(new PoliceForceStation(team.getPoliceOfficeControl(), config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)));
+                if(config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)) {
+                    launcher.connect(new PoliceForceStation(team.getPrePoliceForceControl(), true));
+                }
+                else {
+                    launcher.connect(new PoliceForceStation(team.getPoliceOfficeControl(), config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)));
+                }
                 System.out.println(name);
                 connectAgent++;
             }

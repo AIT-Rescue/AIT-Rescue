@@ -4,6 +4,8 @@ import adk.launcher.ConfigKey;
 import adk.launcher.TeamLoader;
 import adk.launcher.agent.AmbulanceTeamAgent;
 import adk.team.Team;
+import adk.team.tactics.Tactics;
+import adk.team.tactics.TacticsAmbulance;
 import rescuecore2.components.ComponentConnectionException;
 import rescuecore2.components.ComponentLauncher;
 import rescuecore2.config.Config;
@@ -41,7 +43,7 @@ public class ConnectorAmbulanceAgent implements Connector {
             }
         }
         if(team.getAmbulanceTeamTactics() == null) {
-            System.out.println("[ERROR] Cannot Load Ambulance Team Tactics !!");
+            System.out.println("[ERROR] Cannot Load Ambulance Team PreTactics !!");
             if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
                 int limit = config.getIntValue(ConfigKey.KEY_LOAD_RETRY, loader.size());
                 int i = 0;
@@ -61,12 +63,18 @@ public class ConnectorAmbulanceAgent implements Connector {
                 }
             }
         }
-        System.out.println("[INFO ] Ambulance Team Tactics (teamName:" + team.getTeamName() + ")");
+        System.out.println("[INFO ] Ambulance Team PreTactics (teamName:" + team.getTeamName() + ")");
         name = "[INFO ] Connect AmbulanceTeamAgent (teamName:" + team.getTeamName() + ")";
         int connectAgent = 0;
         try {
             for (int i = 0; i != count; ++i) {
-                launcher.connect(new AmbulanceTeamAgent(team.getAmbulanceTeamTactics(), config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)));
+                if(config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)) {
+                    launcher.connect(new AmbulanceTeamAgent(team.getPreAmbulanceTeamTactics(), true));
+                }
+                else {
+                    launcher.connect(new AmbulanceTeamAgent(team.getAmbulanceTeamTactics(), config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)));
+                }
+
                 System.out.println(name);
                 connectAgent++;
             }

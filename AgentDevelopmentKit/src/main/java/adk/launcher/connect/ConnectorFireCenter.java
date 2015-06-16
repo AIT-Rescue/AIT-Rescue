@@ -40,7 +40,7 @@ public class ConnectorFireCenter implements Connector {
             }
         }
         if(team.getFireStationControl() == null) {
-            System.out.println("[ERROR] Cannot Load Fire Station Control !!");
+            System.out.println("[ERROR] Cannot Load Fire Station PreControl !!");
             if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
                 int limit = config.getIntValue(ConfigKey.KEY_LOAD_RETRY, loader.size());
                 int i = 0;
@@ -60,12 +60,17 @@ public class ConnectorFireCenter implements Connector {
                 }
             }
         }
-        System.out.println("[INFO ] Fire Station Control (teamName:" + team.getTeamName() + ")");
+        System.out.println("[INFO ] Fire Station PreControl (teamName:" + team.getTeamName() + ")");
         name = "[INFO ] Connect FireBrigadeStation (teamName:" + team.getTeamName() + ")";
         int connectAgent = 0;
         try {
             for (int i = 0; i != count; ++i) {
-                launcher.connect(new FireBrigadeStation(team.getFireStationControl(), config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)));
+                if(config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)) {
+                    launcher.connect(new FireBrigadeStation(team.getPreFireBrigadeControl(), true));
+                }
+                else {
+                    launcher.connect(new FireBrigadeStation(team.getFireStationControl(), config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)));
+                }
                 System.out.println(name);
                 connectAgent++;
             }

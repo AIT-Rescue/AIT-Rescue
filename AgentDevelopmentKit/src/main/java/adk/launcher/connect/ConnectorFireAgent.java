@@ -40,7 +40,7 @@ public class ConnectorFireAgent implements Connector {
             }
         }
         if(team.getFireBrigadeTactics() == null) {
-            System.out.println("[ERROR] Cannot Load Fire Brigade Tactics !!");
+            System.out.println("[ERROR] Cannot Load Fire Brigade PreTactics !!");
             if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
                 int limit = config.getIntValue(ConfigKey.KEY_LOAD_RETRY, loader.size());
                 int i = 0;
@@ -60,12 +60,17 @@ public class ConnectorFireAgent implements Connector {
                 }
             }
         }
-        System.out.println("[INFO ] Fire Brigade Tactics (teamName:" + team.getTeamName() + ")");
+        System.out.println("[INFO ] Fire Brigade PreTactics (teamName:" + team.getTeamName() + ")");
         name = "[INFO ] Connect FireBrigadeAgent (teamName:" + team.getTeamName() + ")";
         int connectAgent = 0;
         try {
             for (int i = 0; i != count; ++i) {
-                launcher.connect(new FireBrigadeAgent(team.getFireBrigadeTactics(), config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)));
+                if(config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)) {
+                    launcher.connect(new FireBrigadeAgent(team.getPreFireBrigadeTactics(), true));
+                }
+                else {
+                    launcher.connect(new FireBrigadeAgent(team.getFireBrigadeTactics(), config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)));
+                }
                 System.out.println(name);
                 connectAgent++;
             }

@@ -2,6 +2,7 @@ package adk.launcher.connect;
 
 import adk.launcher.ConfigKey;
 import adk.launcher.TeamLoader;
+import adk.launcher.agent.AmbulanceTeamAgent;
 import adk.launcher.station.AmbulanceTeamStation;
 import adk.team.Team;
 import rescuecore2.components.ComponentConnectionException;
@@ -40,7 +41,7 @@ public class ConnectorAmbulanceCenter implements Connector {
             }
         }
         if(team.getAmbulanceCentreControl() == null) {
-            System.out.println("[ERROR] Cannot Load Ambulance Centre Control !!");
+            System.out.println("[ERROR] Cannot Load Ambulance Centre PreControl !!");
             if(TeamLoader.KEYWORD_RANDOM.equalsIgnoreCase(name)) {
                 int limit = config.getIntValue(ConfigKey.KEY_LOAD_RETRY, loader.size());
                 int i = 0;
@@ -60,12 +61,17 @@ public class ConnectorAmbulanceCenter implements Connector {
                 }
             }
         }
-        System.out.println("[INFO ] Ambulance Centre Control (teamName:" + team.getTeamName() + ")");
+        System.out.println("[INFO ] Ambulance Centre PreControl (teamName:" + team.getTeamName() + ")");
         name = "[INFO ] Connect AmbulanceTeamStation (teamName:" + team.getTeamName() + ")";
         int connectAgent = 0;
         try {
             for (int i = 0; i != count; ++i) {
-                launcher.connect(new AmbulanceTeamStation(team.getAmbulanceCentreControl(), config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)));
+                if(config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)) {
+                    launcher.connect(new AmbulanceTeamStation(team.getPreAmbulanceTeamControl(), true));
+                }
+                else {
+                    launcher.connect(new AmbulanceTeamStation(team.getAmbulanceCentreControl(), config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)));
+                }
                 System.out.println(name);
                 connectAgent++;
             }
