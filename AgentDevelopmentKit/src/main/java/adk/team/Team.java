@@ -40,10 +40,5 @@ public abstract class Team {
 
     public abstract PreTacticsPolice getPrePoliceForceTactics();
 
-    public abstract PreControlAmbulance getPreAmbulanceTeamControl();
-
-    public abstract PreControlFire getPreFireBrigadeControl();
-
-    public abstract PreControlPolice getPrePoliceForceControl();
 
 }

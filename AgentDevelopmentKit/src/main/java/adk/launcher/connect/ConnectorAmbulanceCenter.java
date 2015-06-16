@@ -2,7 +2,6 @@ package adk.launcher.connect;
 
 import adk.launcher.ConfigKey;
 import adk.launcher.TeamLoader;
-import adk.launcher.agent.AmbulanceTeamAgent;
 import adk.launcher.station.AmbulanceTeamStation;
 import adk.team.Team;
 import rescuecore2.components.ComponentConnectionException;
@@ -66,12 +65,7 @@ public class ConnectorAmbulanceCenter implements Connector {
         int connectAgent = 0;
         try {
             for (int i = 0; i != count; ++i) {
-                if(config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)) {
-                    launcher.connect(new AmbulanceTeamStation(team.getPreAmbulanceTeamControl(), true));
-                }
-                else {
-                    launcher.connect(new AmbulanceTeamStation(team.getAmbulanceCentreControl(), config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)));
-                }
+                launcher.connect(new AmbulanceTeamStation(team.getAmbulanceCentreControl(), config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)));
                 System.out.println(name);
                 connectAgent++;
             }

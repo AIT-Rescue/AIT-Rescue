@@ -65,12 +65,7 @@ public class ConnectorFireCenter implements Connector {
         int connectAgent = 0;
         try {
             for (int i = 0; i != count; ++i) {
-                if(config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)) {
-                    launcher.connect(new FireBrigadeStation(team.getPreFireBrigadeControl(), true));
-                }
-                else {
-                    launcher.connect(new FireBrigadeStation(team.getFireStationControl(), config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)));
-                }
+                launcher.connect(new FireBrigadeStation(team.getFireStationControl(), config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)));
                 System.out.println(name);
                 connectAgent++;
             }
