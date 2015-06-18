@@ -1,9 +1,13 @@
 package sample.tactics;
 
-import adk.team.tactics.TacticsFire;
+import adk.team.precompute.PrecomputeFire;
+import adk.team.util.provider.BuildingSelectorProvider;
+import adk.team.util.provider.RouteSearcherProvider;
+import comlib.manager.MessageManager;
 import rescuecore2.standard.entities.FireBrigade;
+import sample.util.SampleBuildingSelector;
+import sample.util.SampleRouteSearcher;
 
-public abstract class PrecomputeFire extends TacticsFire {
 public class SamplePrecomputeFire extends PrecomputeFire implements RouteSearcherProvider, BuildingSelectorProvider {
 
     public BuildingSelector buildingSelector;
