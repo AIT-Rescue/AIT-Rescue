@@ -13,4 +13,8 @@ public abstract class PrecomputePolice extends TacticsPolice {
 		return new ActionRest(this);
 	}
 
+	@Override
+	public void registerEvent(MessageManager manager) {
+	}
+
 }

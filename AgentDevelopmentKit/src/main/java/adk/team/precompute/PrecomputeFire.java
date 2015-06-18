@@ -13,4 +13,8 @@ public abstract class PrecomputeFire extends TacticsFire {
 		return new ActionRest(this);
 	}
 
+	@Override
+	public void registerEvent(MessageManager manager) {
+	}
+
 }
