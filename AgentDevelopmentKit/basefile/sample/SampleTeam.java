@@ -7,6 +7,7 @@ import adk.team.tactics.TacticsPolice;
 import sample.tactics.SampleTacticsAmbulance;
 import sample.tactics.SampleTacticsFire;
 import sample.tactics.SampleTacticsPolice;
+import adk.team.precompute.*;
 
 public class SampleTeam extends Team {
 
@@ -28,5 +29,20 @@ public class SampleTeam extends Team {
     @Override
     public TacticsPolice getPoliceForceTactics() {
         return new SampleTacticsPolice();
+    }
+
+    @Override
+    public PrecomputeAmbulance getAmbulancePrecompute() {
+        return null;
+    }
+
+    @Override
+    public PrecomputeFire getFirePrecompute() {
+        return null;
+    }
+
+    @Override
+    public PrecomputePolice getPolicePrecompute() {
+        return null;
     }
 }
