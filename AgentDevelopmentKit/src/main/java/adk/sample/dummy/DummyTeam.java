@@ -32,17 +32,17 @@ public class DummyTeam extends Team {
     }
 
     @Override
-    public PreTacticsAmbulance getPreAmbulanceTeamTactics() {
+    public PrecomputeAmbulance getAmbulancePrecompute() {
         return null;
     }
 
     @Override
-    public PreTacticsFire getPreFireBrigadeTactics() {
+    public PrecomputeFire getFirePrecompute() {
         return null;
     }
 
     @Override
-    public PreTacticsPolice getPrePoliceForceTactics() {
+    public PrecomputePolice getPolicePrecompute() {
         return null;
     }
 

@@ -66,7 +66,7 @@ public class ConnectorPoliceAgent implements Connector {
         try {
             for (int i = 0; i != count; ++i) {
                 if(config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)) {
-                    launcher.connect(new PoliceForceAgent(team.getPrePoliceForceTactics(), true));
+                    launcher.connect(new PoliceForceAgent(team.getPolicePrecompute(), true));
                 }
                 else {
                     launcher.connect(new PoliceForceAgent(team.getPoliceForceTactics(), config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)));

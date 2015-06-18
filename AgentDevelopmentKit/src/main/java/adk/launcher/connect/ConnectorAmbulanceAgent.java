@@ -69,7 +69,7 @@ public class ConnectorAmbulanceAgent implements Connector {
         try {
             for (int i = 0; i != count; ++i) {
                 if(config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)) {
-                    launcher.connect(new AmbulanceTeamAgent(team.getPreAmbulanceTeamTactics(), true));
+                    launcher.connect(new AmbulanceTeamAgent(team.getAmbulancePrecompute(), true));
                 }
                 else {
                     launcher.connect(new AmbulanceTeamAgent(team.getAmbulanceTeamTactics(), config.getBooleanValue(ConfigKey.KEY_PRECOMPUTE, false)));

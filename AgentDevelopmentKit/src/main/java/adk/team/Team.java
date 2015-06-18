@@ -12,33 +12,31 @@ import adk.team.tactics.TacticsFire;
 import adk.team.tactics.TacticsPolice;
 
 public abstract class Team {
-    public abstract String getTeamName();
+	public abstract String getTeamName();
 
-    public abstract TacticsAmbulance getAmbulanceTeamTactics();
+	public abstract TacticsAmbulance getAmbulanceTeamTactics();
 
-    public abstract TacticsFire getFireBrigadeTactics();
+	public abstract TacticsFire getFireBrigadeTactics();
 
-    public abstract TacticsPolice getPoliceForceTactics();
+	public abstract TacticsPolice getPoliceForceTactics();
 
-    //control
+	//control
 
-    public ControlAmbulance getAmbulanceCentreControl() {
-        return new DummyControlAmbulance();
-    }
+	public ControlAmbulance getAmbulanceCentreControl() {
+		return new DummyControlAmbulance();
+	}
 
-    public ControlFire getFireStationControl() {
-        return new DummyControlFire();
-    }
+	public ControlFire getFireStationControl() {
+		return new DummyControlFire();
+	}
 
-    public ControlPolice getPoliceOfficeControl() {
-       return new DummyControlPolice();
-   }
+	public ControlPolice getPoliceOfficeControl() {
+		return new DummyControlPolice();
+	}
 
-    public abstract PreTacticsAmbulance getPreAmbulanceTeamTactics();
+	public abstract PrecomputeAmbulance getAmbulancePrecompute();
 
-    public abstract PreTacticsFire getPreFireBrigadeTactics();
+	public abstract PrecomputeFire getFirePrecompute();
 
-    public abstract PreTacticsPolice getPrePoliceForceTactics();
-
-
+	public abstract PrecomputePolice getPolicePrecompute();
 }
