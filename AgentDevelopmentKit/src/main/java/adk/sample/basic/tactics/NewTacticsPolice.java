@@ -106,7 +106,8 @@ public abstract class NewTacticsPolice extends TacticsPolice implements RouteSea
             //clear
             if(PositionUtil.equalsPoint(this.agentPoint[1 ], this.agentPoint[0], 1000.0D)) {
                 this.beforeMove = false;
-                return this.clear.getAction(this, this.clearPath.get(this.clearPath.indexOf(this.me.getPosition()) + 1));
+                EntityID id = this.clearPath.get(this.clearPath.indexOf(this.me.getPosition()) + 1);
+                return this.clear.getAction(this, id);
             }
         }
         this.beforeMove = true;
