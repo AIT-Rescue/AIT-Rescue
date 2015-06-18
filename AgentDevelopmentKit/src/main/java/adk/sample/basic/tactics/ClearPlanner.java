@@ -17,10 +17,13 @@ public class ClearPlanner {
     public Map<EntityID, List<List<Edge>>> neighbourEdgesMap;
     public Map<EntityID, Map<EntityID, Point2D>> passablePointMap;
 
+    private PointSelector points;
+
     public ClearPlanner(StandardWorldModel standardWorldModel) {
         this.world = standardWorldModel;
         this.neighbourEdgesMap = new HashMap<>();
         this.passablePointMap = new HashMap<>();
+        this.points = new PointSelector(standardWorldModel);
     }
 
     public ActionClear getAction(TacticsPolice tactics, EntityID next) {
@@ -53,7 +56,7 @@ public class ClearPlanner {
 
     public Vector2D getVector(Point2D agentPos, Area location, Area next) {
         this.analysisArea(location);
-        Point2D nextPoint = this.passablePointMap.get(location.getID()).get(next.getID());
+        Point2D nextPoint = this.points.passablePointMap.get(location.getID()).get(next.getID());
         return this.getVector(agentPos, location, nextPoint);
     }
 
@@ -104,7 +107,7 @@ public class ClearPlanner {
                 return false;
             }
         }
-        for (List<Edge> list : this.neighbourEdgesMap.get(roadID)) {
+        for (List<Edge> list : this.points.neighbourEdgesMap.get(roadID)) {
             if (!this.canStraightForward(point, targetPoint, list)) {
                 return false;
             }
