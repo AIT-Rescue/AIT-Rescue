@@ -14,15 +14,10 @@ import java.util.*;
 public class ClearPlanner {
     private StandardWorldModel world;
 
-    public Map<EntityID, List<List<Edge>>> neighbourEdgesMap;
-    public Map<EntityID, Map<EntityID, Point2D>> passablePointMap;
-
     private PointSelector points;
 
     public ClearPlanner(StandardWorldModel standardWorldModel) {
         this.world = standardWorldModel;
-        this.neighbourEdgesMap = new HashMap<>();
-        this.passablePointMap = new HashMap<>();
         this.points = new PointSelector(standardWorldModel);
     }
 
@@ -42,63 +37,31 @@ public class ClearPlanner {
         );
     }
 
-    public Vector2D getVector(TacticsPolice tactics, EntityID next) {
-        return this.getVector(tactics, (Area)this.world.getEntity(next));
-    }
-
     public Vector2D getVector(TacticsPolice tactics, Area next) {
         return this.getVector(new Point2D(tactics.getOwner().getX(), tactics.getOwner().getY()), (Area)tactics.location, next);
     }
 
-    public Vector2D getVector(Point2D agentPos, EntityID location, EntityID next) {
-        return this.getVector(agentPos, (Area)this.world.getEntity(location), (Area)this.world.getEntity(next));
-    }
-
     public Vector2D getVector(Point2D agentPos, Area location, Area next) {
-        this.analysisArea(location);
-        Point2D nextPoint = this.points.passablePointMap.get(location.getID()).get(next.getID());
+        Point2D nextPoint = this.points.getPointMap(location.getID()).get(next.getID());
         return this.getVector(agentPos, location, nextPoint);
     }
 
-    public Vector2D getVector(TacticsPolice tactics, Point2D targetPos) {
-        return this.getVector(new Point2D(tactics.getOwner().getX(), tactics.getOwner().getY()), (Area)tactics.location, targetPos);
-    }
-
     public Vector2D getVector(Point2D agentPos, Area location, Point2D targetPos) {
-        EntityID roadID = location.getID();
-        this.analysisArea(location);
-
+        EntityID areaID = location.getID();
         List<Edge> edges = location.getEdges();
-        if (this.canStraightForward(agentPos, targetPos, roadID, edges)) {
+        if (this.canStraightForward(agentPos, targetPos, areaID, edges)) {
             return targetPos.minus(agentPos).normalised().scale(1000000);
         } else {
             Point2D edgePoint;
             Point2D min = null;
             for (Edge edge : edges) {
                 edgePoint = PositionUtil.getEdgePoint(edge);
-                if (this.canStraightForward(agentPos, edgePoint, roadID, edges)) {
+                if (this.canStraightForward(agentPos, edgePoint, areaID, edges)) {
                     min = min != null ? PositionUtil.compareDistance(agentPos, min, edgePoint).translate(0.0D, 0.0D) : edgePoint.translate(0.0D, 0.0D);
                 }
             }
             return min == null ? targetPos.minus(agentPos).normalised().scale(1000000) : min.minus(agentPos).normalised().scale(1000000);
         }
-    }
-
-    public void analysisArea(Area area) {
-        EntityID roadID = area.getID();
-        if (this.passablePointMap.containsKey(roadID)) {
-            return;
-        }
-        List<List<Edge>> neighbourEdges = new ArrayList<>();
-        Map<EntityID, Point2D> passablePoint = new HashMap<>();
-        area.getEdges().stream().filter(Edge::isPassable).forEach(edge -> {
-            List<Edge> edges = new ArrayList<>(((Area) world.getEntity(edge.getNeighbour())).getEdges());
-            edges.remove(edge);
-            neighbourEdges.add(edges);
-            passablePoint.put(edge.getNeighbour(), PositionUtil.getEdgePoint(edge));
-        });
-        this.neighbourEdgesMap.put(roadID, neighbourEdges);
-        this.passablePointMap.put(roadID, passablePoint);
     }
 
     public boolean canStraightForward(Point2D point, Point2D targetPoint, EntityID roadID, Collection<Edge> edges) {
@@ -107,12 +70,7 @@ public class ClearPlanner {
                 return false;
             }
         }
-        for (List<Edge> list : this.points.neighbourEdgesMap.get(roadID)) {
-            if (!this.canStraightForward(point, targetPoint, list)) {
-                return false;
-            }
-        }
-        return true;
+        return this.canStraightForward(point, targetPoint, this.points.getNeighbourEdges(roadID));
     }
 
     public boolean canStraightForward(Point2D point, Point2D targetPoint, Collection<Edge> edges) {

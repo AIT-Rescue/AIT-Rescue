@@ -5,27 +5,29 @@ import rescuecore2.misc.geometry.Point2D;
 import rescuecore2.standard.entities.*;
 import rescuecore2.worldmodel.EntityID;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PointSelector {
 
-    private StandardWorldModel world;
+    private Map<EntityID, Collection<Edge>> neighbourEdgesMap;
+    private Map<EntityID, Map<EntityID, Point2D>> passablePointMap;
 
-    public Map<EntityID, List<List<Edge>>> neighbourEdgesMap;
-    public Map<EntityID, Map<EntityID, Point2D>> passablePointMap;
-
-    public PointSelector(StandardWorldModel standardWorldModel) {
-        this.world = standardWorldModel;
+    public PointSelector(StandardWorldModel world) {
         this.neighbourEdgesMap = new HashMap<>();
         this.passablePointMap = new HashMap<>();
-        this.init();
+        this.init(world);
     }
 
-    private void init() {
-        for(StandardEntity entity : this.world.getEntitiesOfType(
+    public Collection<Edge> getNeighbourEdges(EntityID areaID) {
+        return this.neighbourEdgesMap.get(areaID);
+    }
+
+    public Map<EntityID, Point2D> getPointMap(EntityID areaID) {
+        return this.passablePointMap.get(areaID);
+    }
+
+    private void init(StandardWorldModel world) {
+        for(StandardEntity entity : world.getEntitiesOfType(
                 StandardEntityURN.BUILDING,
                 StandardEntityURN.AMBULANCE_CENTRE,
                 StandardEntityURN.FIRE_STATION,
@@ -35,21 +37,18 @@ public class PointSelector {
                 StandardEntityURN.HYDRANT,
                 StandardEntityURN.ROAD
         )) {
-            this.analysisArea((Area)entity);
+            this.analysisArea((Area)entity, world);
         }
     }
 
-    public void analysisArea(Area area) {
+    public void analysisArea(Area area, StandardWorldModel world) {
         EntityID roadID = area.getID();
-        if (this.passablePointMap.containsKey(roadID)) {
-            return;
-        }
-        List<List<Edge>> neighbourEdges = new ArrayList<>();
+        Collection<Edge> neighbourEdges = new HashSet<>();
         Map<EntityID, Point2D> passablePoint = new HashMap<>();
         area.getEdges().stream().filter(Edge::isPassable).forEach(edge -> {
             List<Edge> edges = new ArrayList<>(((Area) world.getEntity(edge.getNeighbour())).getEdges());
             edges.remove(edge);
-            neighbourEdges.add(edges);
+            neighbourEdges.addAll(edges);
             passablePoint.put(edge.getNeighbour(), PositionUtil.getEdgePoint(edge));
         });
         this.neighbourEdgesMap.put(roadID, neighbourEdges);
