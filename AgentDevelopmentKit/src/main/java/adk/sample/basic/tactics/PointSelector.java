@@ -9,12 +9,17 @@ import java.util.*;
 
 public class PointSelector {
 
+    private StandardWorldModel world;
+
     private Map<EntityID, Collection<Edge>> neighbourEdgesMap;
     private Map<EntityID, Map<EntityID, Point2D>> passablePointMap;
+    private Map<EntityID, List<Point2D>> clearListMap;
 
     public PointSelector(StandardWorldModel world) {
+        this.world = world;
         this.neighbourEdgesMap = new HashMap<>();
         this.passablePointMap = new HashMap<>();
+        this.clearListMap = new HashMap<>();
         this.init(world);
     }
 
@@ -24,6 +29,21 @@ public class PointSelector {
 
     public Map<EntityID, Point2D> getPointMap(EntityID areaID) {
         return this.passablePointMap.get(areaID);
+    }
+
+    public List<Point2D> getClearPoints(EntityID areaID) {
+        List<Point2D> list = this.clearListMap.get(areaID);
+        if(list == null) {
+            list = new ArrayList<>();
+            Area area = (Area)this.world.getEntity(areaID);
+            for(Edge edge : area.getEdges()) {
+                if(edge.isPassable()) {
+                    list.add(PositionUtil.getEdgePoint(edge));
+                }
+            }
+            this.clearListMap.put(areaID, list);
+        }
+        return list;
     }
 
     private void init(StandardWorldModel world) {

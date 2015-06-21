@@ -16,9 +16,9 @@ public class ClearPlanner {
 
     private PointSelector points;
 
-    public ClearPlanner(StandardWorldModel standardWorldModel) {
+    public ClearPlanner(StandardWorldModel standardWorldModel, PointSelector pointSelector) {
         this.world = standardWorldModel;
-        this.points = new PointSelector(standardWorldModel);
+        this.points = pointSelector;
     }
 
     public ActionClear getAction(TacticsPolice tactics, EntityID next) {
@@ -27,6 +27,18 @@ public class ClearPlanner {
 
     public ActionClear getAction(TacticsPolice tactics, Area next) {
         Vector2D vector = this.getVector(tactics, next);
+        if(vector == null) {
+            return null;
+        }
+        return new ActionClear(
+                tactics,
+                (int) (tactics.getOwner().getX() + vector.getX()),
+                (int) (tactics.getOwner().getY() + vector.getY())
+        );
+    }
+
+    public ActionClear getAction(TacticsPolice tactics, Point2D targetPos) {
+        Vector2D vector = this.getVector(new Point2D(tactics.getOwner().getX(), tactics.getOwner().getY()), (Area)tactics.location, targetPos);
         if(vector == null) {
             return null;
         }
