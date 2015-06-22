@@ -52,6 +52,7 @@ public class ConfigInitializer {
         registerOption(options, new OptionAmbulance());
         registerOption(options, new OptionFire());
         registerOption(options, new OptionPolice());
+        registerOption(options, new OptionPrecompute());
         return options;
     }
 
