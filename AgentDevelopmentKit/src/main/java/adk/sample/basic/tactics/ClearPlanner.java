@@ -102,6 +102,6 @@ public class ClearPlanner {
         double endX = end.getX();
         double endY = end.getY();
         return Line2D.linesIntersect(point.getX(), point.getY(), targetPoint.getX(), targetPoint.getY(), startX, startY, endX, endY) &&
-                !PositionUtil.equalsPoint(targetPoint, ((startX + endX) / 2.0D), (startY + endX) / 2.0D, 1000.0D);
+                !PositionUtil.equalsPoint(targetPoint, ((startX + endX) / 2.0D), (startY + endY) / 2.0D, 1000.0D);
     }
 }
