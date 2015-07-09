@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
 import rescuecore2.misc.collections.LazyMap;
 import rescuecore2.standard.entities.*;
+import rescuecore2.worldmodel.Entity;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.*;
@@ -24,7 +25,41 @@ public class RouteManager {
         this.nodeMap = new HashMap<>();
         this.edgeMap = new HashMap<>();
         this.edgeTable = HashBasedTable.create();
+        this.init(world);
         this.analysis(world);
+    }
+
+    private Map<EntityID, Set<EntityID>> neighboursMap;
+    private Set<EntityID> buildingSet;
+
+    private void init(StandardWorldModel world) {
+        Map<EntityID, Set<EntityID>> neighbours = new LazyMap<EntityID, Set<EntityID>>() {
+            @Override
+            public Set<EntityID> createValue() {
+                return new HashSet<EntityID>();
+            }
+        };
+        buildingSet=new HashSet<EntityID>();
+        for (Entity next : world) {
+            if (next instanceof Area) {
+                Collection<EntityID> areaNeighbours = ((Area) next).getNeighbours();
+                neighbours.get(next.getID()).addAll(areaNeighbours);
+                if(next instanceof Building)
+                    buildingSet.add(next.getID());
+            }
+        }
+        for (Map.Entry<EntityID, Set<EntityID>> graph : neighbours.entrySet()) // fix graph
+        {
+            for (EntityID entityID : graph.getValue())
+            {
+                neighbours.get(entityID).add(graph.getKey());
+            }
+        }
+        setGraph(neighbours);
+    }
+
+    private void setGraph(Map<EntityID, Set<EntityID>> newGraph) {
+        this.neighboursMap = newGraph;
     }
 
     public RouteGraph getGraph() {
@@ -90,7 +125,7 @@ public class RouteManager {
         if(oldNode == null) {
             return;
         }
-        for(EntityID nodeID : ((Area)world.getEntity(areaID)).getNeighbours()) {
+        for(EntityID nodeID : this.neighboursMap.get(areaID)) {
             if(this.passableNodeMap.containsKey(nodeID)) {
                 RouteNode node = this.passableNodeMap.get(nodeID);
                 node.removeNeighbour(oldNode);
@@ -181,7 +216,7 @@ public class RouteManager {
         if(node == null) {
             return;
         }
-        for(EntityID nodeID : ((Area)world.getEntity(areaID)).getNeighbours()) {
+        for(EntityID nodeID : this.neighboursMap.get(areaID)) {
             if(!this.passableNodeMap.containsKey(nodeID)) {
                 node.removeNeighbour(nodeID);
                 continue;
@@ -249,7 +284,7 @@ public class RouteManager {
         }
         else { //edge
             if(this.passableNodeMap.containsKey(firstID)) {
-                for (EntityID id : ((Area) world.getEntity(firstID)).getNeighbours()) {
+                for (EntityID id : this.neighboursMap.get(firstID)) {
                     if (id.getValue() != areaID.getValue()) {
                         RouteEdge edge = this.passableEdgeMap.get(id); // another <-> firstID
                         if(edge != null) {
@@ -302,7 +337,7 @@ public class RouteManager {
         }
         else { //edge
             if(this.passableNodeMap.containsKey(secondID)) {
-                for (EntityID id : ((Area) world.getEntity(secondID)).getNeighbours()) {
+                for (EntityID id : this.neighboursMap.get(secondID)) {
                     if (id.getValue() != areaID.getValue()) {
                         RouteEdge edge = this.passableEdgeMap.get(id); // another <-> secondID
                         if(edge != null) {
@@ -377,7 +412,7 @@ public class RouteManager {
             }
             Road road = (Road)entity;
             EntityID roadID = road.getID();
-            List<EntityID> roadNeighbours = road.getNeighbours();
+            Set<EntityID> roadNeighbours = this.neighboursMap.get(roadID);
             if(roadNeighbours.isEmpty()) {
                 this.nodeMap.put(roadID, RouteNode.getInstance(world, road));
             }
@@ -388,19 +423,22 @@ public class RouteManager {
                 RouteNode roadNode = RouteNode.getInstance(world, road);
                 Set<EntityID> processed = processedNeighbours.get(roadID);
                 List<EntityID> path = Lists.newArrayList(roadID);
-                EntityID roadNeighbourID = roadNeighbours.get(0);
+                Object[] array = roadNeighbours.toArray();
+                EntityID roadNeighbourID = (EntityID)array[0];
                 Area area = (Area)world.getEntity(roadNeighbourID);
                 EntityID neighbourID = roadID;
                 boolean edgeFlag = true;
                 while (edgeFlag) {
                     EntityID areaID = area.getID();
-                    List<EntityID> neighbourList = area.getNeighbours();
+                    Set<EntityID> neighbourList = this.neighboursMap.get(areaID); //area.getNeighbours();
                     path.add(areaID);
                     if(neighbourList.size() == 2) {
                         neighbourList.remove(neighbourID);
                         processedRoad.add(area);
                         neighbourID = areaID;
-                        area = (Area)world.getEntity(neighbourList.get(0));
+                        Object[] array0 = neighbourList.toArray();
+                        EntityID another = (EntityID)array0[0];
+                        area = (Area)world.getEntity(another);
                     }
                     else {
                         edgeFlag = false;
@@ -441,13 +479,15 @@ public class RouteManager {
                     boolean edgeFlag = true;
                     while (edgeFlag) {
                         EntityID areaID = area.getID();
-                        List<EntityID> neighbourList = area.getNeighbours();
+                        Set<EntityID> neighbourList = this.neighboursMap.get(areaID); //area.getNeighbours();
                         if(neighbourList.size() == 2) {
                             neighbourList.remove(neighbourID);
                             path.add(areaID);
                             processedRoad.add(area);
                             neighbourID = areaID;
-                            area = (Area)world.getEntity(neighbourList.get(0));
+                            Object[] array0 = neighbourList.toArray();
+                            EntityID another = (EntityID)array0[0];
+                            area = (Area)world.getEntity(another);
                         }
                         else {
                             edgeFlag = false;
@@ -483,13 +523,15 @@ public class RouteManager {
                 }
                 EntityID start = null;
                 List<EntityID> startPath = new ArrayList<>();
-                Area area = (Area)world.getEntity(roadNeighbours.get(0));
+                Object[] array0 = roadNeighbours.toArray();
+                EntityID another = (EntityID)array0[0];
+                Area area = (Area)world.getEntity(another);
                 EntityID neighbourID = roadID;
                 Set<EntityID> cache = new HashSet<>();
                 boolean edgeFlag = true;
                 while (edgeFlag) {
                     EntityID areaID = area.getID();
-                    List<EntityID> neighbourList = area.getNeighbours();
+                    Set<EntityID> neighbourList = this.neighboursMap.get(areaID); //area.getNeighbours();
                     if(cache.contains(areaID)) {
                         edgeFlag = false;
                         System.out.println("[ERROR] Bad Map (unknown Area)");
@@ -499,7 +541,9 @@ public class RouteManager {
                         startPath.add(areaID);
                         processedRoad.add(area);
                         neighbourID = areaID;
-                        area = (Area)world.getEntity(neighbourList.get(0));
+                        Object[] array1 = neighbourList.toArray();
+                        EntityID another0 = (EntityID)array1[0];
+                        area = (Area)world.getEntity(another0);
                     }
                     else {
                         edgeFlag = false;
@@ -519,13 +563,15 @@ public class RouteManager {
                 }
                 EntityID end = null;
                 List<EntityID> endPath = new ArrayList<>();
-                area = (Area)world.getEntity(roadNeighbours.get(1));
+                //Object[] array0 = roadNeighbours.toArray();
+                EntityID another2 = (EntityID)array0[1];
+                area = (Area)world.getEntity(another2);
                 neighbourID = roadID;
                 cache = new HashSet<>();
                 edgeFlag = true;
                 while (edgeFlag) {
                     EntityID areaID = area.getID();
-                    List<EntityID> neighbourList = area.getNeighbours();
+                    Set<EntityID> neighbourList = this.neighboursMap.get(areaID); //area.getNeighbours();
                     if(cache.contains(areaID)) {
                         edgeFlag = false;
                         System.out.println("[ERROR] Bad Map (unknown Area)");
@@ -535,7 +581,9 @@ public class RouteManager {
                         endPath.add(areaID);
                         processedRoad.add(area);
                         neighbourID = areaID;
-                        area = (Area)world.getEntity(neighbourList.get(0));
+                        Object[] array1 = neighbourList.toArray();
+                        EntityID another0 = (EntityID)array1[0];
+                        area = (Area)world.getEntity(another0);
                     }
                     else {
                         edgeFlag = false;
@@ -594,7 +642,7 @@ public class RouteManager {
             EntityID buildingID = building.getID();
             RouteNode routeNode = this.nodeMap.get(buildingID);
             RouteNode buildingNode = routeNode != null ? routeNode : RouteNode.getInstance(world, building);
-            List<EntityID> buildingNeighbours = building.getNeighbours();
+            Set<EntityID> buildingNeighbours = this.neighboursMap.get(buildingID); //building.getNeighbours();
             Set<EntityID> processed = processedNeighbours.get(buildingID);
             if(buildingNeighbours.isEmpty()) {
                 this.nodeMap.put(buildingID, buildingNode);
@@ -610,7 +658,7 @@ public class RouteManager {
                 boolean edgeFlag = true;
                 while (edgeFlag) {
                     EntityID areaID = area.getID();
-                    List<EntityID> neighbourList = area.getNeighbours();
+                    Set<EntityID> neighbourList = this.neighboursMap.get(areaID); //area.getNeighbours();
                     path.add(areaID);
                     if(area instanceof Building) {
                         edgeFlag = false;
@@ -628,7 +676,9 @@ public class RouteManager {
                         neighbourList.remove(neighbourID);
                         processedRoad.add(area);
                         neighbourID = areaID;
-                        area = (Area)world.getEntity(neighbourList.get(0));
+                        Object[] array0 = neighbourList.toArray();
+                        EntityID another = (EntityID)array0[0];
+                        area = (Area)world.getEntity(another);
                     }
                     else {
                         edgeFlag = false;
