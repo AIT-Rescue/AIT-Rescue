@@ -15,12 +15,12 @@ public class ReservoirSelector {
     private RouteSearcherProvider provider;
 
     public double averageDistance;
-    private boolean firstUpdate;
+    public boolean firstUpdate;
     public static final double DEFAULT_AVERAGE = 37615.0D;
     public static final int DEFAULT_COUNT = 3;
     public int count;
 
-    private List<Reservoir> stations;
+    public List<Reservoir> stations;
 
     public ReservoirSelector(StandardWorldModel standardWorldModel, Config c, RouteSearcherProvider routeSearcherProvider) {
         this(standardWorldModel, c, routeSearcherProvider, DEFAULT_COUNT);
@@ -159,6 +159,9 @@ public class ReservoirSelector {
 
     //move PositionUtil
     public static double getPathDistance(StandardWorldModel world, List<EntityID> path) {
+        if(path.size() < 2){
+            return 0.0D;
+        }
         double distance = 0.0D;
         int limit = path.size() - 1;
 
